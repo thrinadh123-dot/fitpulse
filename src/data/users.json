@@ -1,0 +1,10 @@
+[
+  {
+    "id": "1",
+    "email": "test@example.com",
+    "password": "password",
+    "firstName": "Test",
+    "lastName": "User",
+    "onboardingComplete": true
+  }
+]

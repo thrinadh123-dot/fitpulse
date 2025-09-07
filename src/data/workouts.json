@@ -1,0 +1,402 @@
+{
+  "goals": {
+    "muscle_gain": {
+      "name": "💪 Muscle Gain",
+      "description": "Build strength and muscle mass",
+      "weeklySplit": {
+        "Monday": {
+          "focus": "Chest + Triceps",
+          "muscleGroups": ["Chest", "Triceps"],
+          "intensity": "high"
+        },
+        "Tuesday": {
+          "focus": "Back + Biceps",
+          "muscleGroups": ["Back", "Biceps"],
+          "intensity": "high"
+        },
+        "Wednesday": {
+          "focus": "Legs",
+          "muscleGroups": ["Quads", "Hamstrings", "Glutes", "Calves"],
+          "intensity": "high"
+        },
+        "Thursday": {
+          "focus": "Shoulders + Abs",
+          "muscleGroups": ["Shoulders", "Abs"],
+          "intensity": "moderate"
+        },
+        "Friday": {
+          "focus": "Full Body + Cardio",
+          "muscleGroups": ["Full Body", "Cardio"],
+          "intensity": "moderate"
+        },
+        "Saturday": {
+          "focus": "Yoga / Optional",
+          "muscleGroups": ["Flexibility", "Recovery"],
+          "intensity": "low"
+        },
+        "Sunday": {
+          "focus": "Rest",
+          "muscleGroups": ["Rest"],
+          "intensity": "rest"
+        }
+      }
+    },
+    "fat_loss": {
+      "name": "🏃 Fat Loss",
+      "description": "Burn calories and lose fat",
+      "weeklySplit": {
+        "Monday": {
+          "focus": "HIIT Cardio",
+          "muscleGroups": ["Cardio", "Full Body"],
+          "intensity": "high"
+        },
+        "Tuesday": {
+          "focus": "Strength Training",
+          "muscleGroups": ["Upper Body", "Core"],
+          "intensity": "moderate"
+        },
+        "Wednesday": {
+          "focus": "Steady State Cardio",
+          "muscleGroups": ["Cardio"],
+          "intensity": "moderate"
+        },
+        "Thursday": {
+          "focus": "Lower Body",
+          "muscleGroups": ["Legs", "Glutes"],
+          "intensity": "high"
+        },
+        "Friday": {
+          "focus": "Circuit Training",
+          "muscleGroups": ["Full Body"],
+          "intensity": "high"
+        },
+        "Saturday": {
+          "focus": "Active Recovery",
+          "muscleGroups": ["Flexibility", "Light Cardio"],
+          "intensity": "low"
+        },
+        "Sunday": {
+          "focus": "Rest",
+          "muscleGroups": ["Rest"],
+          "intensity": "rest"
+        }
+      }
+    },
+    "maintain_fitness": {
+      "name": "⚖️ Maintain Fitness",
+      "description": "Stay active and maintain current fitness level",
+      "weeklySplit": {
+        "Monday": {
+          "focus": "Cardio",
+          "muscleGroups": ["Cardio"],
+          "intensity": "moderate"
+        },
+        "Tuesday": {
+          "focus": "Strength",
+          "muscleGroups": ["Upper Body"],
+          "intensity": "moderate"
+        },
+        "Wednesday": {
+          "focus": "Flexibility",
+          "muscleGroups": ["Flexibility", "Core"],
+          "intensity": "low"
+        },
+        "Thursday": {
+          "focus": "Cardio",
+          "muscleGroups": ["Cardio"],
+          "intensity": "moderate"
+        },
+        "Friday": {
+          "focus": "Strength",
+          "muscleGroups": ["Lower Body"],
+          "intensity": "moderate"
+        },
+        "Saturday": {
+          "focus": "Mixed",
+          "muscleGroups": ["Mixed"],
+          "intensity": "low"
+        },
+        "Sunday": {
+          "focus": "Rest",
+          "muscleGroups": ["Rest"],
+          "intensity": "rest"
+        }
+      }
+    },
+    "beginner": {
+      "name": "🧘 Beginner Routine",
+      "description": "Perfect for fitness newcomers",
+      "weeklySplit": {
+        "Monday": {
+          "focus": "Full Body Basics",
+          "muscleGroups": ["Full Body"],
+          "intensity": "low"
+        },
+        "Tuesday": {
+          "focus": "Rest",
+          "muscleGroups": ["Rest"],
+          "intensity": "rest"
+        },
+        "Wednesday": {
+          "focus": "Cardio Basics",
+          "muscleGroups": ["Cardio"],
+          "intensity": "low"
+        },
+        "Thursday": {
+          "focus": "Rest",
+          "muscleGroups": ["Rest"],
+          "intensity": "rest"
+        },
+        "Friday": {
+          "focus": "Full Body Basics",
+          "muscleGroups": ["Full Body"],
+          "intensity": "low"
+        },
+        "Saturday": {
+          "focus": "Flexibility",
+          "muscleGroups": ["Flexibility"],
+          "intensity": "low"
+        },
+        "Sunday": {
+          "focus": "Rest",
+          "muscleGroups": ["Rest"],
+          "intensity": "rest"
+        }
+      }
+    }
+  },
+  "exercises": {
+    "Chest": [
+      {
+        "name": "Push-ups",
+        "sets": "3 x 10-15",
+        "muscleGroup": "Chest",
+        "difficulty": "beginner",
+        "equipment": "none",
+        "instructions": "Start in plank position, lower body until chest nearly touches ground, push back up"
+      },
+      {
+        "name": "Bench Press",
+        "sets": "4 x 8-12",
+        "muscleGroup": "Chest",
+        "difficulty": "intermediate",
+        "equipment": "barbell",
+        "instructions": "Lie on bench, lower bar to chest, press back up"
+      },
+      {
+        "name": "Dumbbell Flyes",
+        "sets": "3 x 12-15",
+        "muscleGroup": "Chest",
+        "difficulty": "intermediate",
+        "equipment": "dumbbells",
+        "instructions": "Lie on bench, arms extended, lower weights in arc motion"
+      }
+    ],
+    "Triceps": [
+      {
+        "name": "Tricep Dips",
+        "sets": "3 x 10-15",
+        "muscleGroup": "Triceps",
+        "difficulty": "beginner",
+        "equipment": "dip bars",
+        "instructions": "Support body on bars, lower until arms are 90 degrees, push up"
+      },
+      {
+        "name": "Overhead Tricep Extension",
+        "sets": "3 x 12-15",
+        "muscleGroup": "Triceps",
+        "difficulty": "beginner",
+        "equipment": "dumbbell",
+        "instructions": "Hold weight overhead, lower behind head, extend back up"
+      }
+    ],
+    "Back": [
+      {
+        "name": "Pull-ups",
+        "sets": "3 x 5-10",
+        "muscleGroup": "Back",
+        "difficulty": "intermediate",
+        "equipment": "pull-up bar",
+        "instructions": "Hang from bar, pull body up until chin over bar"
+      },
+      {
+        "name": "Bent-over Rows",
+        "sets": "4 x 8-12",
+        "muscleGroup": "Back",
+        "difficulty": "intermediate",
+        "equipment": "barbell",
+        "instructions": "Bend at waist, pull bar to lower chest"
+      }
+    ],
+    "Biceps": [
+      {
+        "name": "Bicep Curls",
+        "sets": "3 x 12-15",
+        "muscleGroup": "Biceps",
+        "difficulty": "beginner",
+        "equipment": "dumbbells",
+        "instructions": "Stand with weights, curl up to shoulders, lower slowly"
+      },
+      {
+        "name": "Hammer Curls",
+        "sets": "3 x 12-15",
+        "muscleGroup": "Biceps",
+        "difficulty": "beginner",
+        "equipment": "dumbbells",
+        "instructions": "Curl with palms facing each other"
+      }
+    ],
+    "Quads": [
+      {
+        "name": "Squats",
+        "sets": "4 x 12-15",
+        "muscleGroup": "Quads",
+        "difficulty": "beginner",
+        "equipment": "none",
+        "instructions": "Stand with feet shoulder-width, lower as if sitting, return to standing"
+      },
+      {
+        "name": "Lunges",
+        "sets": "3 x 10 each leg",
+        "muscleGroup": "Quads",
+        "difficulty": "beginner",
+        "equipment": "none",
+        "instructions": "Step forward, lower back knee, push back to start"
+      }
+    ],
+    "Hamstrings": [
+      {
+        "name": "Deadlifts",
+        "sets": "4 x 8-12",
+        "muscleGroup": "Hamstrings",
+        "difficulty": "intermediate",
+        "equipment": "barbell",
+        "instructions": "Stand with bar at shins, hinge at hips, lift bar to standing"
+      },
+      {
+        "name": "Romanian Deadlifts",
+        "sets": "3 x 12-15",
+        "muscleGroup": "Hamstrings",
+        "difficulty": "intermediate",
+        "equipment": "dumbbells",
+        "instructions": "Hold weights, hinge at hips, feel stretch in hamstrings"
+      }
+    ],
+    "Glutes": [
+      {
+        "name": "Glute Bridges",
+        "sets": "3 x 15-20",
+        "muscleGroup": "Glutes",
+        "difficulty": "beginner",
+        "equipment": "none",
+        "instructions": "Lie on back, knees bent, lift hips to form bridge"
+      },
+      {
+        "name": "Hip Thrusts",
+        "sets": "3 x 12-15",
+        "muscleGroup": "Glutes",
+        "difficulty": "intermediate",
+        "equipment": "barbell",
+        "instructions": "Sit on ground, bar on hips, thrust hips up"
+      }
+    ],
+    "Shoulders": [
+      {
+        "name": "Overhead Press",
+        "sets": "3 x 8-12",
+        "muscleGroup": "Shoulders",
+        "difficulty": "intermediate",
+        "equipment": "dumbbells",
+        "instructions": "Press weights overhead from shoulder level"
+      },
+      {
+        "name": "Lateral Raises",
+        "sets": "3 x 12-15",
+        "muscleGroup": "Shoulders",
+        "difficulty": "beginner",
+        "equipment": "dumbbells",
+        "instructions": "Raise weights to sides until arms parallel to ground"
+      }
+    ],
+    "Abs": [
+      {
+        "name": "Crunches",
+        "sets": "3 x 15-20",
+        "muscleGroup": "Abs",
+        "difficulty": "beginner",
+        "equipment": "none",
+        "instructions": "Lie on back, knees bent, lift shoulders off ground"
+      },
+      {
+        "name": "Plank",
+        "sets": "3 x 30-60 seconds",
+        "muscleGroup": "Abs",
+        "difficulty": "beginner",
+        "equipment": "none",
+        "instructions": "Hold plank position with straight body"
+      }
+    ],
+    "Cardio": [
+      {
+        "name": "Running",
+        "sets": "20-30 minutes",
+        "muscleGroup": "Cardio",
+        "difficulty": "beginner",
+        "equipment": "none",
+        "instructions": "Run at moderate pace for specified duration"
+      },
+      {
+        "name": "Cycling",
+        "sets": "30-45 minutes",
+        "muscleGroup": "Cardio",
+        "difficulty": "beginner",
+        "equipment": "bike",
+        "instructions": "Cycle at moderate intensity"
+      },
+      {
+        "name": "Jump Rope",
+        "sets": "10-15 minutes",
+        "muscleGroup": "Cardio",
+        "difficulty": "intermediate",
+        "equipment": "jump rope",
+        "instructions": "Jump rope continuously for specified time"
+      }
+    ],
+    "Flexibility": [
+      {
+        "name": "Stretching",
+        "sets": "10-15 minutes",
+        "muscleGroup": "Flexibility",
+        "difficulty": "beginner",
+        "equipment": "none",
+        "instructions": "Stretch major muscle groups"
+      },
+      {
+        "name": "Yoga",
+        "sets": "20-30 minutes",
+        "muscleGroup": "Flexibility",
+        "difficulty": "beginner",
+        "equipment": "mat",
+        "instructions": "Follow basic yoga sequence"
+      }
+    ],
+    "Full Body": [
+      {
+        "name": "Burpees",
+        "sets": "3 x 8-12",
+        "muscleGroup": "Full Body",
+        "difficulty": "intermediate",
+        "equipment": "none",
+        "instructions": "Squat, jump back to plank, do push-up, jump forward, jump up"
+      },
+      {
+        "name": "Mountain Climbers",
+        "sets": "3 x 30 seconds",
+        "muscleGroup": "Full Body",
+        "difficulty": "beginner",
+        "equipment": "none",
+        "instructions": "In plank position, alternate bringing knees to chest"
+      }
+    ]
+  }
+} 

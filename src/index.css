@@ -1,0 +1,675 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* FitPulse Design System - Futuristic Health & Fitness Focused */
+
+@layer base {
+  :root {
+    /* Light Mode - WCAG Compliant Color Palette */
+    --background: 0 0% 98%; /* #F9FAFB - Ultra Pale Gray */
+    --foreground: 0 0% 11%; /* #1C1C1C - Dark Gray for main text */
+    
+    --card: 0 0% 100%; /* #FFFFFF - White cards */
+    --card-foreground: 0 0% 11%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 11%;
+    
+    /* Primary Action Color - WCAG 4.55:1 contrast */
+    --primary: 4 90% 58%; /* #D9432E - Primary Action */
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 4 90% 68%;
+    
+    /* Secondary Color */
+    --secondary: 330 60% 47%; /* #C53678 - Red-Violet */
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 0 0% 96%; /* #F5F5F5 */
+    --muted-foreground: 0 0% 29%; /* #4A4A4A - Secondary text */
+    
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 11%;
+    
+    /* Success Indicator - WCAG 5.31:1 contrast */
+    --success: 142 76% 36%; /* #00873D - Success Green */
+    --success-foreground: 0 0% 100%;
+    
+    /* Warning Color - WCAG 4.88:1 contrast */
+    --warning: 330 60% 47%; /* #C53678 - Warnings */
+    --warning-foreground: 0 0% 100%;
+    
+    /* Error Color - WCAG 4.53:1 contrast */
+    --destructive: 4 90% 58%; /* #B92525 - Error Red */
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Health Highlight - Graphical only */
+    --health-highlight: 120 100% 50%; /* #39FF14 - Health Highlight */
+    
+    --border: 0 0% 88%; /* #E0E0E0 - Subtle dividers */
+    --input: 0 0% 88%;
+    --ring: 4 90% 58%;
+    
+    /* Light Mode Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(4 90% 58%), hsl(330 60% 47%));
+    --gradient-hero: linear-gradient(135deg, hsl(4 90% 58% / 0.1), hsl(330 60% 47% / 0.1));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(0 0% 98%));
+    
+    /* Light Mode Shadows - Subtle and accessible */
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --shadow-glow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    --shadow-neon: 0 0 20px hsl(4 90% 58% / 0.3), 0 0 40px hsl(330 60% 47% / 0.2);
+    --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05);
+    --shadow-pulse: 0 0 30px hsl(330 60% 47% / 0.4);
+    
+    /* Smooth transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    --radius: 0.75rem;
+    
+    /* Sidebar colors for light mode */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 11%;
+    --sidebar-primary: 0 0% 96%;
+    --sidebar-primary-foreground: 0 0% 11%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 11%;
+    --sidebar-border: 0 0% 88%;
+    --sidebar-ring: 4 90% 58%;
+    
+    /* Dark Mode Color Palette - New Specifications */
+    --dark-background: 0 0% 7%; /* #121212 - Deep charcoal black */
+    --dark-card: 0 0% 12%; /* #1E1E1E - Slightly lighter */
+    --dark-foreground: 0 0% 100%; /* #FFFFFF - Pure white */
+    --dark-muted-foreground: 0 0% 69%; /* #B0B0B0 - Soft gray */
+    
+    /* Dark Mode Accent Colors */
+    --neon-green: 120 100% 50%; /* #39FF14 - Neon Green */
+    --sunset-orange: 8 100% 62%; /* #FF5841 - Sunset Orange */
+    --red-violet: 330 60% 47%; /* #C53678 - Red-Violet */
+    --highlight-blue: 210 70% 58%; /* #4A8BDF - Highlight Blue */
+    --success-green: 142 76% 36%; /* #00C853 - Success Green */
+    --error-red: 4 90% 58%; /* #D32F2F - Error Red */
+    --border-dark: 0 0% 16%; /* #2A2A2A - Divider/Border */
+    --shadow-glow-dark: 0 0% 100% / 0.05; /* rgba(255,255,255,0.05) */
+  }
+
+  .dark {
+    /* Dark Mode - New Specifications */
+    --background: var(--dark-background); /* #121212 - Deep charcoal black */
+    --foreground: var(--dark-foreground); /* #FFFFFF - Pure white */
+    
+    --card: var(--dark-card); /* #1E1E1E - Slightly lighter */
+    --card-foreground: var(--dark-foreground);
+    
+    --popover: var(--dark-card);
+    --popover-foreground: var(--dark-foreground);
+    
+    /* Neon Green for energy bars, streaks, XP indicators */
+    --primary: var(--neon-green); /* #39FF14 */
+    --primary-foreground: var(--dark-background);
+    --primary-glow: 120 100% 60%;
+    
+    /* Sunset Orange for CTA buttons */
+    --secondary: var(--sunset-orange); /* #FF5841 */
+    --secondary-foreground: var(--dark-foreground);
+    
+    --muted: 0 0% 15%;
+    --muted-foreground: var(--dark-muted-foreground); /* #B0B0B0 - Soft gray */
+    
+    --accent: 0 0% 15%;
+    --accent-foreground: var(--dark-foreground);
+    
+    /* Success and Warning colors for dark mode */
+    --success: var(--success-green); /* #00C853 */
+    --success-foreground: var(--dark-foreground);
+    --warning: var(--red-violet); /* #C53678 */
+    --warning-foreground: var(--dark-foreground);
+    
+    /* Error Red for alerts and warnings */
+    --destructive: var(--error-red); /* #D32F2F */
+    --destructive-foreground: var(--dark-foreground);
+    
+    --border: var(--border-dark); /* #2A2A2A - Divider/Border */
+    --input: var(--border-dark);
+    --ring: var(--neon-green);
+    
+    /* Dark mode gradients with new accent colors */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--neon-green)), hsl(var(--sunset-orange)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--neon-green) / 0.1), hsl(var(--sunset-orange) / 0.1));
+    --gradient-card: linear-gradient(145deg, hsl(var(--dark-background)), hsl(var(--dark-card)));
+    
+    /* Dark mode shadows with soft glow */
+    --shadow-soft: 0 4px 20px hsl(var(--neon-green) / 0.15);
+    --shadow-glow: 0 8px 32px hsl(var(--neon-green) / 0.25);
+    --shadow-neon: 0 0 20px hsl(var(--neon-green) / 0.6), 0 0 40px hsl(var(--sunset-orange) / 0.3);
+    --shadow-card: 0 2px 12px var(--shadow-glow-dark); /* Soft white glow */
+    --shadow-pulse: 0 0 30px hsl(var(--sunset-orange) / 0.8);
+    
+    /* Sidebar colors for dark mode */
+    --sidebar-background: 0 0% 5%; /* Even darker than main background */
+    --sidebar-foreground: var(--dark-foreground);
+    --sidebar-primary: var(--dark-background);
+    --sidebar-primary-foreground: var(--dark-foreground);
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: var(--dark-foreground);
+    --sidebar-border: var(--border-dark);
+    --sidebar-ring: var(--neon-green);
+  }
+
+
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  /* Fix for white line artifacts in parallax backgrounds */
+  .fixed.inset-0 {
+    /* Prevent sub-pixel rendering artifacts */
+    transform: translateZ(0);
+    /* Ensure proper background coverage */
+    background-color: hsl(var(--background));
+    /* Remove any potential border artifacts */
+    border: none;
+    outline: none;
+  }
+
+  /* Fix for grid pattern rendering artifacts */
+  .absolute.inset-0[style*="backgroundImage"] {
+    /* Prevent thin line artifacts from gradients */
+    background-clip: padding-box;
+    /* Ensure smooth gradient rendering */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+
+  /* Fix for motion.div parallax elements */
+  .fixed.inset-0 .absolute {
+    /* Prevent transform rendering artifacts */
+    backface-visibility: hidden;
+    /* Ensure proper layering */
+    will-change: transform;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', 'Roboto Mono', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    /* Prevent white line artifacts */
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    /* Force background coverage */
+    min-height: 100vh;
+    /* Enhanced typography for better readability */
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Fix for html element to prevent white lines */
+  html {
+    background-color: hsl(var(--background));
+    overflow-x: hidden;
+    /* Prevent scrollbar artifacts */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  /* Hide scrollbar for webkit browsers */
+  html::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Final comprehensive white line fix */
+  .relative.min-h-screen {
+    /* Prevent any overflow artifacts */
+    overflow-x: hidden;
+    /* Ensure proper background coverage */
+    background-color: hsl(var(--background));
+    /* Prevent any border artifacts */
+    border: none;
+    outline: none;
+  }
+
+  /* Fix for any remaining white line artifacts */
+  .relative.min-h-screen * {
+    /* Prevent any element from creating white lines */
+    border-left: none !important;
+    border-right: none !important;
+    /* Ensure proper rendering */
+    box-sizing: border-box;
+  }
+
+  /* Specific fix for parallax background containers */
+  .fixed.inset-0.overflow-hidden {
+    /* Force proper background coverage */
+    background-color: hsl(var(--background)) !important;
+    /* Prevent any edge artifacts */
+    border: 0 !important;
+    outline: 0 !important;
+    /* Ensure full viewport coverage */
+    width: 100vw !important;
+    height: 100vh !important;
+    left: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Bebas Neue', 'Inter', sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  /* Dark Mode Typography Enhancements */
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: hsl(var(--dark-foreground));
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Dark Mode Body Text */
+  .dark p, .dark span, .dark div {
+    color: hsl(var(--dark-foreground));
+  }
+
+  .dark .text-muted {
+    color: hsl(var(--dark-muted-foreground));
+  }
+
+  /* Dark Mode Card Enhancements */
+  .dark .card-enhanced {
+    background: hsl(var(--dark-card));
+    border: 1px solid hsl(var(--border-dark));
+    box-shadow: 0 2px 12px var(--shadow-glow-dark);
+    backdrop-filter: blur(10px);
+  }
+
+  .dark .card-enhanced:hover {
+    box-shadow: 0 8px 32px hsl(var(--neon-green) / 0.25);
+    border-color: hsl(var(--neon-green) / 0.3);
+  }
+
+  /* Dark Mode Button Enhancements */
+  .dark .btn-primary {
+    background: hsl(var(--neon-green));
+    color: hsl(var(--dark-background));
+    border: none;
+    box-shadow: 0 0 20px hsl(var(--neon-green) / 0.4);
+  }
+
+  .dark .btn-primary:hover {
+    background: hsl(120 100% 60%);
+    box-shadow: 0 0 30px hsl(var(--neon-green) / 0.6);
+    transform: translateY(-2px);
+  }
+
+  .dark .btn-secondary {
+    background: hsl(var(--sunset-orange));
+    color: hsl(var(--dark-foreground));
+    border: none;
+    box-shadow: 0 0 20px hsl(var(--sunset-orange) / 0.4);
+  }
+
+  .dark .btn-secondary:hover {
+    background: hsl(8 100% 72%);
+    box-shadow: 0 0 30px hsl(var(--sunset-orange) / 0.6);
+    transform: translateY(-2px);
+  }
+
+  /* Dark Mode Progress Bars */
+  .dark .progress-bar {
+    background: linear-gradient(90deg, hsl(var(--neon-green)), hsl(var(--highlight-blue)));
+  }
+
+  /* Dark Mode Chart Colors */
+  .dark .chart-line {
+    stroke: hsl(var(--highlight-blue));
+  }
+
+  .dark .chart-positive {
+    fill: hsl(var(--neon-green));
+  }
+
+  .dark .chart-negative {
+    fill: hsl(var(--red-violet));
+  }
+
+  /* Dark Mode Success/Error States */
+  .dark .text-success {
+    color: hsl(var(--success-green));
+  }
+
+  .dark .text-error {
+    color: hsl(var(--error-red));
+  }
+
+  /* Dark Mode Navigation */
+  .dark .nav-active {
+    background: hsl(var(--neon-green));
+    color: hsl(var(--dark-background));
+    box-shadow: 0 0 20px hsl(var(--neon-green) / 0.4);
+  }
+
+  .dark .nav-item:hover {
+    background: hsl(var(--border-dark));
+    color: hsl(var(--neon-green));
+  }
+
+  /* Dark Mode Form Elements */
+  .dark input, .dark textarea, .dark select {
+    background: hsl(var(--dark-card));
+    border: 1px solid hsl(var(--border-dark));
+    color: hsl(var(--dark-foreground));
+  }
+
+  .dark input:focus, .dark textarea:focus, .dark select:focus {
+    border-color: hsl(var(--neon-green));
+    box-shadow: 0 0 0 2px hsl(var(--neon-green) / 0.2);
+  }
+
+  /* Dark Mode Tooltips */
+  .dark .tooltip {
+    background: hsl(var(--dark-card));
+    border: 1px solid hsl(var(--border-dark));
+    color: hsl(var(--dark-foreground));
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Dark Mode Animations */
+  @keyframes darkGlowPulse {
+    0%, 100% {
+      box-shadow: 0 0 20px hsl(var(--neon-green) / 0.3);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 0 40px hsl(var(--neon-green) / 0.6);
+      transform: scale(1.05);
+    }
+  }
+
+  .dark .glow-pulse {
+    animation: darkGlowPulse 4s ease-in-out infinite;
+  }
+
+  /* Dark Mode Accessibility */
+  .dark * {
+    /* Ensure minimum contrast ratio */
+    color-scheme: dark;
+  }
+
+  /* Dark Mode Focus Indicators */
+  .dark *:focus-visible {
+    outline: 2px solid hsl(var(--neon-green));
+    outline-offset: 2px;
+  }
+
+
+
+  /* Page transitions */
+  .page-enter {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .page-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms, transform 300ms;
+  }
+
+  .page-exit {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .page-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 300ms, transform 300ms;
+  }
+
+  /* Enhanced animations for light mode */
+  .neon-glow {
+    box-shadow: var(--shadow-neon);
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .hover-neon {
+    transition: var(--transition-smooth);
+  }
+
+  .dark .hover-neon:hover {
+    box-shadow: var(--shadow-neon);
+    transform: translateY(-2px);
+  }
+
+  .card-enhanced {
+    background: var(--gradient-card);
+    border: 1px solid hsl(var(--border));
+  }
+
+  .dark .card-enhanced {
+    box-shadow: var(--shadow-card);
+  }
+
+  .dark .card-enhanced:hover {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .orbit-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+  }
+
+  .orbit-item {
+    position: absolute;
+    transition: var(--transition-smooth);
+  }
+
+  .orbit-item:hover {
+    transform: scale(1.2);
+    box-shadow: var(--shadow-glow);
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: var(--shadow-soft);
+    }
+    50% {
+      box-shadow: var(--shadow-pulse);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite;
+  }
+
+  /* SVG Heartbeat Automatic Loop Animation */
+  @keyframes drawPath {
+    0% {
+      stroke-dashoffset: 1000;
+      filter: drop-shadow(0 0 0px #ff0000);
+    }
+    50% {
+      stroke-dashoffset: 0;
+      filter: drop-shadow(0 0 12px #ff0000);
+    }
+    100% {
+      stroke-dashoffset: 1000;
+      filter: drop-shadow(0 0 0px #ff0000);
+    }
+  }
+
+  .pulse-path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawPath 3s ease-in-out infinite;
+  }
+
+  /* Enhanced Progress Bar Styles */
+  .progress-bar {
+    background: linear-gradient(90deg, var(--progress-color), var(--progress-color));
+    transition: width 0.6s ease-in-out;
+  }
+
+  /* Parallax container styles */
+  .parallax-container {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+
+  /* Additional fixes for parallax white line issue */
+  .parallax-background-fix {
+    /* Force hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    /* Prevent any border artifacts */
+    border: 0;
+    outline: 0;
+    /* Ensure full coverage */
+    margin: 0;
+    padding: 0;
+    /* Prevent scrollbar artifacts */
+    overflow: hidden;
+    /* Force background coverage */
+    background-color: hsl(var(--background)) !important;
+  }
+
+  /* Comprehensive white line fix for all parallax elements */
+  .fixed.inset-0,
+  .fixed.inset-0 * {
+    /* Prevent any white line artifacts */
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Fix for motion.div elements causing white lines */
+  [style*="transform"] {
+    /* Prevent transform rendering artifacts */
+    backface-visibility: hidden;
+    /* Force hardware acceleration */
+    transform-style: preserve-3d;
+    /* Prevent sub-pixel rendering issues */
+    will-change: transform;
+  }
+
+  /* Fix for grid pattern causing white lines */
+  .grid-pattern-fix {
+    /* Prevent gradient line artifacts */
+    background-clip: padding-box;
+    /* Smooth gradient rendering */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    /* Ensure proper opacity handling */
+    opacity: 0.015;
+    /* Prevent edge artifacts */
+    border-radius: 0;
+    /* Force background coverage */
+    background-color: transparent !important;
+  }
+
+  /* Fix for grid pattern opacity issues */
+  .grid-pattern-fix {
+    /* Prevent gradient line artifacts */
+    background-clip: padding-box;
+    /* Smooth gradient rendering */
+    image-rendering: -webkit-optimize-contrast;
+    /* Ensure proper opacity handling */
+    opacity: 0.015;
+  }
+
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Enhanced card hover effects */
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Floating animation for elements */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Shimmer effect for progress bars */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+}
