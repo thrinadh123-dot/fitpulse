@@ -2,26 +2,37 @@ import React from "react";
 import {
   NavigationMenu,
   NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuContent,
+  NavigationMenuTrigger,
   NavigationMenuLink,
-} from "@/components/ui/navigation-menu";
-import NavigationMenuItem from "@/components/ui/navigation-menu";
-import NavigationMenuContent from "@/components/ui/navigation-menu";
-import NavigationMenuTrigger from "@/components/ui/navigation-menu";
-import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "@/hooks/useUser";
+} from "@/components/ui/navigation-menu-base";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAppContext } from "@/context/AppContext";
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
-const FitpulseNavbar = () => {
-  const { user, isOwner, setUser, setIsOwner } = useAppContext();
+const Navbar = () => {
+  const { user, isOwner, logout, setIsOwner } = useAppContext();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // or however you store auth
-    setUser(null);
-    setIsOwner(false);
-    window.location.href = "/"; // redirect to home
+  const changeRole = async () => {
+    try {
+        const { data } = await axios.post('/api/trainer/change-role');
+        if (data.success) {
+            setIsOwner(true);
+            toast.success(data.message);
+        } else {
+            toast.error(data.message);
+        }
+    } catch (error) {
+        toast.error(error.message);
+    }
   };
 
   return (
-    <nav className="w-full border-b border-borderColor px-6 md:px-16 py-4 flex items-center justify-between">
+    <nav className={`w-full border-b border-borderColor px-6 md:px-16 py-4 flex items-center justify-between relative transition-all ${location.pathname === "/" ? "bg-lime" : ""}`}>
       {/* Logo */}
       <Link to="/" className="text-2xl font-bold text-primary">
         Fitpulse
@@ -76,28 +87,16 @@ const FitpulseNavbar = () => {
       </NavigationMenu>
 
       {/* User Auth */}
-      <div>
-        {user ? (
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-700">Hi, {user.name}</span>
-            <button
-              onClick={handleLogout}
-              className="text-red-500 hover:underline"
-            >
-              Logout
-            </button>
-          </div>
-        ) : (
-          <Link
-            to="/login"
-            className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark"
-          >
-            Login
-          </Link>
-        )}
+      <div className="flex items-center gap-4">
+        <button onClick={() => isOwner ? navigate('/trainer/dashboard') : changeRole()} className="cursor-pointer">
+            {isOwner ? 'Dashboard' : 'List trainers'}
+        </button>
+        <button onClick={() => { user ? logout() : navigate('/login') }} className="cursor-pointer px-8 py-2 rounded-full border-2 border-primary-gray hover:bg-primary-dull transition-all text-white bg-primary">
+            {user ? 'Logout' : 'Login'}
+        </button>
       </div>
     </nav>
   );
 };
 
-export default FitpulseNavbar;
+export default Navbar;

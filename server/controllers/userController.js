@@ -81,6 +81,16 @@ export const changeRoleToOwner = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });
-  }
+  }
 };
 
+// Get All Trainers for the Frontend
+export const getTrainers = async (req, res) => {
+    try {
+        const trainers = await Trainer.find({isAvailable: true});
+        res.json({success: true, trainers});
+    } catch (error) {
+        console.log(error.message);
+        res.json({success: false, message: error.message});
+    }
+}

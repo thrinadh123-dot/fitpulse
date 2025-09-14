@@ -66,3 +66,49 @@ export const addWorkoutPlan = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+// 📌 API to update user profile image
+export const updateUserImage = async (req, res) => {
+  try {
+    const { _id } = req.user; // logged-in user
+    const imageFile = req.file; // file from multer
+
+    if (!imageFile) {
+      return res.json({ success: false, message: "No file uploaded" });
+    }
+
+    // ⿡ Read uploaded file into memory
+    const fileBuffer = fs.readFileSync(imageFile.path);
+
+    // ⿢ Upload to ImageKit
+    const response = await imagekit.upload({
+      file: fileBuffer,
+      fileName: imageFile.originalname,
+      folder: '/users', // store inside 'users' folder in ImageKit
+    });
+
+    // ⿣ Optimize image with ImageKit transformations
+    const optimizedImageUrl = imagekit.url({
+      path: response.filePath,
+      transformation: [
+        {
+          width: '400',
+          quality: 'auto',
+          format: 'webp',
+        },
+      ],
+    });
+
+    // ⿤ Save image URL in DB
+    await User.findByIdAndUpdate(_id, { image: optimizedImageUrl });
+
+    // ⿥ Delete temporary file
+    fs.unlinkSync(imageFile.path);
+
+    res.json({ success: true, message: "User image updated", image: optimizedImageUrl });
+
+  } catch (error) {
+    console.error(error.message);
+    res.json({ success: false, message: error.message });
+  }
+};

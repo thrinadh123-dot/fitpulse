@@ -2,23 +2,16 @@ import React from "react";
 import {
   NavigationMenu,
   NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuContent,
+  NavigationMenuTrigger,
   NavigationMenuLink,
-} from "@/components/ui/navigation-menu";
-import NavigationMenuItem from "@/components/ui/navigation-menu";
-import NavigationMenuContent from "@/components/ui/navigation-menu";
-import NavigationMenuTrigger from "@/components/ui/navigation-menu";
-import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "@/hooks/useUser";
+} from "@/components/ui/navigation-menu-base";
+import { Link } from "react-router-dom";
+import { useAppContext } from "@/context/AppContext";
 
 const FitpulseNavbar = () => {
-  const { user, isOwner, setUser, setIsOwner } = useAppContext();
-
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // or however you store auth
-    setUser(null);
-    setIsOwner(false);
-    window.location.href = "/"; // redirect to home
-  };
+  const { user, isOwner, logout } = useAppContext();
 
   return (
     <nav className="w-full border-b border-borderColor px-6 md:px-16 py-4 flex items-center justify-between">
@@ -81,7 +74,7 @@ const FitpulseNavbar = () => {
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-700">Hi, {user.name}</span>
             <button
-              onClick={handleLogout}
+              onClick={logout}
               className="text-red-500 hover:underline"
             >
               Logout

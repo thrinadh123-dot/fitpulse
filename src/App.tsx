@@ -2,28 +2,28 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { UserProvider } from "@/hooks/useUser";
 import { ThemeProvider } from "@/hooks/useTheme";
-import Layout from "./components/Layout";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import ProfileSetup from "./pages/ProfileSetup";
-import GoalSelection from "./pages/GoalSelection";
-import EnhancedOnboarding from "./pages/EnhancedOnboarding";
-import Dashboard from "./pages/Dashboard";
-import { ProtectedRoute } from "./components/ProtectedRoute";
-import Nutrition from "./pages/Nutrition";
-import Fitness from "./pages/Fitness";
-import Water from "./pages/Water";
-import Sleep from "./pages/Sleep";
-import Settings from "./pages/Settings";
-import Profile from "./pages/Profile";
-import DishCalculatorPage from "./pages/DishCalculatorPage";
-import MedicalCheckup from "./pages/MedicalCheckup";
-import NotFound from "./pages/NotFound";
-
+import Layout from "@/components/Layout";
+import Home from "@/pages/Home";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import ProfileSetup from "@/pages/ProfileSetup";
+import GoalSelection from "@/pages/GoalSelection";
+import EnhancedOnboarding from "@/pages/EnhancedOnboarding";
+import Dashboard from "@/pages/Dashboard";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Nutrition from "@/pages/Nutrition";
+import Fitness from "@/pages/Fitness";
+import Water from "@/pages/Water";
+import Sleep from "@/pages/Sleep";
+import Settings from "@/pages/Settings";
+import Profile from "@/pages/Profile";
+import DishCalculatorPage from "@/pages/DishCalculatorPage";
+import MedicalCheckup from "@/pages/MedicalCheckup";
+import NotFound from "@/pages/NotFound";
+import { Toaster as HotToaster } from "react-hot-toast";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -33,8 +33,8 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
-            <Routes>
+          <HotToaster />
+          <Routes>
               {/* Public routes */}
               <Route path="/" element={<Layout />}>
                 <Route index element={<Home />} />
@@ -147,7 +147,6 @@ const App = () => (
               {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </BrowserRouter>
         </TooltipProvider>
       </UserProvider>
     </ThemeProvider>
