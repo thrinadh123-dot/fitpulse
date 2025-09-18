@@ -402,14 +402,14 @@ const WorkoutPlanner = () => {
                             {getIntensityIcon(workoutPlan.weeklySplit[today].intensity)}
                             {workoutPlan.weeklySplit[today].intensity}
                           </Badge>
-                          <Button
+                          {/* <Button
                             size="sm"
                             onClick={() => handlePlayWorkout(today)}
                             className="bg-green-500 hover:bg-green-600"
                           >
                             <Play className="h-4 w-4 mr-1" />
                             Play
-                          </Button>
+                          </Button> */}
                         </div>
                       </div>
                       <p className="text-sm text-muted-foreground mb-3">
@@ -423,13 +423,13 @@ const WorkoutPlanner = () => {
                           <Play className="h-4 w-4 mr-2" />
                           Start Today's Workout
                         </Button>
-                        <Button 
+                        {/* <Button 
                           variant="outline"
                           onClick={() => handlePlayWorkout(today)}
                         >
                           <Video className="h-4 w-4 mr-2" />
                           Watch Video
-                        </Button>
+                        </Button> */}
                       </div>
                     </div>
                   )}

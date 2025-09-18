@@ -40,3 +40,19 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Smart Recommendations Dark Mode Fix */
+.smart-recommendation-item {
+  transition: all 0.2s ease-in-out;
+}
+
+.dark .smart-recommendation-item {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.dark .smart-recommendation-item:hover {
+  background-color: hsl(var(--muted)) !important;
+  border-color: hsl(var(--primary) / 0.3) !important;
+}

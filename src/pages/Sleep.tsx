@@ -87,7 +87,7 @@ const Sleep = () => {
           <p className="text-muted-foreground">Monitor your rest and recovery</p>
         </div>
         <div className="flex space-x-2">
-          <Dialog>
+          {/* <Dialog>
             <DialogTrigger asChild>
               <Button className="bg-gradient-primary hover:shadow-glow transition-all duration-300">
                 <Plus className="h-4 w-4 mr-2" />
@@ -97,7 +97,7 @@ const Sleep = () => {
             <DialogContent>
               <SleepEntryForm onAdd={addSleepEntry} />
             </DialogContent>
-          </Dialog>
+          </Dialog> */}
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" className="hover:shadow-glow transition-all duration-300">

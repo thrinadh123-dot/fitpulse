@@ -13,7 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUser } from "@/hooks/useUser";
-import { useFitnessStore } from "@/hooks/useFitnessStore";
+import { useFitnessStore } from "@/stores/fitnessStore";
+import { useToast } from "@/hooks/use-toast";
 import { QuickActions } from "@/components/QuickActions";
 import { PageTransition } from "@/components/ui/page-transition";
 import { motion } from "framer-motion";
@@ -266,7 +267,8 @@ const MoodTracker = ({ currentMood, onMoodChange, weeklyMood }: {
 
 const Dashboard = () => {
   const { user } = useUser();
-  const { fitnessData, goals } = useFitnessStore();
+  const { data: fitnessData, goals, addSteps, addWater } = useFitnessStore();
+  const { toast } = useToast();
   
   // State for chart time period
   const [selectedTimeframe, setSelectedTimeframe] = useState<'daily' | 'weekly' | 'monthly'>('daily');
@@ -317,11 +319,21 @@ const Dashboard = () => {
   };
 
   const handleAddSteps = () => {
-    // Add steps logic
+    console.log('🔍 DEBUG: Dashboard - Add steps button clicked');
+    addSteps(1000);
+    toast({
+      title: "Steps Added!",
+      description: "1000 steps added to your daily count.",
+    });
   };
 
   const handleAddWater = () => {
-    // Add water logic
+    console.log('🔍 DEBUG: Dashboard - Add water button clicked');
+    addWater(1);
+    toast({
+      title: "Water Added!",
+      description: "1 cup of water added to your daily intake.",
+    });
   };
 
   const handleLogMeal = () => {

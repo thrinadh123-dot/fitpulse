@@ -4,9 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useFitnessStore } from '@/hooks/useFitnessStore';
-import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
+import { useFitnessStore, selectIsSyncing } from '@/stores/fitnessStore';
+import { Loader2 } from 'lucide-react';
 
 interface QuickActionButtonProps {
   icon: string;
@@ -14,12 +14,21 @@ interface QuickActionButtonProps {
   onClick: () => void;
   variant?: 'default' | 'outline';
   className?: string;
+  isLoading?: boolean;
 }
 
-const QuickActionButton = ({ icon, label, onClick, variant = 'outline', className = '' }: QuickActionButtonProps) => {
+const QuickActionButton = ({ 
+  icon, 
+  label, 
+  onClick, 
+  variant = 'outline', 
+  className = '',
+  isLoading = false 
+}: QuickActionButtonProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const handleClick = () => {
+    if (isLoading) return;
     setIsAnimating(true);
     onClick();
     setTimeout(() => setIsAnimating(false), 300);
@@ -36,8 +45,13 @@ const QuickActionButton = ({ icon, label, onClick, variant = 'outline', classNam
         className={`w-full ${className}`} 
         variant={variant}
         onClick={handleClick}
+        disabled={isLoading}
       >
-        <span className="mr-2">{icon}</span>
+        {isLoading ? (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <span className="mr-2">{icon}</span>
+        )}
         {label}
       </Button>
     </motion.div>
@@ -281,49 +295,59 @@ export const QuickActions = ({
   mealLogged = false,
   sleepLogged = false
 }: QuickActionsProps) => {
-  const { logMeal, addWater, logSleep, addSteps, getLastResetTime } = useFitnessStore();
-  const { toast } = useToast();
+  // Use the new global store
+  const {
+    addWater,
+    addCalories,
+    addSteps,
+    setSleep,
+    getLastResetTime
+  } = useFitnessStore();
+  
+  const isSyncing = useFitnessStore(selectIsSyncing);
+  const [waterAdded, setWaterAdded] = useState(false);
+  const [stepsAdded, setStepsAdded] = useState(false);
 
-  const handleAddWater = () => {
-    addWater(1);
+  const handleAddWater = async () => {
+    console.log('🔍 DEBUG: Water button clicked');
+    await addWater(1);
     onAddWater?.();
-    toast({
-      title: "Water Added",
-      description: "1 cup of water added to your daily intake.",
-    });
+    setWaterAdded(true);
+    setTimeout(() => setWaterAdded(false), 2000);
   };
 
-  const handleAddSteps = (steps: number) => {
-    addSteps(steps);
+  const handleAddSteps = async (steps: number) => {
+    console.log('🔍 DEBUG: Steps button clicked with:', steps);
+    await addSteps(steps);
     onAddSteps?.();
-    toast({
-      title: "Steps Added",
-      description: `${steps} steps added to your daily count.`,
-    });
+    setStepsAdded(true);
+    setTimeout(() => setStepsAdded(false), 2000);
   };
 
-  const handleLogMeal = (calories: number) => {
-    logMeal(calories);
+  const handleLogMeal = async (calories: number) => {
+    console.log('🔍 DEBUG: Meal logged with:', calories);
+    await addCalories(calories);
     onLogMeal?.();
-    toast({
-      title: "Meal Logged",
-      description: `${calories} calories added to your nutrition log.`,
-    });
   };
 
-  const handleLogSleep = (hours: number) => {
-    logSleep(hours);
+  const handleLogSleep = async (hours: number) => {
+    console.log('🔍 DEBUG: Sleep logged with:', hours);
+    await setSleep(hours);
     onLogSleep?.();
-    toast({
-      title: "Sleep Logged",
-      description: `${hours} hours of sleep recorded.`,
-    });
   };
 
   return (
     <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80">
       <CardHeader>
-        <CardTitle className="text-lg">Quick Actions</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg">Quick Actions</CardTitle>
+          {isSyncing && (
+            <div className="flex items-center text-xs text-muted-foreground">
+              <Loader2 className="h-3 w-3 animate-spin mr-1" />
+              Syncing...
+            </div>
+          )}
+        </div>
         <p className="text-sm text-muted-foreground">
           Last Reset: {getLastResetTime()}
         </p>
@@ -334,18 +358,23 @@ export const QuickActions = ({
         <div className="grid grid-cols-2 gap-2">
           <QuickActionButton
             icon="💧"
-            label={mealLogged ? "Added! ✅" : "Add Water"}
+            label={waterAdded ? "Added! ✅" : "Add Water"}
             onClick={handleAddWater}
-            variant={mealLogged ? "default" : "outline"}
-            className={mealLogged ? "bg-green-500 text-white" : ""}
+            variant={waterAdded ? "default" : "outline"}
+            className={waterAdded ? "bg-green-500 text-white" : ""}
+            isLoading={isSyncing}
           />
           <QuickActionButton
             icon="💧💧"
             label="Add 2 Cups"
-            onClick={() => {
-              addWater(2);
+            onClick={async () => {
+              console.log('🔍 DEBUG: Add 2 cups clicked');
+              await addWater(2);
               onAddWater?.();
+              setWaterAdded(true);
+              setTimeout(() => setWaterAdded(false), 2000);
             }}
+            isLoading={isSyncing}
           />
         </div>
         
@@ -354,4 +383,4 @@ export const QuickActions = ({
       </CardContent>
     </Card>
   );
-}; 
+};

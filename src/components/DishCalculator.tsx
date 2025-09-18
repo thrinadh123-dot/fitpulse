@@ -292,10 +292,10 @@ const DishCalculator = ({ onAddToDailyLog, onCompareDishes }: DishCalculatorProp
   // Get recommendation color
   const getRecommendationColor = (type: string) => {
     switch (type) {
-      case 'warning': return 'text-orange-600 bg-orange-50 border-orange-200';
-      case 'success': return 'text-green-600 bg-green-50 border-green-200';
-      case 'info': return 'text-blue-600 bg-blue-50 border-blue-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+      case 'warning': return 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800/30';
+      case 'success': return 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800/30';
+      case 'info': return 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800/30';
+      default: return 'text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/20 border-gray-200 dark:border-gray-700/30';
     }
   };
 
@@ -452,7 +452,7 @@ const DishCalculator = ({ onAddToDailyLog, onCompareDishes }: DishCalculatorProp
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className={`flex items-start space-x-3 p-3 rounded-lg border ${getRecommendationColor(rec.type)}`}
+                        className={`smart-recommendation-item flex items-start space-x-3 p-3 rounded-lg border ${getRecommendationColor(rec.type)}`}
                       >
                         {rec.icon}
                         <span className="text-sm">{rec.message}</span>

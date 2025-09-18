@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 export interface FitnessData {
@@ -18,6 +19,7 @@ const DEFAULT_GOALS = {
 };
 
 export const useFitnessStore = () => {
+  console.log('🔍 DEBUG: useFitnessStore hook called');
   const [fitnessData, setFitnessData] = useState<FitnessData>({
     calories: 0,
     water: 0,
@@ -132,11 +134,14 @@ export const useFitnessStore = () => {
 
   // Add to a metric (increment)
   const addToMetric = useCallback((metric: keyof Omit<FitnessData, 'lastUpdated'>, amount: number) => {
+    console.log('🔍 DEBUG addToMetric called:', { metric, amount });
     setFitnessData(prev => {
+      console.log('🔍 DEBUG Previous state:', prev);
       const updated = {
         ...prev,
         [metric]: prev[metric] + amount
       };
+      console.log('🔍 DEBUG Updated state:', updated);
       saveData(updated);
       return updated;
     });
@@ -152,6 +157,7 @@ export const useFitnessStore = () => {
   }, [addToMetric, toast]);
 
   const addWater = useCallback((cups: number = 1) => {
+    console.log('🔍 DEBUG addWater called with:', cups);
     addToMetric('water', cups);
     toast({
       title: "Water Added",

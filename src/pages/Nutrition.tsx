@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useFitnessStore } from "@/hooks/useFitnessStore";
+import { useFitnessStore } from "@/stores/fitnessStore";
 import { useToast } from "@/hooks/use-toast";
 import { QuickActions } from "@/components/QuickActions";
 import DishCalculator from "@/components/DishCalculator";
@@ -67,7 +67,7 @@ interface MacroGoals {
 }
 
 const Nutrition = () => {
-  const { fitnessData, goals, getProgress, getLastResetTime, logMeal } = useFitnessStore();
+  const { data: fitnessData, goals, getProgress, getLastResetTime, addCalories } = useFitnessStore();
   const { toast } = useToast();
   
   // State management
@@ -168,7 +168,7 @@ const Nutrition = () => {
       ...mealData
     };
     setMeals(prev => [newMeal, ...prev]);
-    logMeal(mealData.calories);
+    addCalories(mealData.calories);
     handleLogMeal();
   };
 
@@ -189,6 +189,24 @@ const Nutrition = () => {
                         dish2: {name: string, nutrition: {calories: number, protein: number, carbs: number, fat: number}}) => {
     setSelectedDishes([dish1, dish2]);
     setShowCompareModal(true);
+  };
+
+  // Delete meal function
+  const deleteMeal = (mealId: string) => {
+    const mealToDelete = meals.find(meal => meal.id === mealId);
+    if (mealToDelete) {
+      setMeals(prev => prev.filter(meal => meal.id !== mealId));
+      toast({
+        title: "Meal Deleted",
+        description: `${mealToDelete.name} has been removed from your log.`,
+      });
+    }
+  };
+
+  // Edit meal function
+  const editMeal = (meal: Meal) => {
+    setEditingMeal(meal);
+    setIsAddMealOpen(true);
   };
 
   // Weekly chart data - now uses state and updates with today's totals
@@ -355,7 +373,7 @@ const Nutrition = () => {
                 className="bg-gradient-to-r from-green-500 to-emerald-500 hover:shadow-lg"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                + Log Meal
+                 Log Meal
               </Button>
         </div>
         </motion.div>
@@ -600,10 +618,20 @@ const Nutrition = () => {
                         </Badge>
                       </div>
                               <div className="flex space-x-1">
-                                <Button variant="ghost" size="sm">
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => editMeal(meal)}
+                                  className="hover:bg-muted/80 transition-colors"
+                                >
                           <Edit className="h-4 w-4" />
                         </Button>
-                                <Button variant="ghost" size="sm">
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => deleteMeal(meal.id)}
+                                  className="hover:bg-destructive/10 hover:text-destructive transition-colors"
+                                >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                               </div>
@@ -857,13 +885,13 @@ const Nutrition = () => {
                 <Plus className="h-4 w-4 mr-2" />
                 Add Meal
               </Button>
-              <Button
+              {/* <Button
                 variant="outline"
                 className="shadow-lg"
               >
-                <Save className="h-4 w-4 mr-2" />
+                {/* <Save className="h-4 w-4 mr-2" />
                 Save Log
-              </Button>
+              </Button> */}
             </div>
           </motion.div>
         </div>
