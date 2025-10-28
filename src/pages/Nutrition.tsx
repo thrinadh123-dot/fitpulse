@@ -78,9 +78,7 @@ const Nutrition = () => {
   const [isAddMealOpen, setIsAddMealOpen] = useState(false);
   const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
   
-  // Quick Actions state
-  const [water, setWater] = useState(0);
-  const [steps, setSteps] = useState(0);
+  // Quick Actions state (keep UI flags only; actual counters come from store)
   const [mealLogged, setMealLogged] = useState(false);
   const [sleepLogged, setSleepLogged] = useState(false);
   
@@ -127,18 +125,18 @@ const Nutrition = () => {
 
   // Quick Actions handlers
   const handleAddSteps = () => {
-    setSteps(prev => prev + 1000);
+    // QuickActions calls addSteps on the shared store. Keep UX toast only.
     toast({
       title: "Steps Added",
-      description: "1000 steps added to your daily count.",
+      description: "1000 steps requested. UI will refresh from central store.",
     });
   };
 
   const handleAddWater = () => {
-    setWater(prev => prev + 1);
+    // QuickActions calls addWater on the shared store. Keep UX toast only.
     toast({
       title: "Water Added",
-      description: "1 cup of water added to your daily intake.",
+      description: "1 cup requested. UI will refresh from central store.",
     });
   };
 
@@ -147,7 +145,7 @@ const Nutrition = () => {
     setTimeout(() => setMealLogged(false), 2000);
     toast({
       title: "Meal Logged",
-      description: "Meal has been added to your nutrition log.",
+      description: "Meal requested. UI will refresh from central store.",
     });
   };
 
@@ -156,7 +154,7 @@ const Nutrition = () => {
     setTimeout(() => setSleepLogged(false), 2000);
     toast({
       title: "Sleep Logged",
-      description: "Sleep data has been recorded.",
+      description: "Sleep requested. UI will refresh from central store.",
     });
   };
 

@@ -319,20 +319,20 @@ const Dashboard = () => {
   };
 
   const handleAddSteps = () => {
-    console.log('🔍 DEBUG: Dashboard - Add steps button clicked');
-    addSteps(1000);
+    // QuickActions will call addSteps on the store directly. Keep toast feedback only.
+    console.log('🔍 DEBUG: Dashboard - requested steps add');
     toast({
       title: "Steps Added!",
-      description: "1000 steps added to your daily count.",
+      description: "1000 steps requested. UI will update when synced.",
     });
   };
 
   const handleAddWater = () => {
-    console.log('🔍 DEBUG: Dashboard - Add water button clicked');
-    addWater(1);
+    // QuickActions handles calling addWater on the store. Keep toast feedback only.
+    console.log('🔍 DEBUG: Dashboard - requested water add');
     toast({
       title: "Water Added!",
-      description: "1 cup of water added to your daily intake.",
+      description: "1 cup requested. UI will update when synced.",
     });
   };
 
