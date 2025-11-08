@@ -13,18 +13,18 @@ interface WaterEntryFormProps {
 }
 
 export const WaterEntryForm = ({ onAdd }: WaterEntryFormProps) => {
-  const [amount, setAmount] = useState(250);
+  const [amount, setAmount] = useState(1);
   const { toast } = useToast();
 
   const handleAdd = () => {
     onAdd(amount);
     toast({
       title: "Water Added",
-      description: `Added ${amount}ml to your daily intake.`,
+      description: `Added ${amount} cup${amount > 1 ? 's' : ''} to your daily intake.`,
     });
   };
 
-  const quickAmounts = [200, 250, 350, 500];
+  const quickAmounts = [0.5, 1, 1.5, 2];
 
   return (
     <Card className="shadow-card">
@@ -55,7 +55,7 @@ export const WaterEntryForm = ({ onAdd }: WaterEntryFormProps) => {
               onClick={() => setAmount(qty)}
               className="text-xs"
             >
-              {qty}ml
+              {qty} cup{qty !== 1 ? 's' : ''}
             </Button>
           ))}
         </div>

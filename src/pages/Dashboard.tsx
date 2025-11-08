@@ -318,21 +318,31 @@ const Dashboard = () => {
     });
   };
 
-  const handleAddSteps = () => {
-    // QuickActions will call addSteps on the store directly. Keep toast feedback only.
-    console.log('🔍 DEBUG: Dashboard - requested steps add');
+  const handleAddSteps = async () => {
+    console.log('🔍 DEBUG: Dashboard - Add steps button clicked');
+    await addSteps(1000);
+    // Force a re-render by updating state
+    setIsLoading(prev => {
+      setTimeout(() => setIsLoading(false), 0);
+      return true;
+    });
     toast({
       title: "Steps Added!",
-      description: "1000 steps requested. UI will update when synced.",
+      description: "1000 steps added to your daily count.",
     });
   };
 
-  const handleAddWater = () => {
-    // QuickActions handles calling addWater on the store. Keep toast feedback only.
-    console.log('🔍 DEBUG: Dashboard - requested water add');
+  const handleAddWater = async () => {
+    console.log('🔍 DEBUG: Dashboard - Add water button clicked');
+    await addWater(1);
+    // Force a re-render by updating state
+    setIsLoading(prev => {
+      setTimeout(() => setIsLoading(false), 0);
+      return true;
+    });
     toast({
       title: "Water Added!",
-      description: "1 cup requested. UI will update when synced.",
+      description: "1 cup of water added to your daily intake.",
     });
   };
 

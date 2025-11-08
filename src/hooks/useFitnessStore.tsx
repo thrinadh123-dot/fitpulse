@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useState, useCallback, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 export interface FitnessData {
@@ -8,6 +7,27 @@ export interface FitnessData {
   steps: number;
   sleep: number;
   lastUpdated: string;
+  waterEntries: Array<{
+    amount: number;
+    time: string;
+  }>;
+}
+
+export const selectIsSyncing = (state: FitnessState) => state.isLoading;
+
+export interface FitnessState {
+  data: FitnessData;
+  isLoading: boolean;
+  goals: typeof DEFAULT_GOALS;
+  updateMetric: (metric: keyof Omit<FitnessData, 'lastUpdated'>, value: number) => void;
+  addToMetric: (metric: keyof Omit<FitnessData, 'lastUpdated'>, amount: number) => void;
+  logMeal: (calories: number) => void;
+  addWater: (cups?: number) => void;
+  logSleep: (hours: number) => void;
+  addSteps: (steps: number) => void;
+  getProgress: (metric: keyof Omit<FitnessData, 'lastUpdated'>) => number;
+  getLastResetTime: () => string;
+  checkDailyReset: (data: FitnessData) => boolean;
 }
 
 const STORAGE_KEY = 'fitpulse_fitness_data';
@@ -25,7 +45,8 @@ export const useFitnessStore = () => {
     water: 0,
     steps: 0,
     sleep: 0,
-    lastUpdated: ''
+    lastUpdated: '',
+    waterEntries: []
   });
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
@@ -70,7 +91,8 @@ export const useFitnessStore = () => {
         water: 0,
         steps: 0,
         sleep: 0,
-        lastUpdated: today
+        lastUpdated: today,
+        waterEntries: []
       };
 
       saveData(resetData);
@@ -108,7 +130,8 @@ export const useFitnessStore = () => {
           water: 0,
           steps: 0,
           sleep: 0,
-          lastUpdated: today
+          lastUpdated: today,
+          waterEntries: []
         };
         saveData(initialData);
         setFitnessData(initialData);
@@ -121,25 +144,29 @@ export const useFitnessStore = () => {
   }, [loadData, saveData, getTodayString, checkDailyReset]);
 
   // Update a specific metric
-  const updateMetric = useCallback((metric: keyof Omit<FitnessData, 'lastUpdated'>, value: number) => {
+  const updateMetric = useCallback((metric: keyof Omit<FitnessData, 'lastUpdated' | 'waterEntries'>, value: number) => {
+    console.log('🔍 DEBUG: Updating metric:', metric, 'to value:', value);
     setFitnessData(prev => {
       const updated = {
         ...prev,
-        [metric]: value
+        [metric]: value,
+        lastUpdated: new Date().toISOString() // Force update on lastUpdated
       };
+      console.log('🔍 DEBUG: Updated state:', updated);
       saveData(updated);
       return updated;
     });
   }, [saveData]);
 
   // Add to a metric (increment)
-  const addToMetric = useCallback((metric: keyof Omit<FitnessData, 'lastUpdated'>, amount: number) => {
+  const addToMetric = useCallback((metric: keyof Omit<FitnessData, 'lastUpdated' | 'waterEntries'>, amount: number) => {
     console.log('🔍 DEBUG addToMetric called:', { metric, amount });
     setFitnessData(prev => {
       console.log('🔍 DEBUG Previous state:', prev);
       const updated = {
         ...prev,
-        [metric]: prev[metric] + amount
+        [metric]: prev[metric] + amount,
+        lastUpdated: new Date().toISOString() // Force update on lastUpdated
       };
       console.log('🔍 DEBUG Updated state:', updated);
       saveData(updated);
@@ -182,9 +209,9 @@ export const useFitnessStore = () => {
   }, [addToMetric, toast]);
 
   // Get progress percentage for a metric
-  const getProgress = useCallback((metric: keyof Omit<FitnessData, 'lastUpdated'>) => {
-    const current = fitnessData[metric];
-    const goal = DEFAULT_GOALS[metric];
+  const getProgress = useCallback((metric: keyof Omit<FitnessData, 'lastUpdated' | 'waterEntries'>) => {
+    const current = Number(fitnessData[metric]);
+    const goal = Number(DEFAULT_GOALS[metric]);
     return Math.min((current / goal) * 100, 100);
   }, [fitnessData]);
 
@@ -201,7 +228,7 @@ export const useFitnessStore = () => {
   }, [fitnessData.lastUpdated]);
 
   return {
-    fitnessData,
+    data: fitnessData, // Changed to match the expected property name
     isLoading,
     goals: DEFAULT_GOALS,
     updateMetric,

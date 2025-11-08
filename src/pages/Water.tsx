@@ -3,6 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import SmartGlassSelector from "@/components/SmartGlassSelector";
+import HydrationProgress from "@/components/WaterTracker/HydrationProgress";
+import AddWaterButton from "@/components/WaterTracker/AddWaterButton";
 import { WaterEntryForm } from "@/components/TrackingForms";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
@@ -45,66 +48,39 @@ const Water = () => {
         <p className="text-muted-foreground">Stay hydrated throughout the day</p>
       </div>
 
-      {/* Main Progress Card */}
+      {/* Main Progress Card (Enhanced) */}
       <Card className="shadow-glow max-w-2xl mx-auto">
-        <CardContent className="p-8 text-center">
-          <div className="relative mb-8">
-            <div className="w-32 h-32 mx-auto mb-4 relative">
-              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  stroke="hsl(var(--muted))"
-                  strokeWidth="8"
-                  fill="none"
-                />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="40"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth="8"
-                  fill="none"
-                  strokeDasharray={`${percentage * 2.51} 251`}
-                  className="transition-all duration-700 ease-out"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Droplet className="h-8 w-8 text-primary" />
-              </div>
-            </div>
-            
-            <div className="text-4xl font-bold text-foreground mb-2">
-              {totalGlasses} / {dailyGoal}
-            </div>
-            <p className="text-muted-foreground mb-4">glasses today ({totalMl}ml)</p>
-            
+        <CardContent className="p-8 text-center space-y-6">
+          <HydrationProgress currentGlasses={totalGlasses} goal={dailyGoal} />
+
+          <div>
+            <p className="text-muted-foreground">glasses today ({totalMl}ml)</p>
             {remaining > 0 ? (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground mt-2">
                 {remaining} more glass{remaining !== 1 ? "es" : ""} to reach your goal!
               </p>
             ) : (
-              <p className="text-sm text-primary font-medium">
+              <p className="text-sm text-primary font-medium mt-2">
                 🎉 Goal achieved! Keep it up!
               </p>
             )}
           </div>
 
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                size="lg"
-                className="bg-gradient-primary hover:shadow-glow transition-all duration-300"
-              >
-                <Plus className="h-5 w-5 mr-2" />
-                Add Water
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <WaterEntryForm onAdd={addWater} />
-            </DialogContent>
-          </Dialog>
+          <div className="flex items-center justify-center gap-3">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="lg" className="bg-gradient-primary hover:shadow-glow transition-all duration-300">
+                  <Plus className="h-5 w-5 mr-2" />
+                  Add Custom Amount
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <WaterEntryForm onAdd={addWater} />
+              </DialogContent>
+            </Dialog>
+
+            <AddWaterButton currentGlasses={totalGlasses} goal={dailyGoal} onClick={() => addWater(250)} />
+          </div>
         </CardContent>
       </Card>
 
@@ -152,6 +128,19 @@ const Water = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Smart Glass Selector */}
+      <Card className="shadow-card hover:shadow-glow transition-all duration-300">
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Droplet className="h-5 w-5 text-primary" />
+            <span>Choose a Glass</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <SmartGlassSelector onSelect={(_, volume) => addWater(volume)} />
+        </CardContent>
+      </Card>
 
       {/* Today's Log */}
       <Card className="shadow-card">
