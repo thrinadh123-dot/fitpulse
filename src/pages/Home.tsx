@@ -103,7 +103,7 @@ const AutoScrollRow: React.FC<{ items: Testimonial[]; direction?: "left" | "righ
             key={idx}
             className="
               min-w-[300px] max-w-sm shrink-0 m-3 p-6 rounded-lg
-              bg-[#1a1a1a] border border-gray-800 text-gray-200
+              bg-[#1a1a1a] border-gray-800 text-gray-200
               flex flex-col justify-between
               transition-colors duration-200
               hover:border-[#34D399] /* green border on hover */
