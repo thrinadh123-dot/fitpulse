@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Dumbbell, BrainCircuit, LineChart, ShieldCheck, Instagram, Twitter, Linkedin, ArrowRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import PricingWithCheckout from "@/components/PricingWithCheckout";
+import { useNavigate } from "react-router-dom"; // Changed from Next.js router to React Router
 
 // Type definitions
 interface Testimonial {
@@ -28,7 +30,7 @@ const ParallaxSection = ({ children, backgroundImage }: { children: React.ReactN
       ref={ref}
       className="relative grid place-items-center overflow-hidden min-h-screen"
     >
-       {/* Background Image Container */}
+      {/* Background Image Container */}
       <motion.div
         className="absolute inset-0 z-0"
         style={{
@@ -47,8 +49,7 @@ const ParallaxSection = ({ children, backgroundImage }: { children: React.ReactN
   );
 };
 
-
-//autoscroll
+// AutoScrollRow Component
 const AutoScrollRow: React.FC<{ items: Testimonial[]; direction?: "left" | "right" }> = ({
   items,
   direction = "left",
@@ -103,7 +104,7 @@ const AutoScrollRow: React.FC<{ items: Testimonial[]; direction?: "left" | "righ
             key={idx}
             className="
               min-w-[300px] max-w-sm shrink-0 m-3 p-6 rounded-lg
-              bg-[#1a1a1a] border-gray-800 text-gray-200
+              bg-[#1a1a1a] border border-gray-800 text-gray-200
               flex flex-col justify-between
               transition-colors duration-200
               hover:border-[#34D399] /* green border on hover */
@@ -129,9 +130,7 @@ const AutoScrollRow: React.FC<{ items: Testimonial[]; direction?: "left" | "righ
   );
 };
 
-
 // TrustedByProfessionals Component
-
 const TrustedByProfessionals = () => {
   const testimonials = [
     {
@@ -140,7 +139,7 @@ const TrustedByProfessionals = () => {
       avatar: "https://randomuser.me/api/portraits/men/32.jpg",
     },
     {
-      quote: "Tracking my progress is so easy with Fitpulse. I’ve never felt more in control of my fitness journey.",
+      quote: "Tracking my progress is so easy with Fitpulse. I've never felt more in control of my fitness journey.",
       name: "Ananya Iyer",
       avatar: "https://randomuser.me/api/portraits/women/34.jpg",
     },
@@ -160,7 +159,7 @@ const TrustedByProfessionals = () => {
       avatar: "https://randomuser.me/api/portraits/men/45.jpg",
     },
     {
-      quote: "Fitpulse adapts to my performance and suggests the perfect next step. It’s like the app knows me better than I do!",
+      quote: "Fitpulse adapts to my performance and suggests the perfect next step. It's like the app knows me better than I do!",
       name: "Divya Kapoor",
       avatar: "https://randomuser.me/api/portraits/women/56.jpg",
     },
@@ -170,7 +169,7 @@ const TrustedByProfessionals = () => {
       avatar: "https://randomuser.me/api/portraits/men/64.jpg",
     },
     {
-      quote: "The progress graphs and detailed insights make Fitpulse stand out. It’s more motivating than any other app I’ve tried.",
+      quote: "The progress graphs and detailed insights make Fitpulse stand out. It's more motivating than any other app I've tried.",
       name: "Sneha Joshi",
       avatar: "https://randomuser.me/api/portraits/women/11.jpg",
     },
@@ -185,7 +184,7 @@ const TrustedByProfessionals = () => {
       avatar: "https://randomuser.me/api/portraits/women/22.jpg",
     },
     {
-      quote: "Fitpulse made me enjoy fitness again. It doesn’t feel like a chore anymore.",
+      quote: "Fitpulse made me enjoy fitness again. It doesn't feel like a chore anymore.",
       name: "Vikram Singh",
       avatar: "https://randomuser.me/api/portraits/men/36.jpg",
     },
@@ -209,7 +208,7 @@ const TrustedByProfessionals = () => {
       name: "Harshita Gupta",
       avatar: "https://randomuser.me/api/portraits/women/77.jpg",
     },
-  ]
+  ];
 
   return (
     <section className="py-20 bg-[#0d0d0d] text-white w-screen">
@@ -227,8 +226,49 @@ const TrustedByProfessionals = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
+
+// SignupForm Component
+const SignupForm = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email) return;
+
+    // Optional: store email for prefilling login
+    localStorage.setItem("prefillEmail", email);
+
+    navigate("/login");
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto"
+    >
+      <input
+        type="email"
+        placeholder="you@example.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="flex-grow p-4 rounded-md bg-[#2a2a2a] border border-gray-700 focus:ring-2 focus:ring-[#FF5841] outline-none text-white"
+        required
+      />
+
+      <Button
+        type="submit"
+        size="lg"
+        className="bg-[#FF5841] text-white font-bold text-lg px-8 py-4 hover:bg-[#ff745d] transition-colors"
+      >
+        Join Now
+      </Button>
+    </form>
+  );
+};
 
 // --- Main Home Component ---
 const Home = () => {
@@ -273,24 +313,6 @@ const Home = () => {
     },
   ];
 
-  const pricingPlans = [
-    {
-      name: "Starter",
-      price: "₹999",
-      features: ["Smart Workout Tracker", "Basic Nutrition Guide", "Progress Dashboard"],
-      cta: "Start Free Trial",
-      color: "#4A8BDF",
-    },
-    {
-      name: "Pro",
-      price: "₹1999",
-      features: ["All Starter Features", "AI-Powered Nutrition", "Advanced Analytics", "Priority Support"],
-      cta: "Get Started Now",
-      color: "#FF5841",
-      featured: true,
-    },
-  ];
-  
   return (
     <div className="dark min-h-screen bg-[#0F0F0F] text-white font-[Inter,sans-serif]">
       {/* 1. Hero Section */}
@@ -311,7 +333,7 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
           >
-            <Link to="/Login">
+            <Link to="/login">
               <Button
                 size="lg"
                 className="bg-[#FF5841] text-white font-bold text-lg px-8 py-6 rounded-full hover:bg-[#ff745d] hover:shadow-[0_0_25px_#FF5841] transition-all duration-300"
@@ -391,14 +413,14 @@ const Home = () => {
             <h2 className="text-4xl md:text-5xl font-bold mb-4">Your Wellness Journey Starts Here.</h2>
             <p className="text-lg text-gray-400 mb-12">Step into balance, clarity, and nature-driven motivation.</p>
             <div className="rounded-xl overflow-hidden shadow-2xl shadow-black/50 border border-gray-800">
-            <video 
-              src="/assets/video.mp4"
-              autoPlay 
-              loop 
-              muted 
-              playsInline
-              className="w-full h-full object-cover"
-            />
+              <video 
+                src="/assets/video.mp4"
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                className="w-full h-full object-cover"
+              />
             </div>
           </motion.div>
         </div>
@@ -407,47 +429,8 @@ const Home = () => {
       {/* 4. Testimonials Section */}
       <TrustedByProfessionals />
       
-      {/* 5. Pricing Plans Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold">Find the Perfect Plan</h2>
-            <p className="text-lg text-gray-400 mt-4">Start for free, upgrade when you're ready.</p>
-          </motion.div>
-          <div className="flex flex-col lg:flex-row justify-center items-center gap-8">
-            {pricingPlans.map((plan) => (
-              <motion.div
-                key={plan.name}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className={`w-full max-w-sm ${plan.featured ? 'lg:scale-105' : ''}`}
-              >
-                <Card className={`bg-[#1a1a1a] border-2 h-full flex flex-col ${plan.featured ? 'border-[#FF5841]' : 'border-gray-800'}`}>
-                  <CardContent className="p-8 flex-grow flex flex-col">
-                    <h3 className="text-2xl font-bold mb-4" style={{ color: plan.color }}>{plan.name}</h3>
-                    <p className="text-5xl font-bold mb-6">{plan.price}<span className="text-lg font-normal text-gray-400">/mo</span></p>
-                    <ul className="space-y-3 text-gray-300 mb-8 flex-grow">
-                      {plan.features.map(feature => (
-                        <li key={feature} className="flex items-center">
-                          <ShieldCheck className="h-5 w-5 mr-2 text-green-500" /> {feature}
-                        </li>
-                      ))}
-                    </ul>
-                    <Button size="lg" className="w-full font-bold text-lg py-6" style={{ backgroundColor: plan.color }}>
-                      {plan.cta}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* 5. Pricing Section */}
+      <PricingWithCheckout />
 
       {/* 6. Signup CTA Section */}
       <section className="py-20 px-4 bg-[#121212] text-center">
@@ -458,19 +441,19 @@ const Home = () => {
           transition={{ duration: 0.8 }}
           className="max-w-3xl mx-auto"
         >
-          <h2 className="text-4xl md:text-5xl font-bold">Ready to Transform Your Health?</h2>
-          <p className="text-lg text-gray-400 mt-4 mb-8">Enter your email to get started with FitPulse and unlock your full potential.</p>
-          <form className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
-            <input type="email" placeholder="you@example.com" className="flex-grow p-4 rounded-md bg-[#2a2a2a] border border-gray-700 focus:ring-2 focus:ring-[#FF5841] outline-none" required />
-            <Button type="submit" size="lg" className="bg-[#FF5841] text-white font-bold text-lg px-8 py-4 hover:bg-[#ff745d] transition-colors">
-              Join Now
-            </Button>
-          </form>
+          <h2 className="text-4xl md:text-5xl font-bold">
+            Ready to Transform Your Health?
+          </h2>
+
+          <p className="text-lg text-gray-400 mt-4 mb-8">
+            Enter your email to get started with FitPulse and unlock your full potential.
+          </p>
+
+          <SignupForm />
         </motion.div>
       </section>
 
-     
-      {/* 8. Footer */}
+      {/* 7. Footer */}
       <footer className="py-12 px-4 border-t border-gray-800">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-8">
           <div>

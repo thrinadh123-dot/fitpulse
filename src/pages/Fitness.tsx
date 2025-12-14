@@ -240,15 +240,19 @@ const Fitness = () => {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      {/* Header */}
+      {/* Header - Improved Typography */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Fitness Tracker</h1>
-          <p className="text-muted-foreground">Track your workouts and stay active</p>
+          <h1 className="text-3xl font-bold text-foreground tracking-[0.06em] uppercase font-['Bebas_Neue']">
+            FITNESS TRACKER
+          </h1>
+          <p className="text-muted-foreground tracking-[0.02em] font-['Inter'] leading-relaxed">
+            Track your workouts and stay active
+          </p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="bg-gradient-primary hover:shadow-glow transition-all duration-300">
+            <Button className="bg-gradient-primary hover:shadow-glow transition-all duration-300 tracking-[0.03em] font-['Inter']">
               <Plus className="h-4 w-4 mr-2" />
               Log Workout
             </Button>
@@ -259,110 +263,130 @@ const Fitness = () => {
         </Dialog>
       </div>
 
-      {/* Today's Stats */}
+      {/* Today's Stats - Improved Alignment */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="shadow-card hover:shadow-glow transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Workouts</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+            <CardTitle className="text-sm font-medium tracking-[0.04em] uppercase text-muted-foreground font-['Inter']">
+              Workouts
+            </CardTitle>
             <Activity className="h-4 w-4 text-primary" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
+          <CardContent className="space-y-2">
+            <div className="text-3xl font-bold text-foreground font-mono tracking-tight">
               {todayStats.workouts}
             </div>
-            <p className="text-xs text-muted-foreground">completed today</p>
+            <p className="text-xs text-muted-foreground tracking-[0.01em] font-['Inter']">
+              completed today
+            </p>
           </CardContent>
         </Card>
 
         <Card className="shadow-card hover:shadow-glow transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Duration</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+            <CardTitle className="text-sm font-medium tracking-[0.04em] uppercase text-muted-foreground font-['Inter']">
+              Duration
+            </CardTitle>
             <Timer className="h-4 w-4 text-secondary" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
+          <CardContent className="space-y-2">
+            <div className="text-3xl font-bold text-foreground font-mono tracking-tight">
               {todayStats.duration}m
             </div>
-            <p className="text-xs text-muted-foreground">total active time</p>
+            <p className="text-xs text-muted-foreground tracking-[0.01em] font-['Inter']">
+              total active time
+            </p>
           </CardContent>
         </Card>
 
         <Card className="shadow-card hover:shadow-glow transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Calories</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+            <CardTitle className="text-sm font-medium tracking-[0.04em] uppercase text-muted-foreground font-['Inter']">
+              Calories
+            </CardTitle>
             <Flame className="h-4 w-4 text-destructive" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
+          <CardContent className="space-y-2">
+            <div className="text-3xl font-bold text-foreground font-mono tracking-tight">
               {todayStats.calories}
             </div>
-            <p className="text-xs text-muted-foreground">burned today</p>
+            <p className="text-xs text-muted-foreground tracking-[0.01em] font-['Inter']">
+              burned today
+            </p>
           </CardContent>
         </Card>
 
         <Card className="shadow-card hover:shadow-glow transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Steps</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+            <CardTitle className="text-sm font-medium tracking-[0.04em] uppercase text-muted-foreground font-['Inter']">
+              Steps
+            </CardTitle>
             <Activity className="h-4 w-4 text-primary" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
+          <CardContent className="space-y-2">
+            <div className="text-3xl font-bold text-foreground font-mono tracking-tight">
               {todayStats.steps.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground">steps taken</p>
+            <p className="text-xs text-muted-foreground tracking-[0.01em] font-['Inter']">
+              steps taken
+            </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Weekly Goals & Streak */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="shadow-card">
+      {/* Weekly Goals & Streak - Improved Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Weekly Workout Goal */}
+        <Card className="shadow-card lg:col-span-2">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
+            <CardTitle className="flex items-center space-x-3 tracking-[0.06em] uppercase font-['Bebas_Neue']">
               <Target className="h-5 w-5 text-primary" />
-              <span>Weekly Workout Goal</span>
+              <span>WEEKLY WORKOUT GOAL</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span>Workouts completed</span>
-                  <span>{weeklyStats.workouts.current} / {weeklyStats.workouts.target}</span>
-                </div>
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: progressAnimation ? `${(weeklyStats.workouts.current / weeklyStats.workouts.target) * 100}%` : 0 }}
-                  transition={{ duration: 1.5, ease: "easeOut" }}
-                  className="h-2 bg-primary rounded-full"
-                />
+          <CardContent className="space-y-6">
+            <div>
+              <div className="flex justify-between text-sm mb-3 items-center">
+                <span className="tracking-[0.02em] font-['Inter']">Workouts completed</span>
+                <span className="font-mono tracking-tight">
+                  {weeklyStats.workouts.current} / {weeklyStats.workouts.target}
+                </span>
               </div>
-              
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span>Active minutes</span>
-                  <span>{weeklyStats.minutes.current} / {weeklyStats.minutes.target}</span>
-                </div>
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: progressAnimation ? `${(weeklyStats.minutes.current / weeklyStats.minutes.target) * 100}%` : 0 }}
-                  transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
-                  className="h-2 bg-secondary rounded-full"
-                />
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: progressAnimation ? `${(weeklyStats.workouts.current / weeklyStats.workouts.target) * 100}%` : 0 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="h-2.5 bg-primary rounded-full"
+              />
+            </div>
+            
+            <div>
+              <div className="flex justify-between text-sm mb-3 items-center">
+                <span className="tracking-[0.02em] font-['Inter']">Active minutes</span>
+                <span className="font-mono tracking-tight">
+                  {weeklyStats.minutes.current} / {weeklyStats.minutes.target}
+                </span>
               </div>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: progressAnimation ? `${(weeklyStats.minutes.current / weeklyStats.minutes.target) * 100}%` : 0 }}
+                transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
+                className="h-2.5 bg-secondary rounded-full"
+              />
             </div>
           </CardContent>
         </Card>
 
+        {/* Workout Streak */}
         <Card className="shadow-card">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
+            <CardTitle className="flex items-center space-x-3 tracking-[0.06em] uppercase font-['Bebas_Neue']">
               <Zap className="h-5 w-5 text-secondary" />
-              <span>Workout Streak</span>
+              <span>WORKOUT STREAK</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-5">
               <motion.div
                 animate={{ 
                   scale: [1, 1.1, 1],
@@ -378,34 +402,39 @@ const Fitness = () => {
                 🔥
               </motion.div>
               <div>
-                <div className="text-3xl font-bold text-foreground">
+                <div className="text-4xl font-bold text-foreground font-mono tracking-tight">
                   {currentStreak}
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-muted-foreground tracking-[0.02em] font-['Inter'] uppercase">
                   Day Streak
                 </div>
               </div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-muted-foreground tracking-[0.01em] font-['Inter'] leading-relaxed">
                 Keep it up! Consistency is key to fitness success.
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-card">
+        {/* Workout Types */}
+        <Card className="shadow-card lg:col-span-3">
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
+            <CardTitle className="flex items-center space-x-3 tracking-[0.06em] uppercase font-['Bebas_Neue']">
               <TrendingUp className="h-5 w-5 text-secondary" />
-              <span>Workout Types</span>
+              <span>WORKOUT TYPES</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
               {workoutTypes.map((type, index) => (
-                <div key={index} className="text-center p-3 bg-gradient-card rounded-lg">
-                  <div className="text-2xl mb-2">{type.icon}</div>
-                  <div className="font-medium text-sm">{type.name}</div>
-                  <div className="text-xs text-muted-foreground">{type.count} logged</div>
+                <div key={index} className="text-center p-5 bg-gradient-card rounded-xl">
+                  <div className="text-3xl mb-3">{type.icon}</div>
+                  <div className="font-semibold tracking-[0.03em] uppercase font-['Inter'] text-sm mb-1">
+                    {type.name}
+                  </div>
+                  <div className="text-xs text-muted-foreground tracking-[0.01em] font-['Inter']">
+                    {type.count} logged
+                  </div>
                 </div>
               ))}
             </div>
@@ -413,45 +442,47 @@ const Fitness = () => {
         </Card>
       </div>
 
-      {/* Recent Workouts */}
+      {/* Recent Workouts - Improved Alignment */}
       <Card className="shadow-card">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
+          <CardTitle className="flex items-center space-x-3 tracking-[0.06em] uppercase font-['Bebas_Neue']">
             <Activity className="h-5 w-5 text-primary" />
-            <span>Recent Workouts</span>
+            <span>RECENT WORKOUTS</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {recentWorkouts.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">
+              <p className="text-center text-muted-foreground py-10 tracking-[0.02em] font-['Inter']">
                 No workouts logged yet. Start your fitness journey!
               </p>
             ) : (
               recentWorkouts.map((workout) => (
                 <div
                   key={workout.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                  className="flex items-center justify-between p-4 border rounded-xl hover:bg-accent/50 transition-colors"
                 >
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
                       <Activity className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h4 className="font-medium">{workout.name}</h4>
-                      <p className="text-sm text-muted-foreground">
+                      <h4 className="font-semibold tracking-[0.02em] font-['Inter']">{workout.name}</h4>
+                      <p className="text-sm text-muted-foreground tracking-[0.01em] font-['Inter']">
                         {new Date(workout.date).toLocaleDateString()}
                       </p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant="outline" className="text-xs">
+                      <div className="flex items-center space-x-2 mt-2">
+                        <Badge variant="outline" className="text-xs tracking-[0.02em] font-['Inter']">
                           {workout.type}
                         </Badge>
                       </div>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-medium">{workout.duration} min</div>
-                    <div className="text-sm text-muted-foreground">{workout.calories} cal</div>
+                    <div className="font-semibold tracking-tight font-mono">{workout.duration} min</div>
+                    <div className="text-sm text-muted-foreground tracking-[0.01em] font-['Inter']">
+                      {workout.calories} cal
+                    </div>
                   </div>
                 </div>
               ))
@@ -459,7 +490,7 @@ const Fitness = () => {
             
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full tracking-[0.03em] font-['Inter']">
                   <Plus className="h-4 w-4 mr-2" />
                   Add New Workout
                 </Button>
@@ -478,7 +509,9 @@ const Fitness = () => {
       {/* Quick Start Workouts */}
       <Card className="shadow-card">
         <CardHeader>
-          <CardTitle>Quick Start Workouts</CardTitle>
+          <CardTitle className="tracking-[0.06em] uppercase font-['Bebas_Neue']">
+            QUICK START WORKOUTS
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -493,12 +526,12 @@ const Fitness = () => {
               >
                 <Button 
                   variant="outline" 
-                  className="h-20 w-full flex-col space-y-2 hover:bg-accent transition-colors hover:shadow-lg"
+                  className="h-20 w-full flex-col space-y-2 hover:bg-accent transition-colors hover:shadow-lg tracking-[0.02em] font-['Inter']"
                   onClick={() => startQuickWorkout(workout)}
                 >
                   <div className="text-2xl">{workout.icon}</div>
-                  <span className="text-sm">{workout.name}</span>
-                  <span className="text-xs text-muted-foreground">{workout.duration}</span>
+                  <span className="text-sm tracking-[0.03em]">{workout.name}</span>
+                  <span className="text-xs text-muted-foreground tracking-[0.01em]">{workout.duration}</span>
                 </Button>
               </motion.div>
             ))}
@@ -513,8 +546,12 @@ const Fitness = () => {
             <DialogTitle className="flex items-center space-x-3">
               <span className="text-3xl">{selectedWorkout?.icon}</span>
               <div>
-                <div className="text-xl font-bold">{selectedWorkout?.name}</div>
-                <div className="text-sm text-muted-foreground">{selectedWorkout?.focus}</div>
+                <div className="text-xl font-bold tracking-[0.03em] font-['Bebas_Neue'] uppercase">
+                  {selectedWorkout?.name}
+                </div>
+                <div className="text-sm text-muted-foreground tracking-[0.02em] font-['Inter']">
+                  {selectedWorkout?.focus}
+                </div>
               </div>
             </DialogTitle>
           </DialogHeader>
@@ -525,37 +562,39 @@ const Fitness = () => {
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
                   <Clock className="h-6 w-6 text-primary mx-auto mb-2" />
-                  <div className="font-semibold">{selectedWorkout.duration}</div>
-                  <div className="text-sm text-muted-foreground">Duration</div>
+                  <div className="font-semibold tracking-tight font-mono">{selectedWorkout.duration}</div>
+                  <div className="text-sm text-muted-foreground tracking-[0.01em] font-['Inter']">Duration</div>
                 </div>
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
                   <Flame className="h-6 w-6 text-destructive mx-auto mb-2" />
-                  <div className="font-semibold">{selectedWorkout.calories} cal</div>
-                  <div className="text-sm text-muted-foreground">Calories</div>
+                  <div className="font-semibold tracking-tight font-mono">{selectedWorkout.calories} cal</div>
+                  <div className="text-sm text-muted-foreground tracking-[0.01em] font-['Inter']">Calories</div>
                 </div>
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
                   <Zap className="h-6 w-6 text-secondary mx-auto mb-2" />
-                  <div className="font-semibold">{selectedWorkout.intensity}</div>
-                  <div className="text-sm text-muted-foreground">Intensity</div>
+                  <div className="font-semibold tracking-[0.03em] font-['Inter'] uppercase">{selectedWorkout.intensity}</div>
+                  <div className="text-sm text-muted-foreground tracking-[0.01em] font-['Inter']">Intensity</div>
                 </div>
               </div>
 
               {/* Description */}
               <div>
-                <h4 className="font-semibold mb-2">Description</h4>
-                <p className="text-muted-foreground">{selectedWorkout.description}</p>
+                <h4 className="font-semibold mb-2 tracking-[0.03em] font-['Inter']">Description</h4>
+                <p className="text-muted-foreground tracking-[0.01em] font-['Inter'] leading-relaxed">
+                  {selectedWorkout.description}
+                </p>
               </div>
 
               {/* Workout Steps */}
               <div>
-                <h4 className="font-semibold mb-3">Workout Steps</h4>
+                <h4 className="font-semibold mb-3 tracking-[0.03em] font-['Inter']">Workout Steps</h4>
                 <div className="space-y-2">
                   {selectedWorkout.steps.map((step: string, index: number) => (
                     <div key={index} className="flex items-start space-x-3 p-3 bg-muted/30 rounded-lg">
-                      <div className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-xs font-bold">
+                      <div className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-xs font-bold font-mono">
                         {index + 1}
                       </div>
-                      <span className="text-sm">{step}</span>
+                      <span className="text-sm tracking-[0.01em] font-['Inter'] leading-relaxed">{step}</span>
                     </div>
                   ))}
                 </div>
@@ -565,7 +604,7 @@ const Fitness = () => {
               <div className="flex space-x-3">
                 <Button 
                   onClick={() => startWorkout(selectedWorkout)}
-                  className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:shadow-lg"
+                  className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:shadow-lg tracking-[0.03em] font-['Inter']"
                 >
                   <Play className="h-4 w-4 mr-2" />
                   Start Now
@@ -573,6 +612,7 @@ const Fitness = () => {
                 <Button 
                   variant="outline" 
                   onClick={() => setShowWorkoutModal(false)}
+                  className="tracking-[0.03em] font-['Inter']"
                 >
                   Cancel
                 </Button>

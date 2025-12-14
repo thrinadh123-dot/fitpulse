@@ -18,6 +18,7 @@ interface UserProfile {
 interface UserContextType {
   user: UserProfile | null;
   isAuthenticated: boolean;
+  isAuthLoaded: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (userData: Partial<UserProfile>) => Promise<boolean>;
   logout: () => void;
@@ -42,6 +43,7 @@ let users = [...usersData];
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthLoaded, setIsAuthLoaded] = useState(false);
 
   // Initialize user state from localStorage on mount
   useEffect(() => {
@@ -51,6 +53,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(userData);
       setIsAuthenticated(true);
     }
+    // Mark that we've finished reading auth state from storage
+    setIsAuthLoaded(true);
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -152,6 +156,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const value: UserContextType = {
     user,
     isAuthenticated,
+    isAuthLoaded,
     login,
     register,
     logout,

@@ -356,16 +356,19 @@ const Nutrition = () => {
         >
             <div className="flex items-center justify-between">
         <div>
-                <h1 className="text-3xl font-bold text-foreground mb-2 font-['Poppins']">
-                  Hey {getGreeting()}, ready to track your nutrition?
-                </h1>
-                <p className="text-lg text-muted-foreground">
-                  Monitor your daily nutrition and calorie intake
-                </p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Last Reset: {getLastResetTime()}
-                </p>
-              </div>
+  <h1 className="text-4xl font-extrabold uppercase tracking-wide text-foreground mb-2 font-['Bebas_Neue']">
+    Hey {getGreeting()}, ready to track your nutrition?
+  </h1>
+
+  <p className="text-lg text-muted-foreground">
+    Monitor your daily nutrition and calorie intake
+  </p>
+
+  <p className="text-sm text-muted-foreground mt-2">
+    Last Reset: {getLastResetTime()}
+  </p>
+</div>
+
               <Button
                 onClick={() => setIsAddMealOpen(true)}
                 className="bg-gradient-to-r from-green-500 to-emerald-500 hover:shadow-lg"
@@ -505,7 +508,7 @@ const Nutrition = () => {
               >
                 <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80">
                   <CardHeader>
-                    <CardTitle className="text-xl">Quick Start Meals</CardTitle>
+                    <CardTitle className="text-S">Quick Start Meals</CardTitle>
             </CardHeader>
             <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

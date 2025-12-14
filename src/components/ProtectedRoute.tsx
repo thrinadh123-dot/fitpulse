@@ -14,7 +14,7 @@ export const ProtectedRoute = ({
   requireAuth = true,
   requireOnboarding = false
 }: ProtectedRouteProps) => {
-  const { user, isAuthenticated } = useUser();
+  const { user, isAuthenticated, isAuthLoaded } = useUser();
   const location = useLocation();
   const { theme, setTheme } = useTheme();
   const isOnboardingRoute = location.pathname.startsWith('/onboarding');
@@ -35,6 +35,11 @@ export const ProtectedRoute = ({
       }
     }
   }, [isOnboardingRoute, theme, setTheme]);
+  // Wait for auth initialization (e.g. localStorage) before redirecting
+  if (!isAuthLoaded) {
+    return null;
+  }
+
   // If authentication is required and user is not authenticated, redirect to home
   if (requireAuth && !isAuthenticated) {
     return <Navigate to="/" state={{ from: location }} replace />;

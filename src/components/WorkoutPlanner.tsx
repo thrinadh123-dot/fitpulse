@@ -258,29 +258,32 @@ const WorkoutPlanner = () => {
 
   return (
     <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80">
-      <CardHeader>
-        <motion.div
-          className="flex items-center justify-between cursor-pointer"
-          onClick={() => setIsExpanded(!isExpanded)}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <CardTitle className="text-xl flex items-center space-x-2">
-            <Calendar className="h-6 w-6 text-primary" />
-            <span>📅 Workout Planner</span>
-          </CardTitle>
-          {isExpanded ? (
-            <ChevronUp className="h-5 w-5 text-muted-foreground" />
-          ) : (
-            <ChevronDown className="h-5 w-5 text-muted-foreground" />
-          )}
-        </motion.div>
-        {!isExpanded && (
-          <p className="text-sm text-muted-foreground">
-            Plan your weekly workouts and track your progress
-          </p>
-        )}
-      </CardHeader>
+     <CardHeader>
+  <motion.div
+    className="flex items-center justify-between cursor-pointer"
+    onClick={() => setIsExpanded(!isExpanded)}
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+  >
+    <CardTitle className="flex items-center gap-3 text-lg font-semibold tracking-[0.08em] uppercase">
+  <Calendar className="h-5 w-5 text-primary" />
+      <span>📅 WORKOUT PLANNER</span>
+    </CardTitle>
+
+    {isExpanded ? (
+      <ChevronUp className="h-5 w-5 text-muted-foreground" />
+    ) : (
+      <ChevronDown className="h-5 w-5 text-muted-foreground" />
+    )}
+  </motion.div>
+
+  {!isExpanded && (
+    <p className="text-sm text-muted-foreground tracking-[0.02em] mt-1">
+      Plan your weekly workouts and track your progress
+    </p>
+  )}
+</CardHeader>
+
       
       <AnimatePresence>
         {isExpanded && (
@@ -368,21 +371,28 @@ const WorkoutPlanner = () => {
                             >
                               <div className="text-sm font-medium">{day.slice(0, 3)}</div>
                               <div className="text-xs text-center">{workout.focus}</div>
-                              <div className={`text-xs px-2 py-1 rounded-full border ${getIntensityColor(workout.intensity)}`}>
+
+                              <div
+                                className={`
+                                  text-xs px-2 py-1 rounded-full border flex items-center justify-center
+                                  bg-background dark:bg-slate-900
+                                  ${getIntensityColor(workout.intensity)}
+                                `}
+                              >
                                 {getIntensityIcon(workout.intensity)}
                               </div>
+
                               {completionStatus > 0 && (
                                 <div className="w-full bg-gray-200 rounded-full h-1">
-                                  <div 
+                                  <div
                                     className="bg-green-500 h-1 rounded-full transition-all duration-300"
                                     style={{ width: `${completionStatus}%` }}
                                   />
                                 </div>
                               )}
-                              {isCompleted && (
-                                <CheckCircle className="h-4 w-4 text-green-500" />
-                              )}
+                              {isCompleted && <CheckCircle className="h-4 w-4 text-green-500" />}
                             </Button>
+
                           </motion.div>
                         );
                       })}
