@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -10,13 +10,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CalendarIcon, Check, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameYear } from "date-fns";
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameYear, isAfter, isBefore } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useUser } from "@/hooks/useUser";
 import { useToast } from "@/hooks/use-toast";
-
-// Remove this duplicate default export and the unused OnboardingStep component
-// If you need OnboardingStep, export it as a named export or refactor its usage.
 
 interface OnboardingData {
   goal: string;
@@ -151,7 +148,17 @@ const EnhancedOnboarding = () => {
   };
 
   return (
-    <div className="dark min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+    <div
+  className="
+    dark min-h-screen
+    bg-gradient-to-b 
+    from-[#0A0C0B] 
+    via-[#0E1110] 
+    to-[#0A0C0B]
+    flex items-center justify-center
+    px-6 py-10
+  "
+>
       <div className="w-full max-w-2xl">
         {/* Progress Bar */}
         <div className="mb-8">
@@ -187,65 +194,85 @@ const EnhancedOnboarding = () => {
 };
 
 // Step 1: Goal Selection
-const GoalSelectionStep = ({ 
-  data, 
-  updateData, 
-  nextStep 
-}: { 
-  data: OnboardingData; 
-  updateData: (field: keyof OnboardingData, value: string | number) => void; 
-  nextStep: () => void; 
+const GoalSelectionStep = ({
+  data,
+  updateData,
+  nextStep,
+}: {
+  data: OnboardingData;
+  updateData: (field: keyof OnboardingData, value: string | number) => void;
+  nextStep: () => void;
 }) => {
   return (
     <Card className="shadow-glow h-full flex flex-col justify-between">
-      <CardHeader className="text-center pb-2">
-        <CardTitle className="text-2xl font-bold mb-1">What's your fitness goal?</CardTitle>
-        <p className="text-muted-foreground text-sm">
+      {/* HEADER */}
+      <CardHeader className="text-center pb-3">
+        <CardTitle className="text-2xl font-bold mb-1 tracking-wide uppercase">
+          WHAT’S YOUR FITNESS GOAL?
+        </CardTitle>
+        <p className="text-muted-foreground text-sm tracking-wide">
           Choose the goal that best describes your fitness journey
         </p>
       </CardHeader>
 
+      {/* CONTENT */}
       <CardContent className="space-y-4 flex-grow">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {goals.map((goal) => (
-            <motion.div
-              key={goal.id}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Card
-                className={`cursor-pointer transition-all duration-300 ${
-                  data.goal === goal.id
-                    ? "ring-2 ring-primary shadow-glow bg-gradient-card"
-                    : "hover:shadow-card"
-                }`}
-                onClick={() => updateData("goal", goal.id)}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {goals.map((goal) => {
+            const selected = data.goal === goal.id;
+
+            return (
+              <motion.div
+                key={goal.id}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <CardContent className="p-4 text-center relative">
-                  <div className="text-3xl mb-2">{goal.icon}</div>
-                  <h3 className="font-semibold text-base mb-1">{goal.title}</h3>
-                  <p className="text-xs text-muted-foreground">{goal.description}</p>
-                  {data.goal === goal.id && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="absolute top-3 right-3"
-                    >
-                      <Check className="h-5 w-5 text-primary" />
-                    </motion.div>
-                  )}
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                <Card
+                  onClick={() => updateData("goal", goal.id)}
+                  className={`relative cursor-pointer transition-all duration-300 ${
+                    selected
+                      ? "ring-2 ring-primary shadow-glow bg-gradient-card"
+                      : "hover:shadow-card"
+                  }`}
+                >
+                  <CardContent className="p-5 text-center">
+                    {/* ICON */}
+                    <div className="text-3xl mb-3">{goal.icon}</div>
+
+                    {/* TITLE */}
+                    <h3 className="font-semibold text-base mb-1 tracking-wide uppercase">
+                      {goal.title}
+                    </h3>
+
+                    {/* DESCRIPTION */}
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {goal.description}
+                    </p>
+
+                    {/* CHECK ICON */}
+                    {selected && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute top-3 right-3"
+                      >
+                        <Check className="h-5 w-5 text-primary" />
+                      </motion.div>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
       </CardContent>
 
-      <div className="px-6 pb-4">
+      {/* FOOTER */}
+      <div className="px-6 pb-5">
         <Button
           onClick={nextStep}
           disabled={!data.goal}
-          className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
+          className="w-full bg-gradient-primary tracking-wide uppercase hover:shadow-glow transition-all duration-300"
         >
           Continue
         </Button>
@@ -256,212 +283,215 @@ const GoalSelectionStep = ({
 
 
 // Enhanced Date Picker Component
-const EnhancedDatePicker = ({ 
-  selectedDate, 
-  onDateSelect 
-}: { 
-  selectedDate: Date | undefined; 
-  onDateSelect: (date: Date | undefined) => void; 
+// Note: All required imports are already at the top of the file
+
+const datePickerMonths = [
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December",
+];
+
+const MIN_AGE = 13;
+const MAX_AGE = 100;
+
+const EnhancedDatePicker = ({
+  selectedDate,
+  onDateSelect,
+}: {
+  selectedDate: Date | undefined;
+  onDateSelect: (date: Date | undefined) => void;
 }) => {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [showMonthPicker, setShowMonthPicker] = useState(false);
-  const [showYearPicker, setShowYearPicker] = useState(false);
-
   const today = new Date();
-  const currentYear = today.getFullYear();
-  const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
 
-  const handleMonthChange = (monthIndex: number) => {
-    const newDate = new Date(currentMonth.getFullYear(), monthIndex, 1);
-    setCurrentMonth(newDate);
-    setShowMonthPicker(false);
-  };
+  const minDate = new Date(
+    today.getFullYear() - MAX_AGE,
+    today.getMonth(),
+    today.getDate()
+  );
 
-  const handleYearChange = (year: number) => {
-    const newDate = new Date(year, currentMonth.getMonth(), 1);
-    setCurrentMonth(newDate);
-    setShowYearPicker(false);
-  };
+  const maxDate = new Date(
+    today.getFullYear() - MIN_AGE,
+    today.getMonth(),
+    today.getDate()
+  );
 
-  const nextMonth = () => {
-    setCurrentMonth(addMonths(currentMonth, 1));
-  };
+  const [currentMonth, setCurrentMonth] = useState(
+    selectedDate ?? maxDate
+  );
 
-  const prevMonth = () => {
-    setCurrentMonth(subMonths(currentMonth, 1));
-  };
+  const [mode, setMode] = useState<"calendar" | "month" | "year">("calendar");
 
-  const getDaysInMonth = () => {
-    const start = startOfMonth(currentMonth);
-    const end = endOfMonth(currentMonth);
-    return eachDayOfInterval({ start, end });
-  };
+  const years = Array.from(
+    { length: MAX_AGE - MIN_AGE + 1 },
+    (_, i) => maxDate.getFullYear() - i
+  );
 
-  const isDateDisabled = (date: Date) => {
-    return date > today || date < new Date("1900-01-01");
-  };
+  const isDateDisabled = (date: Date) =>
+    isAfter(date, maxDate) || isBefore(date, minDate);
+
+  const days = eachDayOfInterval({
+    start: startOfMonth(currentMonth),
+    end: endOfMonth(currentMonth),
+  });
 
   return (
-    <div className="w-auto p-0 bg-card border border-primary/20 rounded-lg">
-      {/* Header with Month/Year Navigation */}
-      <div className="flex items-center justify-between p-3 border-b border-primary/20">
+    <div className="w-[320px] bg-card border border-primary/20 rounded-lg shadow-lg">
+      {/* HEADER (FIXED HEIGHT → NO SHIFT) */}
+      <div className="flex items-center justify-between px-3 py-2 border-b border-primary/20 h-12">
         <Button
           variant="ghost"
-          size="sm"
-          onClick={prevMonth}
-          disabled={isSameMonth(currentMonth, new Date("1900-01-01"))}
-          className="h-8 w-8 p-0 hover:bg-primary/10"
+          size="icon"
+          onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+          disabled={isSameMonth(currentMonth, minDate)}
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        
-        <div className="flex items-center space-x-2">
+
+        <div className="flex items-center gap-1">
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setShowMonthPicker(!showMonthPicker)}
-            className="hover:bg-primary/10 font-medium"
+            onClick={() => setMode(mode === "month" ? "calendar" : "month")}
           >
-            {months[currentMonth.getMonth()]}
+            {datePickerMonths[currentMonth.getMonth()]}
           </Button>
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setShowYearPicker(!showYearPicker)}
-            className="hover:bg-primary/10 font-medium"
+            onClick={() => setMode(mode === "year" ? "calendar" : "year")}
           >
             {currentMonth.getFullYear()}
           </Button>
         </div>
-        
+
         <Button
           variant="ghost"
-          size="sm"
-          onClick={nextMonth}
-          disabled={isSameMonth(currentMonth, today)}
-          className="h-8 w-8 p-0 hover:bg-primary/10"
+          size="icon"
+          onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+          disabled={isSameMonth(currentMonth, maxDate)}
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
 
-      {/* Month Picker */}
-      {showMonthPicker && (
-        <div className="p-3 border-b border-primary/20">
+      {/* BODY (ISOLATED HEIGHT → NO JUMP) */}
+      <div className="p-3 min-h-[260px]">
+        {/* MONTH PICKER */}
+        {mode === "month" && (
           <div className="grid grid-cols-3 gap-2">
-            {months.map((month, index) => (
+            {datePickerMonths.map((m, i) => (
               <Button
-                key={month}
+                key={m}
                 variant="ghost"
                 size="sm"
-                onClick={() => handleMonthChange(index)}
+                onClick={() => {
+                  setCurrentMonth(new Date(currentMonth.getFullYear(), i, 1));
+                  setMode("calendar");
+                }}
                 className={cn(
-                  "text-sm",
-                  currentMonth.getMonth() === index && "bg-primary text-primary-foreground"
+                  currentMonth.getMonth() === i &&
+                    "bg-primary text-primary-foreground"
                 )}
               >
-                {month.slice(0, 3)}
+                {m.slice(0, 3)}
               </Button>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Year Picker */}
-      {showYearPicker && (
-        <div className="p-3 border-b border-primary/20 max-h-48 overflow-y-auto">
-          <div className="grid grid-cols-3 gap-2">
+        {/* YEAR PICKER */}
+        {mode === "year" && (
+          <div className="grid grid-cols-3 gap-2 max-h-52 overflow-y-auto">
             {years.map((year) => (
               <Button
                 key={year}
                 variant="ghost"
                 size="sm"
-                onClick={() => handleYearChange(year)}
+                onClick={() => {
+                  setCurrentMonth(new Date(year, currentMonth.getMonth(), 1));
+                  setMode("calendar");
+                }}
                 className={cn(
-                  "text-sm",
-                  currentMonth.getFullYear() === year && "bg-primary text-primary-foreground"
+                  currentMonth.getFullYear() === year &&
+                    "bg-primary text-primary-foreground"
                 )}
               >
                 {year}
               </Button>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Calendar Grid */}
-      {!showMonthPicker && !showYearPicker && (
-        <div className="p-3">
-          {/* Day Headers */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-              <div key={day} className="text-center text-xs font-medium text-muted-foreground p-2">
-                {day}
-              </div>
-            ))}
-          </div>
-
-          {/* Calendar Days */}
-          <div className="grid grid-cols-7 gap-1">
-            {getDaysInMonth().map((date) => {
-              const isSelected = selectedDate && 
-                date.getDate() === selectedDate.getDate() &&
-                date.getMonth() === selectedDate.getMonth() &&
-                date.getFullYear() === selectedDate.getFullYear();
-              
-              const isDisabled = isDateDisabled(date);
-              
-              return (
-                <Button
-                  key={date.toISOString()}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => !isDisabled && onDateSelect(date)}
-                  disabled={isDisabled}
-                  className={cn(
-                    "h-8 w-8 p-0 text-sm",
-                    isSelected && "bg-primary text-primary-foreground",
-                    isDisabled && "text-muted-foreground opacity-50",
-                    !isDisabled && "hover:bg-primary/10"
-                  )}
+        {/* CALENDAR */}
+        {mode === "calendar" && (
+          <>
+            {/* WEEKDAYS */}
+            <div className="grid grid-cols-7 mb-2">
+              {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((d) => (
+                <div
+                  key={d}
+                  className="text-center text-xs text-muted-foreground"
                 >
-                  {date.getDate()}
-                </Button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+                  {d}
+                </div>
+              ))}
+            </div>
+
+            {/* DAYS */}
+            <div className="grid grid-cols-7 gap-1">
+              {days.map((date) => {
+                const selected =
+                  selectedDate &&
+                  date.toDateString() === selectedDate.toDateString();
+
+                const disabled = isDateDisabled(date);
+
+                return (
+                  <Button
+                    key={date.toISOString()}
+                    variant="ghost"
+                    size="sm"
+                    disabled={disabled}
+                    onClick={() => !disabled && onDateSelect(date)}
+                    className={cn(
+                      "h-8 w-8 p-0",
+                      selected && "bg-primary text-primary-foreground",
+                      disabled && "opacity-40"
+                    )}
+                  >
+                    {date.getDate()}
+                  </Button>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
 
-// Step 2: Age Detection with Enhanced Date of Birth
-const AgeDetectionStep = ({ 
-  data, 
-  updateData, 
-  nextStep, 
-  prevStep 
-}: { 
-  data: OnboardingData; 
-  updateData: (field: keyof OnboardingData, value: string | number) => void; 
-  nextStep: () => void; 
-  prevStep: () => void; 
+
+
+// Step 2: Age Detection
+const AgeDetectionStep = ({
+  data,
+  updateData,
+  nextStep,
+  prevStep,
+}: {
+  data: OnboardingData;
+  updateData: (field: keyof OnboardingData, value: string | number) => void;
+  nextStep: () => void;
+  prevStep: () => void;
 }) => {
-  const [birthDate, setBirthDate] = useState<Date | undefined>(undefined);
-  const [calculatedAge, setCalculatedAge] = useState<number | null>(null);
-
+  const [birthDate, setBirthDate] = useState<Date>();
+  
   const handleDateSelect = (date: Date | undefined) => {
+    setBirthDate(date);
     if (date) {
-      setBirthDate(date);
       const age = calculateAge(date);
-      setCalculatedAge(age);
-      updateData('age', age);
+      updateData("age", age);
     }
-  };
-
-  const isValidAge = () => {
-    return calculatedAge !== null && calculatedAge >= 9 && calculatedAge <= 100;
   };
 
   const calculateAge = (birthDate: Date) => {
@@ -477,181 +507,51 @@ const AgeDetectionStep = ({
   };
 
   return (
-    <Card className="shadow-glow bg-card/80 backdrop-blur-sm border border-primary/20">
-      <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          Tell us your age
-        </CardTitle>
-        <p className="text-muted-foreground">This helps us personalize your fitness plan</p>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex flex-col items-center space-y-6">
-          {/* Enhanced Date of Birth Picker */}
-          <div className="w-full max-w-sm">
-            <Label htmlFor="dob" className="text-lg font-semibold mb-4 block text-center">
-              When were you born?
-            </Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal border-primary/30 hover:border-primary/60 transition-all duration-300",
-                    !birthDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {birthDate ? format(birthDate, "PPP") : <span>Select your date of birth</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="center">
-                <EnhancedDatePicker
-                  selectedDate={birthDate}
-                  onDateSelect={handleDateSelect}
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-          
-          {/* Age Display */}
-          <AnimatePresence>
-            {calculatedAge !== null && (
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.9 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="text-center"
-              >
-                {/* <div className="bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg p-4 border border-primary/30">
-                  <p className="text-2xl font-bold text-primary">
-                    You are {calculatedAge} years old
-                  </p>
-                </div> */}
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Error Message */}
-          <AnimatePresence>
-            {calculatedAge !== null && !isValidAge() && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                className="flex items-center space-x-2 text-red-400 bg-red-400/10 border border-red-400/30 rounded-lg px-4 py-3"
-              >
-                <AlertCircle className="h-4 w-4" />
-                <p className="text-sm font-medium">
-                  Your age must be greater than 9 years to continue.
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-        
-        <div className="flex gap-4">
-          <Button
-            onClick={prevStep}
-            variant="outline"
-            className="flex-1 border-primary/30 hover:border-primary/60 transition-all duration-300"
-          >
-            Back
-          </Button>
-          <Button
-            onClick={nextStep}
-            disabled={!isValidAge()}
-            className="flex-1 bg-gradient-primary hover:shadow-glow transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Continue
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-// Step 3: Height & Weight
-const HeightWeightStep = ({ 
-  data, 
-  updateData, 
-  nextStep, 
-  prevStep, 
-  handleUnitToggle 
-}: { 
-  data: OnboardingData; 
-  updateData: (field: keyof OnboardingData, value: string | number) => void; 
-  nextStep: () => void; 
-  prevStep: () => void; 
-  handleUnitToggle: () => void; 
-}) => {
-  return (
     <Card className="shadow-glow">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold mb-2">Height & Weight</CardTitle>
-        <p className="text-muted-foreground">Help us calculate your BMI and fitness metrics</p>
+        <CardTitle className="text-3xl font-bold mb-2">Your Age</CardTitle>
+        <p className="text-muted-foreground">
+          Used to personalize your fitness plan
+        </p>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex justify-center">
-          <Button
-            onClick={handleUnitToggle}
-            variant="outline"
-            className="mb-4"
-          >
-            Switch to {data.unitSystem === 'metric' ? 'Imperial' : 'Metric'}
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-[280px] justify-start text-left font-normal",
+                  !birthDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {birthDate ? format(birthDate, "PPP") : <span>Pick your birth date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <EnhancedDatePicker 
+                selectedDate={birthDate} 
+                onDateSelect={handleDateSelect} 
+              />
+            </PopoverContent>
+          </Popover>
         </div>
         
-        <div className="space-y-6">
-          <div className="space-y-4">
-            <Label className="text-lg font-semibold">
-              Height: {data.height} {data.unitSystem === 'metric' ? 'cm' : 'in'}
-            </Label>
-            <Slider
-              value={[data.height]}
-              onValueChange={(value) => updateData('height', value[0])}
-              max={data.unitSystem === 'metric' ? 220 : 87}
-              min={data.unitSystem === 'metric' ? 120 : 47}
-              step={1}
-              className="w-full"
-            />
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>{data.unitSystem === 'metric' ? '120 cm' : '47 in'}</span>
-              <span>{data.unitSystem === 'metric' ? '220 cm' : '87 in'}</span>
-            </div>
+        {birthDate && (
+          <div className="text-center">
+            <p className="text-lg font-semibold">Age: {data.age} years old</p>
           </div>
-          
-          <div className="space-y-4">
-            <Label className="text-lg font-semibold">
-              Weight: {data.weight} {data.unitSystem === 'metric' ? 'kg' : 'lbs'}
-            </Label>
-            <Slider
-              value={[data.weight]}
-              onValueChange={(value) => updateData('weight', value[0])}
-              max={data.unitSystem === 'metric' ? 150 : 330}
-              min={data.unitSystem === 'metric' ? 40 : 88}
-              step={1}
-              className="w-full"
-            />
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>{data.unitSystem === 'metric' ? '40 kg' : '88 lbs'}</span>
-              <span>{data.unitSystem === 'metric' ? '150 kg' : '330 lbs'}</span>
-            </div>
-          </div>
-        </div>
+        )}
         
-        <div className="flex gap-4">
-          <Button
-            onClick={prevStep}
-            variant="outline"
-            className="flex-1"
-          >
+        <div className="flex gap-4 pt-4">
+          <Button variant="outline" className="flex-1" onClick={prevStep}>
             Back
           </Button>
           <Button
+            className="flex-1 bg-gradient-primary hover:shadow-glow transition-all"
             onClick={nextStep}
-            className="flex-1 bg-gradient-primary hover:shadow-glow transition-all duration-300"
+            disabled={!birthDate}
           >
             Continue
           </Button>
@@ -661,54 +561,334 @@ const HeightWeightStep = ({
   );
 };
 
-// Step 4: Completion
-const CompletionStep = ({ 
-  data, 
-  onComplete 
-}: { 
-  data: OnboardingData; 
-  onComplete: () => void; 
+/* ---------------- STEP 3: HEIGHT & WEIGHT ---------------- */
+
+const HeightWeightStep = ({
+  data,
+  updateData,
+  nextStep,
+  prevStep,
+  handleUnitToggle
+}: {
+  data: OnboardingData;
+  updateData: (field: keyof OnboardingData, value: string | number) => void;
+  nextStep: () => void;
+  prevStep: () => void;
+  handleUnitToggle: () => void;
 }) => {
-  const selectedGoal = goals.find(goal => goal.id === data.goal);
-  
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
+  /* ---------------- CONVERSIONS ---------------- */
+
+  const heightCm =
+    data.unitSystem === "metric" ? data.height : data.height * 2.54;
+
+  const weightKg =
+    data.unitSystem === "metric" ? data.weight : data.weight * 0.453592;
+
+  /* ---------------- RANGES (FOR VISUALS) ---------------- */
+
+  const heightMin = data.unitSystem === "metric" ? 120 : 47;
+  const heightMax = data.unitSystem === "metric" ? 220 : 87;
+
+  const weightMin = data.unitSystem === "metric" ? 40 : 88;
+  const weightMax = data.unitSystem === "metric" ? 150 : 330;
+
+  /* ---------------- BMI (NEUTRAL) ---------------- */
+
+  const bmi = useMemo(() => {
+    if (!heightCm || !weightKg) return null;
+    return (weightKg / Math.pow(heightCm / 100, 2)).toFixed(1);
+  }, [heightCm, weightKg]);
+
+  /* ---------------- SAFE INPUT HANDLER ---------------- */
+
+  const handleNumberChange = (
+    field: "height" | "weight",
+    value: string,
+    min: number,
+    max: number
+  ) => {
+    const v = Number(value);
+    if (Number.isNaN(v)) return;
+    if (v < min || v > max) return;
+    updateData(field, v);
+  };
+
+  /* ---------------- PERCENT HELPERS FOR BARS ---------------- */
+
+  const pct = (value: number, min: number, max: number) => {
+    if (!value) return 0;
+    return Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
+  };
+
+  const heightPct = pct(data.height as number, heightMin, heightMax);
+  const weightPct = pct(data.weight as number, weightMin, weightMax);
+
   return (
-    <Card className="shadow-glow">
+    <Card className="shadow-glow max-w-3xl mx-auto">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold mb-2">You're all set! 🎉</CardTitle>
-        <p className="text-muted-foreground">Let's review your profile and start your fitness journey</p>
+        <CardTitle className="text-3xl font-bold mb-2">
+          Height &amp; Weight
+        </CardTitle>
+        <p className="text-muted-foreground">
+          Used internally to personalize your fitness plan
+        </p>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="bg-muted/50 rounded-lg p-6 space-y-4">
-          <h3 className="font-semibold text-lg">Your Profile Summary</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-muted-foreground">Goal:</span>
-              <p className="font-medium">{selectedGoal?.icon} {selectedGoal?.title}</p>
+
+      <CardContent className="space-y-8">
+        {/* INPUT GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* HEIGHT */}
+          <div className="space-y-3">
+            <Label className="text-lg font-semibold">Height</Label>
+            <div className="flex items-center gap-3">
+              <Input
+                type="number"
+                inputMode="decimal"
+                value={data.height}
+                onChange={(e) =>
+                  handleNumberChange("height", e.target.value, heightMin, heightMax)
+                }
+              />
+              <Button onClick={handleUnitToggle} className="w-24">
+                {data.unitSystem === 'metric' ? 'cm' : 'in'}
+              </Button>
             </div>
-            <div>
-              <span className="text-muted-foreground">Age:</span>
-              <p className="font-medium">{data.age} years old</p>
+
+            {/* VISUAL FEEDBACK BAR */}
+            <div className="space-y-1">
+              <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-emerald-400 to-amber-400 transition-all"
+                  style={{ width: `${heightPct}%` }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Range {heightMin}–{heightMax} {data.unitSystem === 'metric' ? 'cm' : 'in'}
+              </p>
             </div>
-            <div>
-              <span className="text-muted-foreground">Height:</span>
-              <p className="font-medium">{data.height} {data.unitSystem === 'metric' ? 'cm' : 'in'}</p>
+          </div>
+
+          {/* WEIGHT */}
+          <div className="space-y-3">
+            <Label className="text-lg font-semibold">Weight</Label>
+            <div className="flex items-center gap-3">
+              <Input
+                type="number"
+                inputMode="decimal"
+                value={data.weight}
+                onChange={(e) =>
+                  handleNumberChange("weight", e.target.value, weightMin, weightMax)
+                }
+              />
+              <Button onClick={handleUnitToggle} className="w-24">
+                {data.unitSystem === 'metric' ? 'kg' : 'lb'}
+              </Button>
             </div>
-            <div>
-              <span className="text-muted-foreground">Weight:</span>
-              <p className="font-medium">{data.weight} {data.unitSystem === 'metric' ? 'kg' : 'lbs'}</p>
+
+            {/* VISUAL FEEDBACK BAR */}
+            <div className="space-y-1">
+              <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-emerald-400 to-amber-400 transition-all"
+                  style={{ width: `${weightPct}%` }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Range {weightMin}–{weightMax} {data.unitSystem === 'metric' ? 'kg' : 'lb'}
+              </p>
             </div>
           </div>
         </div>
-        
-        <Button
-          onClick={onComplete}
-          className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300 text-lg py-6"
-        >
-          Start Your Journey
-        </Button>
+
+        {/* BMI (NEUTRAL DISPLAY) */}
+        {bmi && (
+          <div className="text-center border rounded-lg p-4 bg-muted/30">
+            <p className="text-lg font-semibold">BMI: {bmi}</p>
+            <p className="text-sm text-muted-foreground">
+              Used internally for recommendations
+            </p>
+          </div>
+        )}
+
+        {/* ADVANCED CONTROLS TOGGLE */}
+        <div className="flex items-center justify-between border rounded-lg px-4 py-3 bg-muted/20">
+          <div>
+            <p className="text-sm font-medium">Advanced controls</p>
+            <p className="text-xs text-muted-foreground">
+              Optional sliders for quick adjustments
+            </p>
+          </div>
+          <Button
+            variant={showAdvanced ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowAdvanced((v) => !v)}
+          >
+            {showAdvanced ? "Hide" : "Show"}
+          </Button>
+        </div>
+
+        {/* ADVANCED SLIDERS (same state) */}
+        {showAdvanced && (
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Height slider</span>
+                <span>
+                  {data.height} {data.unitSystem === 'metric' ? 'cm' : 'in'}
+                </span>
+              </div>
+              <input
+                type="range"
+                min={heightMin}
+                max={heightMax}
+                value={data.height}
+                onChange={(e) =>
+                  updateData("height", Number(e.target.value))
+                }
+                className="w-full accent-emerald-400"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Weight slider</span>
+                <span>
+                  {data.weight} {data.unitSystem === 'metric' ? 'kg' : 'lb'}
+                </span>
+              </div>
+              <input
+                type="range"
+                min={weightMin}
+                max={weightMax}
+                value={data.weight}
+                onChange={(e) =>
+                  updateData("weight", Number(e.target.value))
+                }
+                className="w-full accent-emerald-400"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* NAVIGATION */}
+        <div className="flex gap-4 pt-4">
+          <Button variant="outline" className="flex-1" onClick={prevStep}>
+            Back
+          </Button>
+          <Button
+            className="flex-1 bg-gradient-primary hover:shadow-glow transition-all"
+            onClick={nextStep}
+          >
+            Continue
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
 };
+
+/* ---------------- STEP 4: COMPLETION ---------------- */
+
+const CompletionStep = ({
+  data,
+  onComplete,
+}: {
+  data: OnboardingData;
+  onComplete: () => void;
+}) => {
+  const selectedGoal = goals.find((goal) => goal.id === data.goal);
+
+  return (
+    <Card className="shadow-glow max-w-3xl mx-auto">
+      {/* HEADER */}
+      <CardHeader className="text-center space-y-3 pb-6">
+        <div className="flex justify-center">
+          <div className="h-14 w-14 rounded-full bg-primary/15 flex items-center justify-center">
+            <Check className="h-8 w-8 text-primary" />
+          </div>
+        </div>
+
+        <CardTitle className="text-3xl font-bold tracking-wide uppercase">
+          YOU’RE ALL SET!
+        </CardTitle>
+
+        <p className="text-muted-foreground tracking-wide">
+          Let’s review your profile and start your fitness journey
+        </p>
+      </CardHeader>
+
+      {/* CONTENT */}
+      <CardContent className="space-y-8">
+        {/* PROFILE SUMMARY */}
+        <div className="rounded-xl border bg-gradient-card p-6 space-y-6">
+          <h3 className="text-sm font-semibold tracking-wider uppercase text-muted-foreground">
+            Your Profile Summary
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* GOAL */}
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground tracking-wide uppercase">
+                Goal
+              </p>
+              <p className="text-base font-medium flex items-center gap-2">
+                <span className="text-lg">{selectedGoal?.icon}</span>
+                {selectedGoal?.title}
+              </p>
+            </div>
+
+            {/* AGE */}
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground tracking-wide uppercase">
+                Age
+              </p>
+              <p className="text-base font-medium">
+                {data.age} years
+              </p>
+            </div>
+
+            {/* HEIGHT */}
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground tracking-wide uppercase">
+                Height
+              </p>
+              <p className="text-base font-medium">
+                {data.height}{" "}
+                {data.unitSystem === "metric" ? "cm" : "in"}
+              </p>
+            </div>
+
+            {/* WEIGHT */}
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground tracking-wide uppercase">
+                Weight
+              </p>
+              <p className="text-base font-medium">
+                {data.weight}{" "}
+                {data.unitSystem === "metric" ? "kg" : "lb"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <Button
+          onClick={onComplete}
+          className="w-full bg-gradient-primary tracking-wide uppercase text-lg py-6 hover:shadow-glow transition-all"
+        >
+          Start Your Journey
+        </Button>
+
+        {/* SUBTEXT */}
+        <p className="text-center text-xs text-muted-foreground">
+          You can update these details anytime in your profile settings
+        </p>
+      </CardContent>
+    </Card>
+  );
+};
+
 
 export default EnhancedOnboarding;
