@@ -52,83 +52,106 @@ const Water = () => {
         <p className="text-sm text-muted-foreground mt-1">Stay hydrated throughout the day</p>
       </div>
 
-      {/* Top Section - 2:1 Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
-        {/* LEFT MAIN CARD - Water Intake */}
-        <Card className="bg-gradient-card">
-          <CardContent className="p-6">
-            {/* Internal grid: Circle | Info + Buttons */}
-            <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6 items-center">
-              {/* Left Column - Big Circle */}
-              <div className="text-center">
-                <div className="relative w-48 h-48 mx-auto">
-                  <div className="absolute inset-0 rounded-full bg-muted"></div>
-                  <div 
-                    className="absolute inset-0 rounded-full bg-gradient-to-t from-blue-500 to-blue-400"
-                    style={{ 
-                      clipPath: `inset(${100 - Math.min(percentage, 100)}% 0 0 0)`,
-                      transform: 'rotate(180deg)'
-                    }}
-                  ></div>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <div className="text-4xl font-bold text-foreground">{totalLiters}L</div>
-                    <div className="text-sm text-muted-foreground mt-2">Today's Progress</div>
-                    <div className="text-2xl text-primary mt-1">{Math.round(percentage)}%</div>
-                  </div>
-                </div>
-              </div>
+      {/* Top Section - 3-Column Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_280px] gap-8 items-start">
 
-              {/* Right Column - Info and Buttons */}
-              <div className="flex flex-col space-y-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Water Intake</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Daily Goal</span>
-                      <span className="text-sm font-medium text-foreground">{goalLiters}L</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Current Intake</span>
-                      <span className="text-sm font-medium text-foreground">{totalLiters}L</span>
-                    </div>
-                    
-                    {percentage >= 100 ? (
-                      <div className="p-3 bg-primary/10 rounded-lg">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm">🎉</span>
-                          <span className="text-xs text-primary">Goal Achieved! Excellent hydration today</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-sm text-muted-foreground">
-                        {Math.round((goalMl - totalMl) / 1000 * 10) / 10}L remaining
-                      </div>
-                    )}
-                  </div>
-                </div>
+  {/* LEFT — Progress Circle */}
+  <div className="flex justify-center">
+    <div className="relative w-56 h-56">
+      
+      {/* Background ring */}
+      <div className="absolute inset-0 rounded-full bg-muted/40" />
 
-                {/* Quick Add buttons */}
-                <div className="space-y-2">
-                  <div className="text-sm font-medium text-foreground">Quick Add</div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <Button 
-                      className="bg-gradient-primary text-sm py-2 h-auto"
-                      onClick={() => quickAdd(250)}
-                    >
-                      +250ml
-                    </Button>
-                    <Button 
-                      className="bg-gradient-primary text-sm py-2 h-auto"
-                      onClick={() => quickAdd(500)}
-                    >
-                      +500ml
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Progress fill */}
+      <div
+        className="absolute inset-0 rounded-full bg-gradient-to-t from-blue-600 via-blue-500 to-cyan-400 transition-all duration-700 ease-out"
+        style={{
+          clipPath: `inset(${100 - Math.min(percentage, 100)}% 0 0 0)`,
+          transform: 'rotate(180deg)'
+        }}
+      />
+
+      {/* Glow */}
+      <div className="absolute inset-0 rounded-full blur-xl bg-blue-500/20" />
+
+      {/* Center content */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+        <div className="text-4xl font-bold text-foreground tracking-tight">
+          {totalLiters}L
+        </div>
+        <div className="text-xs uppercase tracking-wide text-muted-foreground mt-2">
+          Today’s Intake
+        </div>
+        <div className="text-2xl font-semibold text-primary mt-1">
+          {Math.round(percentage)}%
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* RIGHT — Info + Actions */}
+  <div className="flex flex-col space-y-6">
+
+    {/* Stats */}
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold text-foreground">
+        Water Intake
+      </h3>
+
+      <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="p-3 rounded-lg bg-muted/40">
+          <div className="text-muted-foreground">Daily Goal</div>
+          <div className="font-medium text-foreground">{goalLiters}L</div>
+        </div>
+
+        <div className="p-3 rounded-lg bg-muted/40">
+          <div className="text-muted-foreground">Current</div>
+          <div className="font-medium text-foreground">{totalLiters}L</div>
+        </div>
+      </div>
+
+      {/* Remaining / Success */}
+      {percentage >= 100 ? (
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/10 text-primary text-sm">
+          🎉 Goal achieved! Excellent hydration today.
+        </div>
+      ) : (
+        <div className="text-sm text-muted-foreground">
+          {Math.round((goalMl - totalMl) / 100) / 10}L remaining
+        </div>
+      )}
+
+      {/* Linear progress (secondary feedback) */}
+      <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-700"
+          style={{ width: `${Math.min(percentage, 100)}%` }}
+        />
+      </div>
+    </div>
+
+    {/* Quick Add */}
+    <div className="space-y-3">
+      <div className="text-sm font-medium text-foreground">Quick Add</div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <Button
+          className="bg-gradient-primary hover:scale-[1.02] active:scale-95 transition-all"
+          onClick={() => quickAdd(250)}
+        >
+          +250 ml
+        </Button>
+
+        <Button
+          className="bg-gradient-primary hover:scale-[1.02] active:scale-95 transition-all"
+          onClick={() => quickAdd(500)}
+        >
+          +500 ml
+        </Button>
+      </div>
+    </div>
+  </div>
+
 
         {/* RIGHT STACK - Two Small Cards */}
         <div className="flex flex-col gap-4">
