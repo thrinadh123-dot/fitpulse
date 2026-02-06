@@ -75,6 +75,22 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/profile-setup"
+                element={
+                  <ProtectedRoute requireAuth={true} requireOnboarding={false}>
+                    <ProfileSetup />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/goal-selection"
+                element={
+                  <ProtectedRoute requireAuth={true} requireOnboarding={false}>
+                    <GoalSelection />
+                  </ProtectedRoute>
+                }
+              />
 
               {/* Protected routes - require both auth and completed onboarding */}
               <Route path="/" element={<Layout />}>
