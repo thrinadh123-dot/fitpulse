@@ -67,9 +67,9 @@ export const FitnessProgressWidget = () => {
     <Card className=\"shadow-lg\">
       <CardHeader>
         <div className=\"flex items-center justify-between\">
-          <CardTitle className=\"text-lg\">Today's Progress</CardTitle>
+          <CardTitle className=\"text-card-title\">Today's Progress</CardTitle>
           {isSyncing && (
-            <div className=\"flex items-center text-xs text-muted-foreground\">
+            <div className=\"flex items-center text-number-label text-muted-foreground\">
               <Loader2 className=\"h-3 w-3 animate-spin mr-1\" />
               Syncing...
             </div>
@@ -96,14 +96,14 @@ export const FitnessProgressWidget = () => {
                       <Icon className={`h-4 w-4 ${metric.color}`} />
                     </div>
                     <div>
-                      <p className=\"text-sm font-medium\">{metric.label}</p>
-                      <p className=\"text-xs text-muted-foreground\">
+                      <p className=\"text-body-text font-medium\">{metric.label}</p>
+                      <p className=\"text-number-label text-muted-foreground\">
                         {metric.value} / {metric.target} {metric.unit}
                       </p>
                     </div>
                   </div>
                   <div className=\"text-right\">
-                    <p className=\"text-lg font-bold\">{progress.toFixed(0)}%</p>
+                    <p className=\"text-card-title font-bold\">{progress.toFixed(0)}%</p>
                   </div>
                 </div>
                 <Progress value={progress} className=\"h-2\" />

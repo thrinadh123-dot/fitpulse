@@ -175,11 +175,11 @@ const MedicalCheckup = () => {
         >
           <div className="flex items-center justify-center space-x-3 mb-4">
             <Stethoscope className="h-8 w-8 text-primary" />
-            <h1 className="text-4xl font-bold text-foreground font-['Bebas Neue']">
+            <h1 className="text-page-heading text-foreground">
               Medical Checkup Planner
             </h1>
           </div>
-          <p className="text-lg text-muted-foreground font-['Inter'] max-w-2xl mx-auto">
+          <p className="text-body-text text-muted-foreground max-w-2xl mx-auto">
             Create personalized wellness plans tailored to your health conditions and goals.
           </p>
         </motion.div>
@@ -193,13 +193,14 @@ const MedicalCheckup = () => {
           <Card className="card-enhanced">
             <CardContent className="p-6">
               <div className="space-y-4">
-                <div className="flex justify-between text-sm font-['Inter']">
+                <div className="flex justify-between text-number-label text-muted-foreground">
                   <span>Step {currentStep + 1} of {steps.length}</span>
                   <span>{Math.round(((currentStep + 1) / steps.length) * 100)}% Complete</span>
                 </div>
                 <Progress value={((currentStep + 1) / steps.length) * 100} className="progress-bar" />
+                
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium font-['Inter']">
+                  <span className="text-card-title">
                     {steps[currentStep]?.title}
                   </span>
                   <div className="flex items-center space-x-2">
@@ -228,8 +229,8 @@ const MedicalCheckup = () => {
               >
                 <div className="text-center space-y-4">
                   <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto" />
-                  <h3 className="text-xl font-bold font-['Bebas Neue']">Important Disclaimer</h3>
-                  <p className="text-sm text-muted-foreground font-['Inter']">
+                  <h3 className="text-card-title uppercase">Important Disclaimer</h3>
+                  <p className="text-body-text text-muted-foreground">
                     This feature is an educational tool and does not replace professional medical advice. 
                     Always consult with healthcare professionals for medical decisions.
                   </p>
@@ -256,15 +257,15 @@ const MedicalCheckup = () => {
             >
               <Card className="card-enhanced">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-['Bebas Neue'] flex items-center space-x-2">
+                  <CardTitle className="text-card-title uppercase flex items-center space-x-2">
                     <Shield className="h-6 w-6 text-primary" />
                     <span>Welcome to Medical Checkup Planner</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold font-['Inter']">What this tool provides:</h3>
-                    <ul className="space-y-2 text-sm font-['Inter']">
+                    <h3 className="text-card-title uppercase">What this tool provides:</h3>
+                    <ul className="space-y-2 text-body-text">
                       <li className="flex items-center space-x-2">
                         <CheckCircle className="h-4 w-4 text-success" />
                         <span>Personalized wellness plans based on your conditions</span>
@@ -287,8 +288,8 @@ const MedicalCheckup = () => {
                   <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
                     <div className="flex items-start space-x-2">
                       <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5" />
-                      <div className="text-sm font-['Inter']">
-                        <p className="font-semibold text-yellow-600">Medical Disclaimer</p>
+                      <div className="text-body-text">
+                        <p className="text-card-title uppercase text-yellow-600">Medical Disclaimer</p>
                         <p className="text-muted-foreground mt-1">
                           This tool is for educational purposes only. It does not provide medical advice, 
                           diagnosis, or treatment. Always consult healthcare professionals for medical decisions.
@@ -310,7 +311,7 @@ const MedicalCheckup = () => {
             >
               <Card className="card-enhanced">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-['Bebas Neue'] flex items-center space-x-2">
+                  <CardTitle className="text-card-title uppercase flex items-center space-x-2">
                     <Stethoscope className="h-6 w-6 text-primary" />
                     <span>Select Your Medical Conditions</span>
                   </CardTitle>
@@ -336,8 +337,8 @@ const MedicalCheckup = () => {
                             {condition.icon}
                           </div>
                           <div className="flex-1">
-                            <h3 className="font-semibold font-['Inter']">{condition.name}</h3>
-                            <p className="text-sm text-muted-foreground font-['Inter']">
+                            <h3 className="text-card-title uppercase">{condition.name}</h3>
+                            <p className="text-body-text text-muted-foreground">
                               {condition.description}
                             </p>
                           </div>
@@ -347,7 +348,7 @@ const MedicalCheckup = () => {
                   </div>
                   
                   {selectedConditions.length === 0 && (
-                    <div className="mt-4 text-center text-sm text-muted-foreground font-['Inter']">
+                    <div className="mt-4 text-center text-body-text text-muted-foreground">
                       Please select at least one condition to continue
                     </div>
                   )}
@@ -365,7 +366,7 @@ const MedicalCheckup = () => {
             >
               <Card className="card-enhanced">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-['Bebas Neue'] flex items-center space-x-2">
+                  <CardTitle className="text-card-title uppercase flex items-center space-x-2">
                     <Target className="h-6 w-6 text-primary" />
                     <span>Input Current Values & Severity</span>
                   </CardTitle>
@@ -378,8 +379,8 @@ const MedicalCheckup = () => {
                           {condition.icon}
                         </div>
                         <div>
-                          <h3 className="font-semibold font-['Inter']">{condition.name}</h3>
-                          <p className="text-sm text-muted-foreground font-['Inter']">
+                          <h3 className="text-card-title uppercase">{condition.name}</h3>
+                          <p className="text-number-label text-muted-foreground">
                             Normal range: {condition.normalRange}
                           </p>
                         </div>
@@ -387,7 +388,7 @@ const MedicalCheckup = () => {
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-sm font-medium font-['Inter']">Severity Level</label>
+                          <label className="text-card-title uppercase">Severity Level</label>
                           <div className="flex space-x-2">
                             {['mild', 'moderate', 'severe'].map((severity) => (
                               <Button
@@ -399,7 +400,7 @@ const MedicalCheckup = () => {
                                   updatedConditions[index].severity = severity as any;
                                   setSelectedConditions(updatedConditions);
                                 }}
-                                className="capitalize"
+                                className="capitalize text-body-text"
                               >
                                 {severity}
                               </Button>
@@ -408,7 +409,7 @@ const MedicalCheckup = () => {
                         </div>
                         
                         <div className="space-y-2">
-                          <label className="text-sm font-medium font-['Inter']">
+                          <label className="text-card-title uppercase">
                             Current Value ({condition.unit})
                           </label>
                           <input
@@ -419,7 +420,7 @@ const MedicalCheckup = () => {
                               updatedConditions[index].currentValue = e.target.value;
                               setSelectedConditions(updatedConditions);
                             }}
-                            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                            className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground text-body-text"
                             placeholder={`Enter ${condition.unit}`}
                           />
                         </div>
@@ -440,7 +441,7 @@ const MedicalCheckup = () => {
             >
               <Card className="card-enhanced">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-['Bebas Neue'] flex items-center space-x-2">
+                  <CardTitle className="text-card-title uppercase flex items-center space-x-2">
                     <Clock className="h-6 w-6 text-primary" />
                     <span>Choose Plan Duration</span>
                   </CardTitle>
@@ -457,13 +458,13 @@ const MedicalCheckup = () => {
                             : 'border-border hover:border-primary/50'
                         }`}
                       >
-                        <div className="text-3xl font-bold font-['Roboto Mono'] text-primary">
+                        <div className="text-primary-number text-primary">
                           {duration}
                         </div>
-                        <div className="text-sm font-['Inter'] text-muted-foreground">
+                        <div className="text-number-label text-muted-foreground">
                           Days
                         </div>
-                        <div className="mt-2 text-xs font-['Inter'] text-muted-foreground">
+                        <div className="mt-2 text-number-label text-muted-foreground">
                           {duration === 15 && "Quick start"}
                           {duration === 30 && "Recommended"}
                           {duration === 60 && "Comprehensive"}
@@ -475,9 +476,9 @@ const MedicalCheckup = () => {
                   <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-lg">
                     <div className="flex items-center space-x-2">
                       <Calendar className="h-5 w-5 text-primary" />
-                      <span className="font-semibold font-['Inter']">Plan Summary</span>
+                      <span className="text-card-title uppercase">Plan Summary</span>
                     </div>
-                    <p className="text-sm text-muted-foreground font-['Inter'] mt-2">
+                    <p className="text-body-text text-muted-foreground mt-2">
                       You'll receive a {planDuration}-day personalized plan for: {selectedConditions.map(c => c.name).join(', ')}
                     </p>
                   </div>
@@ -495,7 +496,7 @@ const MedicalCheckup = () => {
             >
               <Card className="card-enhanced">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-['Bebas Neue'] flex items-center space-x-2">
+                  <CardTitle className="text-card-title uppercase flex items-center space-x-2">
                     <CheckCircle className="h-6 w-6 text-primary" />
                     <span>Your Personalized Wellness Plan</span>
                   </CardTitle>
@@ -506,19 +507,19 @@ const MedicalCheckup = () => {
                     <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
                       <div className="flex items-center space-x-2 mb-2">
                         <Clock className="h-5 w-5 text-primary" />
-                        <span className="font-semibold font-['Inter']">Duration</span>
+                        <span className="text-card-title">Duration</span>
                       </div>
-                      <div className="text-2xl font-bold font-['Roboto Mono'] text-primary">
-                        {generatedPlan.duration} Days
+                      <div className="text-primary-number text-primary">
+                        {generatedPlan.duration} <span className="text-number-label text-muted-foreground font-normal">Days</span>
                       </div>
                     </div>
                     
                     <div className="p-4 bg-success/5 border border-success/20 rounded-lg">
                       <div className="flex items-center space-x-2 mb-2">
                         <TrendingUp className="h-5 w-5 text-success" />
-                        <span className="font-semibold font-['Inter']">Estimated Progress</span>
+                        <span className="text-card-title">Estimated Progress</span>
                       </div>
-                      <div className="text-sm font-['Inter'] text-muted-foreground">
+                      <div className="text-body-text text-muted-foreground">
                         {generatedPlan.estimatedProgress}
                       </div>
                     </div>
@@ -526,7 +527,7 @@ const MedicalCheckup = () => {
 
                   {/* Daily Goals */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold font-['Inter']">Daily Goals</h3>
+                    <h3 className="text-card-title uppercase">Daily Goals</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {Object.entries(generatedPlan.dailyGoals).map(([key, goal]) => (
                         <div key={key} className="p-4 border border-border rounded-lg">
@@ -536,11 +537,11 @@ const MedicalCheckup = () => {
                             {key === 'sleep' && <Moon className="h-5 w-5 text-primary" />}
                             {key === 'stress' && <Heart className="h-5 w-5 text-primary" />}
                             {key === 'lifestyle' && <Target className="h-5 w-5 text-primary" />}
-                            <span className="font-semibold font-['Inter'] capitalize">
+                            <span className="text-card-title capitalize">
                               {key}
                             </span>
                           </div>
-                          <p className="text-sm text-muted-foreground font-['Inter']">
+                          <p className="text-body-text text-muted-foreground">
                             {goal}
                           </p>
                         </div>
@@ -550,12 +551,12 @@ const MedicalCheckup = () => {
 
                   {/* Education Tips */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold font-['Inter']">Educational Tips</h3>
+                    <h3 className="text-card-title uppercase">Educational Tips</h3>
                     <div className="space-y-2">
                       {generatedPlan.educationTips.map((tip, index) => (
                         <div key={index} className="flex items-start space-x-2 p-3 bg-muted/50 rounded-lg">
                           <Zap className="h-4 w-4 text-primary mt-0.5" />
-                          <p className="text-sm font-['Inter']">{tip}</p>
+                          <p className="text-body-text">{tip}</p>
                         </div>
                       ))}
                     </div>
@@ -565,8 +566,8 @@ const MedicalCheckup = () => {
                   <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
                     <div className="flex items-start space-x-2">
                       <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5" />
-                      <div className="text-sm font-['Inter']">
-                        <p className="font-semibold text-yellow-600">Important Reminder</p>
+                      <div className="text-body-text">
+                        <p className="text-card-title uppercase text-yellow-600">Important Reminder</p>
                         <p className="text-muted-foreground mt-1">
                           Consult a medical expert before making major lifestyle changes. 
                           This plan is for educational purposes only.
@@ -588,18 +589,18 @@ const MedicalCheckup = () => {
             >
               <Card className="card-enhanced">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-['Bebas Neue'] flex items-center space-x-2">
+                  <CardTitle className="text-card-title uppercase flex items-center space-x-2">
                     <TrendingUp className="h-6 w-6 text-primary" />
                     <span>Track Your Progress</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="text-center space-y-4">
-                    <div className="text-6xl">🎉</div>
-                    <h3 className="text-xl font-semibold font-['Inter']">
+                    <div className="text-primary-number">🎉</div>
+                    <h3 className="text-card-title uppercase">
                       Your plan is ready!
                     </h3>
-                    <p className="text-muted-foreground font-['Inter']">
+                    <p className="text-body-text text-muted-foreground">
                       Start tracking your daily progress and build healthy habits.
                     </p>
                   </div>
@@ -607,78 +608,80 @@ const MedicalCheckup = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="text-center p-4 border border-border rounded-lg">
                       <Calendar className="h-8 w-8 text-primary mx-auto mb-2" />
-                      <h4 className="font-semibold font-['Inter']">Daily Check-ins</h4>
-                      <p className="text-sm text-muted-foreground font-['Inter']">
+                      <h4 className="text-card-title uppercase">Daily Check-ins</h4>
+                      <p className="text-body-text text-muted-foreground">
                         Mark your goals as completed each day
                       </p>
                     </div>
                     
                     <div className="text-center p-4 border border-border rounded-lg">
-                      <Zap className="h-8 w-8 text-primary mx-auto mb-2" />
-                      <h4 className="font-semibold font-['Inter']">XP & Streaks</h4>
-                      <p className="text-sm text-muted-foreground font-['Inter']">
-                        Earn points and maintain consistency
+                      <Activity className="h-8 w-8 text-primary mx-auto mb-2" />
+                      <h4 className="text-card-title uppercase">Vital Tracking</h4>
+                      <p className="text-body-text text-muted-foreground">
+                        Monitor your health metrics regularly
                       </p>
                     </div>
                     
                     <div className="text-center p-4 border border-border rounded-lg">
-                      <Target className="h-8 w-8 text-primary mx-auto mb-2" />
-                      <h4 className="font-semibold font-['Inter']">Progress Review</h4>
-                      <p className="text-sm text-muted-foreground font-['Inter']">
-                        Reassess your values after plan completion
+                      <TrendingUp className="h-8 w-8 text-primary mx-auto mb-2" />
+                      <h4 className="text-card-title uppercase">Monthly Review</h4>
+                      <p className="text-body-text text-muted-foreground">
+                        Adjust your plan based on progress
                       </p>
                     </div>
                   </div>
                   
-                  <Button 
-                    onClick={() => window.location.href = '/dashboard'}
-                    className="w-full btn-primary"
-                  >
-                    Start Tracking My Progress
-                  </Button>
+                  <div className="flex justify-center space-x-4 pt-4">
+                    <Button 
+                      className="btn-primary w-full md:w-auto"
+                      onClick={() => window.location.href = '/dashboard'}
+                    >
+                      Go to Dashboard
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      className="w-full md:w-auto text-body-text"
+                      onClick={() => {
+                        setCurrentStep(0);
+                        setGeneratedPlan(null);
+                        setSelectedConditions([]);
+                      }}
+                    >
+                      Create New Plan
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
           )}
-        </AnimatePresence>
 
-        {/* Navigation Buttons */}
-        {!showDisclaimer && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex justify-between"
-          >
+          <div className="flex justify-between mt-8">
             <Button
               variant="outline"
               onClick={handleBack}
               disabled={currentStep === 0}
-              className="flex items-center space-x-2"
+              className={`${currentStep === 0 ? 'invisible' : ''} text-body-text`}
             >
-              <ArrowLeft className="h-4 w-4" />
-              <span>Back</span>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
             </Button>
             
-            <Button
-              onClick={handleNext}
-              disabled={
-                (currentStep === 1 && selectedConditions.length === 0) ||
-                (currentStep === 2 && selectedConditions.some(c => !c.severity || !c.currentValue)) ||
-                currentStep === 5
-              }
-              className="flex items-center space-x-2 btn-primary"
-            >
-              <span>
-                {currentStep === 4 ? 'Start Tracking' : 'Next'}
-              </span>
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </motion.div>
-        )}
+            {currentStep < 5 && (
+              <Button 
+                onClick={handleNext} 
+                disabled={currentStep === 1 && selectedConditions.length === 0}
+                className="btn-primary"
+              >
+                {currentStep === 3 ? 'Generate Plan' : 'Next'}
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            )}
+          </div>
+        </AnimatePresence>
       </div>
     </div>
   );
 };
 
-export default MedicalCheckup; 
+export default MedicalCheckup;
+

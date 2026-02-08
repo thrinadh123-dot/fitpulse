@@ -115,7 +115,7 @@ export const SleepLogForm = ({ onSubmit, open, onOpenChange }: SleepLogFormProps
               required
               className="w-full"
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-number-label text-muted-foreground">
               {getWeekday(date)}
             </p>
           </div>
@@ -156,11 +156,11 @@ export const SleepLogForm = ({ onSubmit, open, onOpenChange }: SleepLogFormProps
           {calculatedDuration !== null && (
             <div className="p-4 rounded-lg border border-border bg-card/50 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">Calculated Duration:</span>
-                <span className="text-lg font-bold text-foreground">{calculatedDuration}h</span>
+                <span className="text-body-text font-medium text-muted-foreground">Calculated Duration:</span>
+                <span className="text-card-title font-bold text-foreground">{calculatedDuration}h</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">Sleep Quality:</span>
+                <span className="text-body-text font-medium text-muted-foreground">Sleep Quality:</span>
                 {colors && (
                   <Badge className={`${colors.bg} ${colors.text} ${colors.border}`}>
                     {calculatedQuality}
@@ -180,4 +180,5 @@ export const SleepLogForm = ({ onSubmit, open, onOpenChange }: SleepLogFormProps
     </Sheet>
   );
 };
+
 

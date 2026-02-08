@@ -1,6 +1,13 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import usersData from '@/data/users.json';
 
+interface NotificationSettings {
+  waterReminders: boolean;
+  workoutReminders: boolean;
+  sleepReminders: boolean;
+  emailUpdates: boolean;
+}
+
 interface UserProfile {
   id?: string;
   firstName?: string;
@@ -8,11 +15,14 @@ interface UserProfile {
   email?: string;
   password?: string;
   age?: number;
+  gender?: string;
+  healthIssues?: string;
   height?: number;
   weight?: number;
   unitSystem?: 'metric' | 'imperial';
   goal?: string;
   onboardingComplete?: boolean;
+  notificationSettings?: NotificationSettings;
 }
 
 interface UserContextType {

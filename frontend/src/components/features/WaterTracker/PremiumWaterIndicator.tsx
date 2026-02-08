@@ -27,30 +27,30 @@ export const PremiumWaterIndicator = ({
   const sizeClasses = {
     sm: { 
       container: "w-32 h-32", 
-      text: "text-3xl", 
-      unit: "text-base", 
-      subtitle: "text-xs",
+      text: "text-page-heading", 
+      unit: "text-body-text", 
+      subtitle: "text-number-label",
       icon: "h-8 w-8" 
     },
     md: { 
       container: "w-40 h-40", 
-      text: "text-4xl", 
-      unit: "text-lg", 
-      subtitle: "text-sm",
+      text: "text-primary-number", 
+      unit: "text-card-title uppercase", 
+      subtitle: "text-card-title",
       icon: "h-10 w-10" 
     },
     lg: { 
       container: "w-56 h-56", 
-      text: "text-5xl", 
-      unit: "text-xl", 
-      subtitle: "text-base",
+      text: "text-primary-number", 
+      unit: "text-card-title uppercase", 
+      subtitle: "text-body-text",
       icon: "h-12 w-12" 
     },
     xl: { 
       container: "w-64 h-64", 
-      text: "text-6xl", 
-      unit: "text-2xl", 
-      subtitle: "text-base",
+      text: "text-primary-number", 
+      unit: "text-page-heading", 
+      subtitle: "text-body-text",
       icon: "h-14 w-14" 
     },
   };
@@ -122,9 +122,8 @@ export const PremiumWaterIndicator = ({
             <span
               className={`
                 ${currentSize.text}
-                font-bold
-                text-slate-800
-                tracking-tight
+                text-foreground
+                
               `}
               style={{
                 textShadow: fillPercentage > 50 
@@ -138,7 +137,7 @@ export const PremiumWaterIndicator = ({
                   ${currentSize.unit}
                   font-normal
                   ml-0.5
-                  text-slate-600
+                  text-muted-foreground
                 `}
                 style={{
                   textShadow: "0 1px 2px rgba(255,255,255,0.8)",
@@ -154,8 +153,8 @@ export const PremiumWaterIndicator = ({
                 ${currentSize.subtitle}
                 mt-1
                 font-medium
-                text-slate-500
-                tracking-wide
+                text-muted-foreground
+                
                 uppercase
               `}
               style={{
@@ -192,3 +191,4 @@ export const PremiumWaterIndicator = ({
     </div>
   );
 };
+

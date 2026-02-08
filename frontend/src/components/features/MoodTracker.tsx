@@ -78,7 +78,7 @@ const MoodTracker = ({ currentMood, onMoodChange }: MoodTrackerProps) => {
     <Card className="shadow-lg border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <span className="text-2xl">{getCurrentMood().emoji}</span>
+          <span className="text-page-heading">{getCurrentMood().emoji}</span>
           <span>How are you feeling?</span>
         </CardTitle>
       </CardHeader>
@@ -97,8 +97,8 @@ const MoodTracker = ({ currentMood, onMoodChange }: MoodTrackerProps) => {
                 }`}
                 onClick={() => handleMoodSelect(mood.id)}
               >
-                <span className="text-xl">{mood.emoji}</span>
-                <span className="text-xs font-medium">{mood.label}</span>
+                <span className="text-card-title uppercase">{mood.emoji}</span>
+                <span className="text-number-label">{mood.label}</span>
               </Button>
             </motion.div>
           ))}
@@ -108,9 +108,9 @@ const MoodTracker = ({ currentMood, onMoodChange }: MoodTrackerProps) => {
         <div className="mt-4 p-3 bg-muted/20 rounded-lg">
           <div className="flex items-center space-x-2 mb-2">
             {getCurrentMood().icon}
-            <span className="text-sm font-medium">Today's Mood: {getCurrentMood().label}</span>
+            <span className="text-card-title">Today's Mood: {getCurrentMood().label}</span>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-number-label text-muted-foreground">
             {selectedMood === 'excellent' && "You're feeling great! Perfect time for a challenging workout."}
             {selectedMood === 'good' && "You're in a good mood. Consider trying a new exercise routine."}
             {selectedMood === 'okay' && "You're doing okay. A light workout might help boost your energy."}
@@ -122,7 +122,7 @@ const MoodTracker = ({ currentMood, onMoodChange }: MoodTrackerProps) => {
 
         {/* Weekly Mood Trend */}
         <div className="mt-4">
-          <h4 className="text-sm font-medium mb-2">This Week's Mood</h4>
+          <h4 className="text-card-title mb-2">This Week's Mood</h4>
           <div className="flex space-x-1">
             {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => {
               const randomMood = moodOptions[Math.floor(Math.random() * moodOptions.length)];
@@ -134,9 +134,9 @@ const MoodTracker = ({ currentMood, onMoodChange }: MoodTrackerProps) => {
                   transition={{ delay: index * 0.1 }}
                   className="flex flex-col items-center space-y-1"
                 >
-                  <span className="text-xs text-muted-foreground">{day}</span>
+                  <span className="text-number-label text-muted-foreground">{day}</span>
                   <div className="w-6 h-6 rounded-full bg-muted/30 flex items-center justify-center">
-                    <span className="text-xs">{randomMood.emoji}</span>
+                    <span className="text-number-label">{randomMood.emoji}</span>
                   </div>
                 </motion.div>
               );

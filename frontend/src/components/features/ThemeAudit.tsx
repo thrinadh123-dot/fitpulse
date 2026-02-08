@@ -198,22 +198,22 @@ export function ThemeAudit() {
             {/* Progress Overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-lg border">
-                <div className="text-2xl font-bold text-green-600">{completionPercentage}%</div>
-                <div className="text-sm text-muted-foreground">Completion</div>
+                <div className="text-page-heading font-bold text-green-600">{completionPercentage}%</div>
+                <div className="text-body-text text-muted-foreground">Completion</div>
               </div>
               <div className="text-center p-4 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-lg border">
-                <div className="text-2xl font-bold text-blue-600">{completedItems}</div>
-                <div className="text-sm text-muted-foreground">Completed</div>
+                <div className="text-page-heading font-bold text-blue-600">{completedItems}</div>
+                <div className="text-body-text text-muted-foreground">Completed</div>
               </div>
               <div className="text-center p-4 bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-lg border">
-                <div className="text-2xl font-bold text-orange-600">{totalItems - completedItems}</div>
-                <div className="text-sm text-muted-foreground">Remaining</div>
+                <div className="text-page-heading font-bold text-orange-600">{totalItems - completedItems}</div>
+                <div className="text-body-text text-muted-foreground">Remaining</div>
               </div>
             </div>
 
             {/* Progress Bar */}
             <div className="space-y-2">
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-body-text">
                 <span>Theme Implementation Progress</span>
                 <span>{completedItems}/{totalItems}</span>
               </div>
@@ -230,7 +230,7 @@ export function ThemeAudit() {
             {/* Detailed Audit List */}
             {showDetails && (
               <div className="space-y-3">
-                <h3 className="font-semibold text-lg">Detailed Audit</h3>
+                <h3 className="font-semibold text-card-title">Detailed Audit</h3>
                 <div className="grid gap-3">
                   {auditItems.map((item) => (
                     <motion.div
@@ -252,15 +252,15 @@ export function ThemeAudit() {
                             <h4 className="font-medium">{item.component}</h4>
                             <Badge 
                               variant="outline" 
-                              className={`text-xs ${getPriorityColor(item.priority)}`}
+                              className={`text-number-label ${getPriorityColor(item.priority)}`}
                             >
                               {item.priority}
                             </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground mb-1">
+                          <p className="text-body-text text-muted-foreground mb-1">
                             Screen: {item.screen}
                           </p>
-                          <p className="text-sm">{item.notes}</p>
+                          <p className="text-body-text">{item.notes}</p>
                         </div>
                       </div>
                     </motion.div>

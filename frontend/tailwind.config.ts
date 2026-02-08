@@ -20,9 +20,19 @@ const config: Config = {
 		},
 		extend: {
 			fontFamily: {
-				'orbitron': ['Orbitron', 'sans-serif'],
-				'poppins': ['Poppins', 'sans-serif'],
-				'montserrat': ['Montserrat', 'sans-serif'],
+				sans: ['Inter', 'sans-serif'],
+			},
+			fontSize: {
+				// Strict Typography System
+				'page-heading': ['28px', { lineHeight: '1.25', letterSpacing: '0.02em', fontWeight: '700' }],
+				'page-subheading': ['14px', { lineHeight: 'normal', fontWeight: '400' }],
+				'section-heading': ['18px', { lineHeight: 'normal', fontWeight: '600' }],
+				'card-title': ['13px', { lineHeight: 'normal', letterSpacing: '0.04em', fontWeight: '600' }],
+				'primary-number': ['38px', { lineHeight: '1', fontWeight: '700' }],
+				'number-label': ['12px', { lineHeight: 'normal', fontWeight: '400' }],
+				'body-text': ['14px', { lineHeight: '1.6', fontWeight: '400' }],
+				'form-label': ['12px', { lineHeight: 'normal', fontWeight: '500' }],
+				'input-text': ['14px', { lineHeight: 'normal', fontWeight: '400' }],
 			},
 			colors: {
 				border: 'hsl(var(--border))',

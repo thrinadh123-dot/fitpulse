@@ -73,12 +73,12 @@ const Register = () => {
         <CardHeader className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Activity className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <span className="text-page-heading text-primary">
               FitPulse
             </span>
           </div>
-          <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
-          <p className="text-muted-foreground">Start your fitness journey today</p>
+          <CardTitle className="text-card-title uppercase">Create Account</CardTitle>
+          <p className="text-body-text text-muted-foreground">Start your fitness journey today</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -106,13 +106,13 @@ const Register = () => {
                 />
               </div>
             </div>
-
+            
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="john@example.com"
+                placeholder="john.doe@example.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
@@ -126,7 +126,7 @@ const Register = () => {
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Create a password"
+                  placeholder="••••••••"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
@@ -135,10 +135,9 @@ const Register = () => {
                 <Button
                   type="button"
                   variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  size="icon"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8"
                   onClick={() => setShowPassword(!showPassword)}
-                  disabled={isLoading}
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -148,48 +147,32 @@ const Register = () => {
                 </Button>
               </div>
             </div>
-
+            
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <Input
                 id="confirmPassword"
                 type="password"
-                placeholder="Confirm your password"
+                placeholder="••••••••"
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 required
                 disabled={isLoading}
               />
             </div>
-
-            <Button
-              type="submit"
-              className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
-              disabled={isLoading}
-            >
-              {isLoading ? "Creating Account..." : "Create Account"}
+            
+            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
+              {isLoading ? "Creating account..." : "Sign Up"}
             </Button>
           </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground">
+          
+          <div className="mt-6 text-center text-body-text">
+            <p className="text-muted-foreground">
               Already have an account?{" "}
-              <Link
-                to="/login"
-                className="font-medium text-primary hover:underline"
-              >
+              <Link to="/login" className="text-primary hover:underline">
                 Sign in
               </Link>
             </p>
-          </div>
-
-          <div className="mt-4 text-center">
-            <Link
-              to="/"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              ← Back to Home
-            </Link>
           </div>
         </CardContent>
       </Card>
@@ -198,3 +181,4 @@ const Register = () => {
 };
 
 export default Register;
+

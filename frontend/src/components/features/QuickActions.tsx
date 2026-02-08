@@ -89,7 +89,7 @@ const MealLogDialog = ({ onLog }: { onLog: (calories: number) => void }) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Log Your Meal</DialogTitle>
+          <DialogTitle className="text-card-title uppercase uppercase">Log Your Meal</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-2">
@@ -103,21 +103,22 @@ const MealLogDialog = ({ onLog }: { onLog: (calories: number) => void }) => {
                 }}
                 className="h-auto p-3 flex flex-col"
               >
-                <span className="font-medium">{meal.name}</span>
-                <span className="text-sm text-muted-foreground">{meal.calories} cal</span>
+                <span className="text-card-title">{meal.name}</span>
+                <span className="text-number-label text-muted-foreground">{meal.calories} cal</span>
               </Button>
             ))}
           </div>
           <div className="border-t pt-4">
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <Label htmlFor="calories">Custom Calories</Label>
+                <Label htmlFor="calories" className="text-form-label">Custom Calories</Label>
                 <Input
                   id="calories"
                   type="number"
                   placeholder="Enter calories"
                   value={calories}
                   onChange={(e) => setCalories(e.target.value)}
+                  className="text-input-text"
                 />
               </div>
               <Button type="submit" className="w-full">
@@ -162,7 +163,7 @@ const SleepLogDialog = ({ onLog }: { onLog: (hours: number) => void }) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Log Your Sleep</DialogTitle>
+          <DialogTitle className="text-card-title uppercase uppercase">Log Your Sleep</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-2">
@@ -176,14 +177,14 @@ const SleepLogDialog = ({ onLog }: { onLog: (hours: number) => void }) => {
                 }}
                 className="h-auto p-3"
               >
-                {sleep.label}
+                <span className="text-body-text">{sleep.label}</span>
               </Button>
             ))}
           </div>
           <div className="border-t pt-4">
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <Label htmlFor="hours">Custom Hours</Label>
+                <Label htmlFor="hours" className="text-form-label">Custom Hours</Label>
                 <Input
                   id="hours"
                   type="number"
@@ -193,6 +194,7 @@ const SleepLogDialog = ({ onLog }: { onLog: (hours: number) => void }) => {
                   placeholder="Enter hours"
                   value={hours}
                   onChange={(e) => setHours(e.target.value)}
+                  className="text-input-text"
                 />
               </div>
               <Button type="submit" className="w-full">
@@ -237,7 +239,7 @@ const StepsLogDialog = ({ onLog }: { onLog: (steps: number) => void }) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Steps</DialogTitle>
+          <DialogTitle className="text-card-title uppercase uppercase">Add Steps</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-2">
@@ -251,20 +253,21 @@ const StepsLogDialog = ({ onLog }: { onLog: (steps: number) => void }) => {
                 }}
                 className="h-auto p-3"
               >
-                {step.label}
+                <span className="text-body-text">{step.label}</span>
               </Button>
             ))}
           </div>
           <div className="border-t pt-4">
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <Label htmlFor="steps">Custom Steps</Label>
+                <Label htmlFor="steps" className="text-form-label">Custom Steps</Label>
                 <Input
                   id="steps"
                   type="number"
                   placeholder="Enter steps"
                   value={steps}
                   onChange={(e) => setSteps(e.target.value)}
+                  className="text-input-text"
                 />
               </div>
               <Button type="submit" className="w-full">
@@ -283,17 +286,13 @@ interface QuickActionsProps {
   onAddWater?: () => void;
   onLogMeal?: () => void;
   onLogSleep?: () => void;
-  mealLogged?: boolean;
-  sleepLogged?: boolean;
 }
 
 export const QuickActions = ({ 
   onAddSteps, 
   onAddWater, 
   onLogMeal, 
-  onLogSleep,
-  mealLogged = false,
-  sleepLogged = false
+  onLogSleep
 }: QuickActionsProps) => {
   // Use the new global store
   const {
@@ -310,7 +309,7 @@ export const QuickActions = ({
 
   const handleAddWater = async () => {
     console.log('🔍 DEBUG: Water button clicked');
-    await addWater(1);
+    await addWater(250);
     onAddWater?.();
     setWaterAdded(true);
     setTimeout(() => setWaterAdded(false), 2000);
@@ -340,15 +339,15 @@ export const QuickActions = ({
     <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Quick Actions</CardTitle>
+          <CardTitle className="text-card-title uppercase">Quick Actions</CardTitle>
           {isSyncing && (
-            <div className="flex items-center text-xs text-muted-foreground">
+            <div className="flex items-center text-number-label text-muted-foreground">
               <Loader2 className="h-3 w-3 animate-spin mr-1" />
               Syncing...
             </div>
           )}
         </div>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-number-label text-muted-foreground">
           Last Reset: {getLastResetTime()}
         </p>
       </CardHeader>
@@ -369,7 +368,7 @@ export const QuickActions = ({
             label="Add 2 Cups"
             onClick={async () => {
               console.log('🔍 DEBUG: Add 2 cups clicked');
-              await addWater(2);
+              await addWater(500);
               onAddWater?.();
               setWaterAdded(true);
               setTimeout(() => setWaterAdded(false), 2000);

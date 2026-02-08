@@ -1,7 +1,8 @@
 // SleepVisualizer.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SleepLogForm } from "@/components/features/SleepLogForm";
+import { useFitnessStore } from "@/stores/fitnessStore";
 import {
   Card,
   CardHeader,
@@ -27,48 +28,8 @@ import {
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-// Storage key for sleep logs
-const SLEEP_LOGS_STORAGE_KEY = "fitpulse_sleep_logs";
-const MONTHLY_SLEEP_STORAGE_KEY = "fitpulse_monthly_sleep";
-
 // Days of week in order
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-// Helper to get today's weekday
-const getTodayWeekday = (): string => {
-  return new Date().toLocaleDateString("en-US", { weekday: "long" });
-};
-
-// Helper to get days up to today (optional - for filtering future days)
-const getDaysUpToToday = (): string[] => {
-  const today = new Date();
-  const todayIndex = today.getDay(); // 0=Sunday, 1=Monday, etc.
-  // Convert to Monday=0 format
-  const mondayIndex = todayIndex === 0 ? 6 : todayIndex - 1;
-  return daysOfWeek.slice(0, mondayIndex + 1);
-};
-
-// Load monthly sleep data from localStorage
-function loadMonthlySleepData(): Record<string, { duration: number; quality: string }> {
-  try {
-    const stored = localStorage.getItem(MONTHLY_SLEEP_STORAGE_KEY);
-    if (stored) {
-      return JSON.parse(stored);
-    }
-  } catch (error) {
-    console.error("Error loading monthly sleep data:", error);
-  }
-  return {};
-}
-
-// Save monthly sleep data to localStorage
-function saveMonthlySleepData(data: Record<string, { duration: number; quality: string }>) {
-  try {
-    localStorage.setItem(MONTHLY_SLEEP_STORAGE_KEY, JSON.stringify(data));
-  } catch (error) {
-    console.error("Error saving monthly sleep data:", error);
-  }
-}
 
 const qualityColors = {
   Excellent: { bg: "bg-green-500/20", text: "text-green-500", border: "border-green-500/30", fill: "bg-green-500", emoji: "😴" },
@@ -207,7 +168,7 @@ const SmartAnalyticsSummary = ({
         className="flex items-center gap-2 mb-6"
       >
         <Brain className="w-6 h-6 text-primary" />
-        <h2 className="text-xl font-semibold">Smart Analytics Summary</h2>
+        <h2 className="text-card-title uppercase text-foreground">Smart Analytics Summary</h2>
       </motion.div>
 
       {/* Stats Grid */}
@@ -220,12 +181,17 @@ const SmartAnalyticsSummary = ({
             transition={{ delay: item.delay, duration: 0.3 }}
             className="flex flex-col p-3 rounded-lg bg-background/50 border border-border/50"
           >
-            <span className="text-sm text-muted-foreground mb-1">{item.icon} {item.label}</span>
-            <span className={`text-lg font-bold ${item.isPositive !== undefined ? (item.isPositive ? "text-green-500" : "text-red-500") : "text-foreground"}`}>
-              {item.value}
-            </span>
+            <span className="text-number-label text-muted-foreground mb-1 uppercase">{item.icon} {item.label}</span>
+            <div className="flex items-baseline gap-1">
+              <span className={`text-primary-number ${item.isPositive !== undefined ? (item.isPositive ? "text-green-500" : "text-red-500") : "text-foreground"}`}>
+                {item.value.replace(/[^\d.-]/g, '')}
+              </span>
+               <span className="text-form-label text-muted-foreground">
+                {item.value.replace(/[\d.-]/g, '')}
+              </span>
+            </div>
             {item.subValue && (
-              <span className="text-xs text-muted-foreground mt-0.5">{item.subValue}</span>
+              <span className="text-number-label text-muted-foreground mt-0.5">{item.subValue}</span>
             )}
           </motion.div>
         ))}
@@ -245,15 +211,15 @@ const SmartAnalyticsSummary = ({
             transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
             className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center"
           >
-            <span className="text-lg">💡</span>
+            <span className="text-card-title uppercase">💡</span>
           </motion.div>
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-foreground mb-1">AI Tip</h3>
+            <h3 className="text-card-title uppercase text-foreground mb-1">AI Tip</h3>
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
-              className="text-sm text-muted-foreground leading-relaxed"
+              className="text-body-text text-muted-foreground leading-relaxed"
             >
               {analytics.aiTip}
             </motion.p>
@@ -282,17 +248,17 @@ const BarChartView = ({ data }: { data: any[] }) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
+        <h3 className="text-card-title uppercase flex items-center gap-2 text-foreground">
           <BarChart3 className="w-5 h-5" />
           Sleep Duration Chart
         </h3>
         {/* Quality Legend */}
         <div className="flex items-center gap-4 flex-wrap">
-          <span className="text-xs text-muted-foreground font-medium">Quality:</span>
+          <span className="text-number-label text-muted-foreground font-medium uppercase">Quality:</span>
           {qualityLegend.map((item) => (
             <div key={item.label} className="flex items-center gap-1.5">
               <div className={`w-3 h-3 rounded-full ${item.color.fill}`} />
-              <span className="text-xs text-muted-foreground">{item.label}</span>
+              <span className="text-number-label text-muted-foreground">{item.label}</span>
             </div>
           ))}
         </div>
@@ -312,8 +278,8 @@ const BarChartView = ({ data }: { data: any[] }) => {
                 transition={{ duration: 0.3, delay: idx * 0.1 }}
                 className="flex items-center justify-between py-3 border-b border-border/20 text-muted-foreground"
               >
-                <span className="font-semibold w-32">{day}</span>
-                <span className="italic text-sm">No entry yet</span>
+                <span className="w-32 text-card-title uppercase">{day}</span>
+                <span className="italic text-body-text">No entry yet</span>
               </motion.div>
             );
           }
@@ -330,20 +296,21 @@ const BarChartView = ({ data }: { data: any[] }) => {
               transition={{ duration: 0.3, delay: idx * 0.1 }}
               className="space-y-2"
             >
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-body-text">
                 <div className="flex items-center gap-3 min-w-[120px]">
-                  <span className="font-semibold text-foreground">{entry.day}</span>
-                  <Badge className={`${colors.bg} ${colors.text} ${colors.border} text-xs px-2 py-0.5`}>
+                  <span className="text-card-title uppercase text-foreground">{entry.day}</span>
+                  <Badge className={`${colors.bg} ${colors.text} ${colors.border} text-number-label px-2 py-0.5`}>
                     {entry.quality}
                   </Badge>
                 </div>
-                <div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-4 text-body-text">
                   <span className="text-muted-foreground">{entry.bedtime}</span>
                   <span className="text-muted-foreground">→</span>
                   <span className="text-muted-foreground">{entry.wakeup}</span>
-                  <span className="font-bold text-foreground min-w-[50px] text-right">
-                    {entry.duration}h
-                  </span>
+                  <div className="text-foreground min-w-[50px] text-right flex justify-end items-baseline gap-0.5">
+                      <span className="text-card-title">{entry.duration}</span>
+                      <span className="text-number-label text-muted-foreground">h</span>
+                    </div>
                 </div>
               </div>
               
@@ -363,7 +330,7 @@ const BarChartView = ({ data }: { data: any[] }) => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: idx * 0.1 + 0.4 }}
-                    className="text-xs font-semibold text-white drop-shadow-sm"
+                    className="text-form-label text-white drop-shadow-sm"
                   >
                     {entry.duration}h
                   </motion.span>
@@ -381,7 +348,7 @@ const BarChartView = ({ data }: { data: any[] }) => {
 const TimelineView = ({ data }: { data: any[] }) => {
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold flex items-center gap-2">
+      <h3 className="text-card-title uppercase flex items-center gap-2 text-foreground">
         <Clock className="w-5 h-5" />
         Sleep Timeline
       </h3>
@@ -401,8 +368,8 @@ const TimelineView = ({ data }: { data: any[] }) => {
               >
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-muted-foreground">{day}</span>
-                    <span className="text-xs italic text-muted-foreground">No entry yet</span>
+                    <span className="text-card-title uppercase text-muted-foreground">{day}</span>
+                    <span className="text-number-label italic text-muted-foreground">No entry yet</span>
                   </div>
                 </div>
               </motion.div>
@@ -420,12 +387,12 @@ const TimelineView = ({ data }: { data: any[] }) => {
             >
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-semibold">{entry.day}</span>
+                  <span className="text-card-title uppercase text-foreground">{entry.day}</span>
                   <Badge className={colors.bg + " " + colors.text + " " + colors.border}>
                     {entry.quality}
                   </Badge>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-4 text-body-text text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <Sunset className="w-4 h-4" />
                     <span>{entry.bedtime}</span>
@@ -502,7 +469,7 @@ const MonthlyCalendarView = ({ monthlyData }: { monthlyData: Record<string, { du
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
+        <h3 className="text-card-title uppercase flex items-center gap-2 text-foreground">
           <Calendar className="w-5 h-5" />
           Monthly Sleep Calendar
         </h3>
@@ -515,7 +482,7 @@ const MonthlyCalendarView = ({ monthlyData }: { monthlyData: Record<string, { du
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
-          <span className="text-sm font-medium min-w-[140px] text-center">
+          <span className="text-body-text font-medium min-w-[140px] text-center">
             {monthNames[month]} {year}
           </span>
           <Button
@@ -533,7 +500,7 @@ const MonthlyCalendarView = ({ monthlyData }: { monthlyData: Record<string, { du
         {/* Week day headers */}
         <div className="grid grid-cols-7 gap-2 mb-2">
           {weekDays.map((day) => (
-            <div key={day} className="text-center text-xs font-semibold text-muted-foreground py-2">
+            <div key={day} className="text-center text-form-label text-muted-foreground py-2 uppercase">
               {day}
             </div>
           ))}
@@ -572,21 +539,21 @@ const MonthlyCalendarView = ({ monthlyData }: { monthlyData: Record<string, { du
               >
                 <div className="flex flex-col h-full">
                   <div className="flex items-center justify-between mb-1">
-                    <div className={`text-xs font-semibold ${isToday ? 'text-primary' : 'text-foreground'}`}>
+                    <div className={`text-form-label ${isToday ? 'text-primary' : 'text-foreground'}`}>
                       {day}
                     </div>
                     {dayData && (
-                      <span className="text-xs" title={dayData.quality}>
+                      <span className="text-number-label" title={dayData.quality}>
                         {colors?.emoji}
                       </span>
                     )}
                   </div>
                   {dayData && (
                     <div className="flex-1 flex flex-col justify-center items-center gap-0.5">
-                      <div className={`text-base font-bold ${colors?.text}`}>
-                        {dayData.duration}h
+                      <div className={`text-card-title uppercase ${colors?.text}`}>
+                        {dayData.duration}<span className="text-number-label font-normal opacity-70 ml-0.5">h</span>
                       </div>
-                      <div className={`text-[9px] ${colors?.text} opacity-70 font-medium`}>
+                      <div className={`text-number-label ${colors?.text} opacity-70 font-medium`}>
                         {dayData.quality}
                       </div>
                     </div>
@@ -611,7 +578,7 @@ const CardGridView = ({
 }) => {
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold flex items-center gap-2">
+      <h3 className="text-card-title uppercase flex items-center gap-2 text-foreground">
         <LayoutGrid className="w-5 h-5" />
         Sleep Overview
       </h3>
@@ -644,10 +611,10 @@ const CardGridView = ({
                     className="p-4 rounded-lg border border-border/30 bg-muted/20 space-y-3"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-muted-foreground">{day}</span>
+                      <span className="text-card-title text-muted-foreground">{day}</span>
                     </div>
                     <div className="text-center py-4">
-                      <span className="text-sm italic text-muted-foreground">No entry yet</span>
+                      <span className="italic text-body-text text-muted-foreground">No entry yet</span>
                     </div>
                   </motion.div>
                 );
@@ -664,28 +631,28 @@ const CardGridView = ({
                 >
                   {/* Day and Quality Badge */}
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-foreground">{entry.day}</span>
-                    <Badge className={`${colors.text} ${colors.bg} ${colors.border} text-xs px-2 py-0.5`}>
+                    <span className="text-card-title text-foreground">{entry.day}</span>
+                    <Badge className={`${colors.text} ${colors.bg} ${colors.border} text-number-label px-2 py-0.5`}>
                       {entry.quality}
                     </Badge>
                   </div>
                   
                   {/* Total Duration */}
-                  <div className={`text-3xl font-bold ${colors.text}`}>
-                    {entry.duration}h
+                  <div className={`text-primary-number ${colors.text} flex items-baseline gap-1`}>
+                    {entry.duration}<span className="text-card-title font-normal opacity-70 ml-0.5">h</span>
                   </div>
                   
                   {/* Bedtime and Wake Time */}
                   <div className="space-y-2 pt-2 border-t border-border/50">
-                    <div className="flex items-center gap-2 text-xs">
+                    <div className="flex items-center gap-2 text-number-label">
                       <Sunset className="w-3.5 h-3.5 text-muted-foreground" />
                       <span className="text-muted-foreground">Bedtime:</span>
-                      <span className="font-semibold text-foreground">{entry.bedtime}</span>
+                      <span className="text-form-label text-foreground">{entry.bedtime}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs">
+                    <div className="flex items-center gap-2 text-number-label">
                       <Sunrise className="w-3.5 h-3.5 text-muted-foreground" />
                       <span className="text-muted-foreground">Wake:</span>
-                      <span className="font-semibold text-foreground">{entry.wakeup}</span>
+                      <span className="text-form-label text-foreground">{entry.wakeup}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -705,168 +672,162 @@ const CardGridView = ({
 // 🎯 Main Component
 export default function SleepVisualizer() {
   const [view, setView] = useState<"bar" | "timeline" | "grid">("bar");
-  const [sleepData, setSleepData] = useState<any[]>([]);
-  const [monthlySleepData, setMonthlySleepData] = useState<Record<string, { duration: number; quality: string }>>({});
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [currentDay, setCurrentDay] = useState<string>("");
+  
+  const { addSleep, data: fitnessData } = useFitnessStore();
 
-  // Load data from localStorage on mount
-  useEffect(() => {
-    const today = getTodayWeekday();
-    setCurrentDay(today);
+  // Transform sleep history to weekly data
+  const sleepData = useMemo(() => {
+    // Get current week's dates
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+    const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - diffToMonday);
+    monday.setHours(0, 0, 0, 0);
 
-    // Retrieve saved logs from localStorage
-    try {
-      const storedData = localStorage.getItem(SLEEP_LOGS_STORAGE_KEY);
-      if (storedData) {
-        const parsed = JSON.parse(storedData);
-        setSleepData(parsed);
-      } else {
-        // Initialize with empty entries for all days
-        const emptyData = daysOfWeek.map(day => ({ day }));
-        setSleepData(emptyData);
-      }
-    } catch (error) {
-      console.error("Error loading sleep logs:", error);
-      const emptyData = daysOfWeek.map(day => ({ day }));
-      setSleepData(emptyData);
-    }
+    return daysOfWeek.map((dayName, index) => {
+      const targetDate = new Date(monday);
+      targetDate.setDate(monday.getDate() + index);
+      const dateStr = targetDate.toISOString().split('T')[0];
 
-    // Load monthly data
-    const monthlyData = loadMonthlySleepData();
-    setMonthlySleepData(monthlyData);
-  }, []);
-
-  const handleSleepLogSubmit = (entry: { date: string; bedtime: string; wakeTime: string; duration: number; quality: string }) => {
-    const entryDate = new Date(entry.date);
-    const newEntry = {
-      day: entryDate.toLocaleDateString("en-US", { weekday: "long" }),
-      duration: entry.duration,
-      bedtime: entry.bedtime,
-      wakeup: entry.wakeTime,
-      quality: entry.quality,
-    };
-
-    // Update weekly data
-    setSleepData(prev => {
-      const newData = [...prev];
-      const existingIndex = newData.findIndex(item => item.day === newEntry.day);
-      if (existingIndex !== -1) {
-        newData[existingIndex] = newEntry;
-      } else {
-        newData.push(newEntry);
-      }
+      const entry = fitnessData.sleepHistory.find(e => e.date === dateStr);
       
-      // Save to localStorage
-      try {
-        localStorage.setItem(SLEEP_LOGS_STORAGE_KEY, JSON.stringify(newData));
-      } catch (error) {
-        console.error("Error saving sleep logs:", error);
-      }
-      
-      return newData;
-    });
-
-    // Update monthly data
-    const dateKey = entryDate.toISOString().split('T')[0];
-    setMonthlySleepData(prev => {
-      const updated = {
-        ...prev,
-        [dateKey]: {
+      if (entry) {
+        return {
+          day: dayName,
           duration: entry.duration,
+          bedtime: entry.bedtime,
+          wakeup: entry.wakeTime,
           quality: entry.quality,
-        },
+          date: dateStr
+        };
+      }
+      return { day: dayName };
+    });
+  }, [fitnessData.sleepHistory]);
+
+  // Transform sleep history to monthly data
+  const monthlySleepData = useMemo(() => {
+    const map: Record<string, { duration: number; quality: string }> = {};
+    fitnessData.sleepHistory.forEach(entry => {
+      map[entry.date] = {
+        duration: entry.duration,
+        quality: entry.quality
       };
-      saveMonthlySleepData(updated);
-      return updated;
+    });
+    return map;
+  }, [fitnessData.sleepHistory]);
+
+  const handleSleepLogSubmit = async (entry: { date: string; bedtime: string; wakeTime: string; duration: number; quality: string }) => {
+    await addSleep({
+      date: entry.date,
+      bedtime: entry.bedtime,
+      wakeTime: entry.wakeTime,
+      duration: entry.duration,
+      quality: entry.quality,
     });
   };
 
   return (
-    <Card className="bg-card text-card-foreground border-border shadow-lg">
-      <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
-        <div className="space-y-1">
-          <CardTitle className="text-xl flex items-center gap-2">
-            <Moon className="w-5 h-5 text-primary" />
-            This Week's Sleep Pattern
-          </CardTitle>
-          <CardDescription className="text-sm">
-            Track your sleep duration and quality across the week
-          </CardDescription>
+    <div className="container mx-auto p-4 space-y-6 max-w-7xl">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-page-heading uppercase text-foreground mb-1">
+            Sleep Tracker
+          </h1>
+          <p className="text-body-text text-muted-foreground">
+            Monitor your sleep patterns and improve your rest quality
+          </p>
         </div>
+      </div>
 
-        <div className="flex gap-2">
-          <Button
-            variant={view === "bar" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setView("bar")}
-            className="gap-2"
-          >
-            <BarChart3 className="w-4 h-4" />
-            <span className="hidden sm:inline">Chart</span>
-          </Button>
-          <Button
-            variant={view === "timeline" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setView("timeline")}
-            className="gap-2"
-          >
-            <Clock className="w-4 h-4" />
-            <span className="hidden sm:inline">Timeline</span>
-          </Button>
-          <Button
-            variant={view === "grid" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setView("grid")}
-            className="gap-2"
-          >
-            <LayoutGrid className="w-4 h-4" />
-            <span className="hidden sm:inline">Cards</span>
-          </Button>
-        </div>
-      </CardHeader>
+      <Card className="bg-card text-card-foreground border-border shadow-lg">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
+          <div className="space-y-1">
+            <CardTitle className="text-card-title uppercase flex items-center gap-2">
+              <Moon className="w-5 h-5 text-primary" />
+              This Week's Sleep Pattern
+            </CardTitle>
+            <CardDescription className="text-number-label">
+              Track your sleep duration and quality across the week
+            </CardDescription>
+          </div>
 
-      <CardContent className="pt-2">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={view}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            {view === "bar" && <BarChartView data={sleepData} />}
-            {view === "timeline" && <TimelineView data={sleepData} />}
-            {view === "grid" && <CardGridView data={sleepData} monthlyData={monthlySleepData} />}
-          </motion.div>
-        </AnimatePresence>
+          <div className="flex gap-2">
+            <Button
+              variant={view === "bar" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setView("bar")}
+              className="gap-2"
+            >
+              <BarChart3 className="w-4 h-4" />
+              <span className="hidden sm:inline">Chart</span>
+            </Button>
+            <Button
+              variant={view === "timeline" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setView("timeline")}
+              className="gap-2"
+            >
+              <Clock className="w-4 h-4" />
+              <span className="hidden sm:inline">Timeline</span>
+            </Button>
+            <Button
+              variant={view === "grid" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setView("grid")}
+              className="gap-2"
+            >
+              <LayoutGrid className="w-4 h-4" />
+              <span className="hidden sm:inline">Cards</span>
+            </Button>
+          </div>
+        </CardHeader>
 
-        {/* 🧠 Added Smart Analytics Summary */}
-        <SmartAnalyticsSummary data={sleepData} monthlyData={monthlySleepData} />
-      </CardContent>
+        <CardContent className="pt-2">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={view}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              {view === "bar" && <BarChartView data={sleepData} />}
+              {view === "timeline" && <TimelineView data={sleepData} />}
+              {view === "grid" && <CardGridView data={sleepData} monthlyData={monthlySleepData} />}
+            </motion.div>
+          </AnimatePresence>
 
-      {/* 💤 Floating Log Sleep Button */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="fixed bottom-6 right-6 z-40"
-      >
-        <Button
-          onClick={() => setIsFormOpen(true)}
-          size="lg"
-          className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-shadow"
+          {/* 🧠 Added Smart Analytics Summary */}
+          <SmartAnalyticsSummary data={sleepData} monthlyData={monthlySleepData} />
+        </CardContent>
+
+        {/* 💤 Floating Log Sleep Button */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="fixed bottom-6 right-6 z-40"
         >
-          <Plus className="h-6 w-6" />
-          <span className="sr-only">Log Sleep</span>
-        </Button>
-      </motion.div>
+          <Button
+            onClick={() => setIsFormOpen(true)}
+            size="lg"
+            className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-shadow"
+          >
+            <Plus className="h-6 w-6" />
+            <span className="sr-only">Log Sleep</span>
+          </Button>
+        </motion.div>
 
-      {/* 💤 Floating Side Modal Form */}
-      <SleepLogForm 
-        onSubmit={handleSleepLogSubmit} 
-        open={isFormOpen}
-        onOpenChange={setIsFormOpen}
-      />
-    </Card>
+        {/* 💤 Floating Side Modal Form */}
+        <SleepLogForm 
+          onSubmit={handleSleepLogSubmit} 
+          open={isFormOpen}
+          onOpenChange={setIsFormOpen}
+        />
+      </Card>
+    </div>
   );
 }
+

@@ -91,7 +91,7 @@ const NotificationSystem = ({ notifications, onDismiss, onAction }: Notification
               animate={{ scale: 1 }}
               className="absolute -top-1 -right-1 w-5 h-5 bg-destructive rounded-full flex items-center justify-center"
             >
-              <span className="text-xs text-white font-bold">
+              <span className="text-number-label text-white font-bold">
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
             </motion.div>
@@ -126,7 +126,7 @@ const NotificationSystem = ({ notifications, onDismiss, onAction }: Notification
                   {notifications.length === 0 ? (
                     <div className="text-center py-8 text-muted-foreground">
                       <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">No notifications yet</p>
+                      <p className="text-body-text">No notifications yet</p>
                     </div>
                   ) : (
                     notifications.map((notification) => (
@@ -152,12 +152,12 @@ const NotificationSystem = ({ notifications, onDismiss, onAction }: Notification
                           
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
-                              <h4 className="text-sm font-medium truncate">
+                              <h4 className="text-body-text font-medium truncate">
                                 {notification.title}
                               </h4>
                               <Badge 
                                 variant="outline" 
-                                className={`text-xs ${
+                                className={`text-number-label ${
                                   notification.priority === 'high' 
                                     ? 'border-destructive/50 text-destructive' 
                                     : notification.priority === 'medium'
@@ -169,12 +169,12 @@ const NotificationSystem = ({ notifications, onDismiss, onAction }: Notification
                               </Badge>
                             </div>
                             
-                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                            <p className="text-number-label text-muted-foreground mt-1 line-clamp-2">
                               {notification.message}
                             </p>
                             
                             <div className="flex items-center justify-between mt-2">
-                              <span className="text-xs text-muted-foreground">
+                              <span className="text-number-label text-muted-foreground">
                                 {formatTimeAgo(notification.timestamp)}
                               </span>
                               
@@ -184,7 +184,7 @@ const NotificationSystem = ({ notifications, onDismiss, onAction }: Notification
                                     size="sm"
                                     variant="outline"
                                     onClick={() => onAction(notification.id)}
-                                    className="h-6 text-xs"
+                                    className="h-6 text-number-label"
                                   >
                                     {notification.action}
                                   </Button>

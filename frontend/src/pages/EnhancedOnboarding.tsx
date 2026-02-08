@@ -149,7 +149,7 @@ const EnhancedDatePicker = ({
           <>
             <div className="grid grid-cols-7 mb-2">
               {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
-                <div key={d} className="text-center text-xs text-muted-foreground">
+                <div key={d} className="text-center text-number-label text-muted-foreground">
                   {d}
                 </div>
               ))}
@@ -192,8 +192,8 @@ const GoalSelectionStep = ({
   return (
     <Card className="shadow-glow h-full flex flex-col justify-between">
       <CardHeader className="text-center pb-3">
-        <CardTitle className="text-2xl font-bold mb-1 tracking-wide uppercase">WHAT'S YOUR FITNESS GOAL?</CardTitle>
-        <p className="text-muted-foreground text-sm tracking-wide">Choose the goal that best describes your fitness journey</p>
+        <CardTitle className="text-page-heading mb-1  uppercase">WHAT'S YOUR FITNESS GOAL?</CardTitle>
+        <p className="text-body-text text-muted-foreground">Select the goal that best describes your fitness journey</p>
       </CardHeader>
       <CardContent className="space-y-4 flex-grow">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -206,9 +206,9 @@ const GoalSelectionStep = ({
                   className={`relative cursor-pointer transition-all duration-300 ${selected ? "ring-2 ring-primary shadow-glow bg-gradient-card" : "hover:shadow-card"}`}
                 >
                   <CardContent className="p-5 text-center">
-                    <div className="text-3xl mb-3">{goal.icon}</div>
-                    <h3 className="font-semibold text-base mb-1 tracking-wide uppercase">{goal.title}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{goal.description}</p>
+                    <div className="text-primary-number mb-3">{goal.icon}</div>
+                    <h3 className="text-card-title mb-1  uppercase">{goal.title}</h3>
+                    <p className="text-number-label text-muted-foreground leading-relaxed">{goal.description}</p>
                     {selected && (
                       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-3 right-3">
                         <Check className="h-5 w-5 text-primary" />
@@ -225,7 +225,7 @@ const GoalSelectionStep = ({
         <Button
           onClick={nextStep}
           disabled={!data.goal}
-          className="w-full bg-gradient-primary tracking-wide uppercase hover:shadow-glow transition-all duration-300"
+          className="w-full bg-gradient-primary  uppercase hover:shadow-glow transition-all duration-300 text-card-title"
         >
           Continue
         </Button>
@@ -259,14 +259,14 @@ const AgeDetectionStep = ({
   return (
     <Card className="shadow-glow">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold mb-2">Your Age</CardTitle>
-        <p className="text-muted-foreground">Used to personalize your fitness plan</p>
+        <CardTitle className="text-page-heading mb-2">Your Age</CardTitle>
+        <p className="text-body-text text-muted-foreground">Used to personalize your fitness plan</p>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex justify-center">
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant={"outline"} className={cn("w-[280px] justify-start text-left font-normal", !birthDate && "text-muted-foreground")}>
+              <Button variant={"outline"} className={cn("w-[280px] justify-start text-left font-normal text-body-text", !birthDate && "text-muted-foreground")}>
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {birthDate ? format(birthDate, "PPP") : <span>Pick your birth date</span>}
               </Button>
@@ -278,15 +278,15 @@ const AgeDetectionStep = ({
         </div>
         {birthDate && (
           <div className="text-center">
-            <p className="text-lg font-semibold">Age: {data.age} years old</p>
+            <p className="text-card-title uppercase">Age: {data.age} years old</p>
           </div>
         )}
         <div className="flex gap-4 pt-4">
-          <Button variant="outline" className="flex-1" onClick={prevStep}>
+          <Button variant="outline" className="flex-1 text-body-text" onClick={prevStep}>
             Back
           </Button>
           <Button
-            className="flex-1 bg-gradient-primary hover:shadow-glow transition-all"
+            className="flex-1 bg-gradient-primary hover:shadow-glow transition-all text-body-text"
             onClick={nextStep}
             disabled={!birthDate}
           >
@@ -343,21 +343,22 @@ const HeightWeightStep = ({
   return (
     <Card className="shadow-glow max-w-3xl mx-auto">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold mb-2">Height & Weight</CardTitle>
-        <p className="text-muted-foreground">Used internally to personalize your fitness plan</p>
+        <CardTitle className="text-page-heading mb-2">Height & Weight</CardTitle>
+        <p className="text-body-text text-muted-foreground">Used internally to personalize your fitness plan</p>
       </CardHeader>
       <CardContent className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-3">
-            <Label className="text-lg font-semibold">Height</Label>
+            <Label className="text-card-title uppercase">Height</Label>
             <div className="flex items-center gap-3">
               <Input
                 type="number"
                 inputMode="decimal"
                 value={data.height}
                 onChange={(e) => handleNumberChange("height", e.target.value, heightMin, heightMax)}
+                className="text-body-text"
               />
-              <Button onClick={handleUnitToggle} className="w-24">
+              <Button onClick={handleUnitToggle} className="w-24 text-body-text">
                 {data.unitSystem === 'metric' ? 'cm' : 'in'}
               </Button>
             </div>
@@ -365,21 +366,22 @@ const HeightWeightStep = ({
               <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-emerald-400 to-amber-400 transition-all" style={{ width: `${heightPct}%` }} />
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-number-label text-muted-foreground">
                 Range {heightMin}–{heightMax} {data.unitSystem === 'metric' ? 'cm' : 'in'}
               </p>
             </div>
           </div>
           <div className="space-y-3">
-            <Label className="text-lg font-semibold">Weight</Label>
+            <Label className="text-card-title uppercase">Weight</Label>
             <div className="flex items-center gap-3">
               <Input
                 type="number"
                 inputMode="decimal"
                 value={data.weight}
                 onChange={(e) => handleNumberChange("weight", e.target.value, weightMin, weightMax)}
+                className="text-body-text"
               />
-              <Button onClick={handleUnitToggle} className="w-24">
+              <Button onClick={handleUnitToggle} className="w-24 text-body-text">
                 {data.unitSystem === 'metric' ? 'kg' : 'lb'}
               </Button>
             </div>
@@ -387,7 +389,7 @@ const HeightWeightStep = ({
               <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-emerald-400 to-amber-400 transition-all" style={{ width: `${weightPct}%` }} />
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-number-label text-muted-foreground">
                 Range {weightMin}–{weightMax} {data.unitSystem === 'metric' ? 'kg' : 'lb'}
               </p>
             </div>
@@ -395,23 +397,23 @@ const HeightWeightStep = ({
         </div>
         {bmi && (
           <div className="text-center border rounded-lg p-4 bg-muted/30">
-            <p className="text-lg font-semibold">BMI: {bmi}</p>
-            <p className="text-sm text-muted-foreground">Used internally for recommendations</p>
+            <p className="text-card-title uppercase">BMI: {bmi}</p>
+            <p className="text-body-text text-muted-foreground">Used internally for recommendations</p>
           </div>
         )}
         <div className="flex items-center justify-between border rounded-lg px-4 py-3 bg-muted/20">
           <div>
-            <p className="text-sm font-medium">Advanced controls</p>
-            <p className="text-xs text-muted-foreground">Optional sliders for quick adjustments</p>
+            <p className="text-card-title">Advanced controls</p>
+            <p className="text-number-label text-muted-foreground">Optional sliders for quick adjustments</p>
           </div>
-          <Button variant={showAdvanced ? "default" : "outline"} size="sm" onClick={() => setShowAdvanced((v) => !v)}>
+          <Button variant={showAdvanced ? "default" : "outline"} size="sm" onClick={() => setShowAdvanced((v) => !v)} className="text-body-text">
             {showAdvanced ? "Hide" : "Show"}
           </Button>
         </div>
         {showAdvanced && (
           <div className="space-y-6">
             <div className="space-y-2">
-              <div className="flex justify-between text-xs text-muted-foreground">
+              <div className="flex justify-between text-number-label text-muted-foreground">
                 <span>Height slider</span>
                 <span>{data.height} {data.unitSystem === 'metric' ? 'cm' : 'in'}</span>
               </div>
@@ -425,7 +427,7 @@ const HeightWeightStep = ({
               />
             </div>
             <div className="space-y-2">
-              <div className="flex justify-between text-xs text-muted-foreground">
+              <div className="flex justify-between text-number-label text-muted-foreground">
                 <span>Weight slider</span>
                 <span>{data.weight} {data.unitSystem === 'metric' ? 'kg' : 'lb'}</span>
               </div>
@@ -441,10 +443,10 @@ const HeightWeightStep = ({
           </div>
         )}
         <div className="flex gap-4 pt-4">
-          <Button variant="outline" className="flex-1" onClick={prevStep}>
+          <Button variant="outline" className="flex-1 text-body-text" onClick={prevStep}>
             Back
           </Button>
-          <Button className="flex-1 bg-gradient-primary hover:shadow-glow transition-all" onClick={nextStep}>
+          <Button className="flex-1 bg-gradient-primary hover:shadow-glow transition-all text-body-text" onClick={nextStep}>
             Continue
           </Button>
         </div>
@@ -471,42 +473,42 @@ const CompletionStep = ({
             <Check className="h-8 w-8 text-primary" />
           </div>
         </div>
-        <CardTitle className="text-3xl font-bold tracking-wide uppercase">YOU'RE ALL SET!</CardTitle>
-        <p className="text-muted-foreground tracking-wide">Let's review your profile and start your fitness journey</p>
+        <CardTitle className="text-page-heading  uppercase">YOU'RE ALL SET!</CardTitle>
+        <p className="text-body-text text-muted-foreground">Review your profile and start your fitness journey</p>
       </CardHeader>
       <CardContent className="space-y-8">
         <div className="rounded-xl border bg-gradient-card p-6 space-y-6">
-          <h3 className="text-sm font-semibold tracking-wider uppercase text-muted-foreground">Your Profile Summary</h3>
+          <h3 className="text-card-title  uppercase text-muted-foreground">Your Profile Summary</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground tracking-wide uppercase">Goal</p>
-              <p className="text-base font-medium flex items-center gap-2">
-                <span className="text-lg">{selectedGoal?.icon}</span>
-                {selectedGoal?.title}
-              </p>
+              <p className="text-number-label text-muted-foreground  uppercase">Goal</p>
+              <p className="text-body-text flex items-center gap-2">
+                    <span className="text-card-title uppercase">{selectedGoal?.icon}</span>
+                    {selectedGoal?.title}
+                  </p>
             </div>
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground tracking-wide uppercase">Age</p>
-              <p className="text-base font-medium">{data.age} years</p>
+              <p className="text-number-label text-muted-foreground  uppercase">Age</p>
+              <p className="text-body-text">{data.age} years</p>
             </div>
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground tracking-wide uppercase">Height</p>
-              <p className="text-base font-medium">
+              <p className="text-number-label text-muted-foreground  uppercase">Height</p>
+              <p className="text-body-text">
                 {data.height} {data.unitSystem === "metric" ? "cm" : "in"}
               </p>
             </div>
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground tracking-wide uppercase">Weight</p>
-              <p className="text-base font-medium">
+              <p className="text-number-label text-muted-foreground  uppercase">Weight</p>
+              <p className="text-body-text">
                 {data.weight} {data.unitSystem === "metric" ? "kg" : "lb"}
               </p>
             </div>
           </div>
         </div>
-        <Button onClick={onComplete} className="w-full bg-gradient-primary tracking-wide uppercase text-lg py-6 hover:shadow-glow transition-all">
+        <Button onClick={onComplete} className="w-full bg-gradient-primary  uppercase text-card-title py-6 hover:shadow-glow transition-all">
           Start Your Journey
         </Button>
-        <p className="text-center text-xs text-muted-foreground">You can update these details anytime in your profile settings</p>
+        <p className="text-center text-number-label text-muted-foreground">You can update these details anytime in your profile settings</p>
       </CardContent>
     </Card>
   );
@@ -577,8 +579,8 @@ const EnhancedOnboarding = () => {
       <div className="w-full max-w-2xl">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-muted-foreground">Step {currentStep} of 4</span>
-            <span className="text-sm text-muted-foreground">{Math.round((currentStep / 4) * 100)}%</span>
+            <span className="text-body-text text-muted-foreground">Step {currentStep} of 4</span>
+            <span className="text-body-text text-muted-foreground">{Math.round((currentStep / 4) * 100)}%</span>
           </div>
           <div className="w-full bg-muted rounded-full h-2">
             <motion.div
@@ -606,3 +608,6 @@ const EnhancedOnboarding = () => {
 };
 
 export default EnhancedOnboarding;
+
+
+

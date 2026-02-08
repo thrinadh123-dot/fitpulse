@@ -1,174 +1,159 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/hooks/useUser";
-import { PageTransition } from "@/components/ui/page-transition";
-import { User, Calendar, Ruler, Weight, Target, Settings } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { User, Mail, Ruler, Weight, Calendar, Activity, HeartPulse } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const { user } = useUser();
 
-  if (!user) {
-    return (
-      <PageTransition>
-        <div className="text-center py-12">
-          <h1 className="text-2xl font-bold mb-4">Profile Not Found</h1>
-          <p className="text-muted-foreground">Please log in to view your profile.</p>
-        </div>
-      </PageTransition>
-    );
-  }
+  const getBMI = () => {
+    if (user?.height && user?.weight) {
+      // Assuming metric (cm, kg) for now based on typical implementation, 
+      // but should ideally check unitSystem. 
+      // Formula: kg / (m^2)
+      const heightInMeters = user.height / 100;
+      return (user.weight / (heightInMeters * heightInMeters)).toFixed(1);
+    }
+    return "N/A";
+  };
 
   return (
-    <PageTransition>
-      <div className="space-y-8">
-        {/* Profile Header */}
-        <div className="text-center">
-          <div className="w-24 h-24 mx-auto mb-4 bg-primary/20 rounded-full flex items-center justify-center">
-            <User className="w-12 h-12 text-primary" />
-          </div>
-          <h1 className="text-3xl font-bold mb-2">
-            {user.firstName} {user.lastName}
-          </h1>
-          <p className="text-muted-foreground mb-4">{user.email}</p>
-          <Badge variant="secondary" className="text-sm">
-            {user.onboardingComplete ? 'Profile Complete' : 'Profile Incomplete'}
-          </Badge>
+    <div className="container mx-auto p-4 md:p-6 space-y-8 max-w-4xl pb-24">
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <h1 className="text-page-heading">My Profile</h1>
+          <p className="text-body-text text-muted-foreground">
+            View and manage your personal health profile.
+          </p>
         </div>
-
-        {/* Profile Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <User className="h-5 w-5 text-primary" />
-                <span>Personal Information</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">First Name</span>
-                <span className="font-medium">{user.firstName || 'Not set'}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Last Name</span>
-                <span className="font-medium">{user.lastName || 'Not set'}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Email</span>
-                <span className="font-medium">{user.email || 'Not set'}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Age</span>
-                <span className="font-medium">
-                  {user.age ? `${user.age} years` : 'Not set'}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Target className="h-5 w-5 text-secondary" />
-                <span>Fitness Goals</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Primary Goal</span>
-                <span className="font-medium">{user.goal || 'Not set'}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Unit System</span>
-                <span className="font-medium capitalize">
-                  {user.unitSystem || 'Not set'}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Ruler className="h-5 w-5 text-primary" />
-                <span>Physical Measurements</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Height</span>
-                <span className="font-medium">
-                  {user.height ? `${user.height} ${user.unitSystem === 'metric' ? 'cm' : 'in'}` : 'Not set'}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Weight</span>
-                <span className="font-medium">
-                  {user.weight ? `${user.weight} ${user.unitSystem === 'metric' ? 'kg' : 'lbs'}` : 'Not set'}
-                </span>
-              </div>
-              {user.height && user.weight && (
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">BMI</span>
-                  <span className="font-medium">
-                    {calculateBMI(user.height, user.weight, user.unitSystem).toFixed(1)}
-                  </span>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Settings className="h-5 w-5 text-secondary" />
-                <span>Account Settings</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Profile Status</span>
-                <Badge variant={user.onboardingComplete ? "default" : "secondary"}>
-                  {user.onboardingComplete ? 'Complete' : 'Incomplete'}
-                </Badge>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Member Since</span>
-                <span className="font-medium">
-                  {user.id ? new Date(parseInt(user.id)).toLocaleDateString() : 'Unknown'}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex justify-center space-x-4">
-          <Button variant="outline" className="px-8">
-            Edit Profile
-          </Button>
-          <Button className="px-8 bg-gradient-primary hover:shadow-glow">
-            Update Goals
-          </Button>
-        </div>
+        <Link to="/settings">
+          <Button variant="outline" className="text-body-text">Edit Profile</Button>
+        </Link>
       </div>
-    </PageTransition>
-  );
-};
 
-// Helper function to calculate BMI
-const calculateBMI = (height: number, weight: number, unitSystem: 'metric' | 'imperial'): number => {
-  if (unitSystem === 'imperial') {
-    // Convert inches to meters and pounds to kg
-    const heightInMeters = height * 0.0254;
-    const weightInKg = weight * 0.453592;
-    return weightInKg / (heightInMeters * heightInMeters);
-  } else {
-    // Height in cm, weight in kg
-    const heightInMeters = height / 100;
-    return weight / (heightInMeters * heightInMeters);
-  }
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Personal Info */}
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle className="text-section-heading flex items-center gap-2">
+              <User className="h-5 w-5 text-primary" />
+              Personal Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-6 md:grid-cols-2">
+            <div className="flex items-center gap-4 p-4 rounded-lg bg-muted/30">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-primary font-bold text-xl">
+                  {user?.firstName?.charAt(0) || "U"}
+                </span>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Full Name</p>
+                <p className="text-card-title">{user?.firstName} {user?.lastName}</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4 p-4 rounded-lg bg-muted/30">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Mail className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Email</p>
+                <p className="text-card-title">{user?.email}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 p-4 rounded-lg bg-muted/30">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Calendar className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Age</p>
+                <p className="text-card-title">{user?.age || "Not set"}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 p-4 rounded-lg bg-muted/30">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <User className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Gender</p>
+                <p className="text-card-title capitalize">{user?.gender || "Not set"}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Physical Stats */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-section-heading flex items-center gap-2">
+              <Activity className="h-5 w-5 text-primary" />
+              Body Stats
+            </CardTitle>
+            <CardDescription className="text-body-text">
+              Your physical measurements and calculated metrics.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between p-3 border-b">
+              <div className="flex items-center gap-3">
+                <Ruler className="h-4 w-4 text-muted-foreground" />
+                <span className="text-body-text">Height</span>
+              </div>
+              <span className="text-card-title">{user?.height ? `${user.height} cm` : "Not set"}</span>
+            </div>
+            <div className="flex items-center justify-between p-3 border-b">
+              <div className="flex items-center gap-3">
+                <Weight className="h-4 w-4 text-muted-foreground" />
+                <span className="text-body-text">Weight</span>
+              </div>
+              <span className="text-card-title">{user?.weight ? `${user.weight} kg` : "Not set"}</span>
+            </div>
+            <div className="flex items-center justify-between p-3">
+              <div className="flex items-center gap-3">
+                <Activity className="h-4 w-4 text-muted-foreground" />
+                <span className="text-body-text">BMI</span>
+              </div>
+              <span className="text-card-title">{getBMI()}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Health Goals */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-section-heading flex items-center gap-2">
+              <HeartPulse className="h-5 w-5 text-primary" />
+              Health Goals
+            </CardTitle>
+            <CardDescription className="text-body-text">
+              Your primary fitness objectives and considerations.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <span className="text-sm font-medium text-muted-foreground">Primary Goal</span>
+              <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
+                <p className="text-card-title capitalize">{user?.goal?.replace('-', ' ') || "No goal set"}</p>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <span className="text-sm font-medium text-muted-foreground">Health Considerations</span>
+              <div className="p-3 bg-muted rounded-lg">
+                <p className="text-body-text text-muted-foreground">
+                  {user?.healthIssues || "No reported health issues"}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
 };
 
 export default Profile;

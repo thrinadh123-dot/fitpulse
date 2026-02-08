@@ -6,9 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useUser } from "@/hooks/useUser";
 
 const ProfileSetup = () => {
   const navigate = useNavigate();
+  const { updateProfile } = useUser();
   const [formData, setFormData] = useState({
     height: "",
     weight: "",
@@ -17,7 +19,15 @@ const ProfileSetup = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Save profile data to Supabase
+    
+    // Save profile data to UserContext
+    updateProfile({
+      height: Number(formData.height),
+      weight: Number(formData.weight),
+      // Note: healthIssues is not currently in UserProfile interface in useUser.tsx
+      // We might need to add it if we want to persist it, or just ignore for now
+    });
+    
     console.log("Profile setup data:", formData);
     
     // Redirect to goal selection
@@ -30,17 +40,17 @@ const ProfileSetup = () => {
         <CardHeader className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Activity className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <span className="text-page-heading bg-gradient-primary bg-clip-text text-transparent">
               FitPulse
             </span>
           </div>
-          <CardTitle className="text-2xl font-bold">Complete Your Profile</CardTitle>
-          <p className="text-muted-foreground">Help us personalize your fitness journey</p>
+          <CardTitle className="text-page-heading">Complete Your Profile</CardTitle>
+          <p className="text-body-text text-muted-foreground">Help us personalize your fitness journey</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="height">Height (cm)</Label>
+              <Label htmlFor="height" className="text-card-title">Height (cm)</Label>
               <Input
                 id="height"
                 type="number"
@@ -48,11 +58,12 @@ const ProfileSetup = () => {
                 value={formData.height}
                 onChange={(e) => setFormData({ ...formData, height: e.target.value })}
                 required
+                className="text-body-text"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="weight">Weight (kg)</Label>
+              <Label htmlFor="weight" className="text-card-title">Weight (kg)</Label>
               <Input
                 id="weight"
                 type="number"
@@ -60,23 +71,24 @@ const ProfileSetup = () => {
                 value={formData.weight}
                 onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
                 required
+                className="text-body-text"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="healthIssues">Health Issues/Disorders (Optional)</Label>
+              <Label htmlFor="healthIssues" className="text-card-title">Health Issues/Disorders (Optional)</Label>
               <Textarea
                 id="healthIssues"
                 placeholder="Any health conditions we should know about..."
                 value={formData.healthIssues}
                 onChange={(e) => setFormData({ ...formData, healthIssues: e.target.value })}
-                className="min-h-[80px]"
+                className="min-h-[80px] text-body-text"
               />
             </div>
 
             <Button
               type="submit"
-              className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
+              className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300 text-card-title uppercase"
             >
               Continue to Goal Selection
             </Button>

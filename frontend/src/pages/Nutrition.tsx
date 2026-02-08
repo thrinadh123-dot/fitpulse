@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
@@ -67,11 +67,10 @@ interface MacroGoals {
 }
 
 const Nutrition = () => {
-  const { data: fitnessData, goals, getProgress, getLastResetTime, addCalories } = useFitnessStore();
+  const { data: fitnessData, goals, getProgress, getLastResetTime, addMeal: addMealToStore, deleteMeal: deleteMealFromStore } = useFitnessStore();
   const { toast } = useToast();
   
   // State management
-  const [meals, setMeals] = useState<Meal[]>([]);
   const [chartType, setChartType] = useState<'line' | 'area'>('line');
   const [activeFilter, setActiveFilter] = useState<'calories' | 'protein' | 'carbs' | 'fat'>('calories');
   const [searchQuery, setSearchQuery] = useState('');
@@ -79,23 +78,37 @@ const Nutrition = () => {
   const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
   
   // Quick Actions state (keep UI flags only; actual counters come from store)
-  const [mealLogged, setMealLogged] = useState(false);
-  const [sleepLogged, setSleepLogged] = useState(false);
   
   // Dish comparison state
   const [showCompareModal, setShowCompareModal] = useState(false);
   const [selectedDishes, setSelectedDishes] = useState<Array<{name: string, nutrition: {calories: number, protein: number, carbs: number, fat: number}}>>([]);
   
-  // Weekly nutrition data
-  const [weeklyNutrition] = useState({
-    Mon: { calories: 1800, protein: 60, carbs: 200, fat: 50 },
-    Tue: { calories: 2100, protein: 70, carbs: 220, fat: 60 },
-    Wed: { calories: 1950, protein: 65, carbs: 210, fat: 55 },
-    Thu: { calories: 2200, protein: 75, carbs: 240, fat: 65 },
-    Fri: { calories: 1900, protein: 63, carbs: 205, fat: 52 },
-    Sat: { calories: 2400, protein: 80, carbs: 270, fat: 75 },
-    Sun: { calories: 2000, protein: 68, carbs: 220, fat: 58 }
-  });
+  // Weekly nutrition data - dynamic from store
+  const weeklyChartData = useMemo(() => {
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (6 - i));
+      return {
+        dateStr: d.toISOString().split('T')[0],
+        label: d.toLocaleDateString('en-US', { weekday: 'short' })
+      };
+    });
+
+    const data = last7Days.map(day => {
+      const dayMeals = fitnessData.meals.filter(m => m.date === day.dateStr);
+      return {
+        calories: dayMeals.reduce((sum, m) => sum + m.calories, 0),
+        protein: dayMeals.reduce((sum, m) => sum + m.protein, 0),
+        carbs: dayMeals.reduce((sum, m) => sum + m.carbs, 0),
+        fat: dayMeals.reduce((sum, m) => sum + m.fat, 0),
+      };
+    });
+
+    return {
+      labels: last7Days.map(d => d.label),
+      data
+    };
+  }, [fitnessData.meals]);
 
   // Macro goals (calculated from fitness goals)
   const macroGoals: MacroGoals = {
@@ -105,13 +118,20 @@ const Nutrition = () => {
     fat: Math.round(goals.calories * 0.25 / 9)     // 25% of calories from fat
   };
 
-  // Calculate today's totals
-  const todayTotals = meals.reduce((acc, meal) => ({
-    calories: acc.calories + meal.calories,
-    protein: acc.protein + meal.protein,
-    carbs: acc.carbs + meal.carbs,
-    fat: acc.fat + meal.fat
-  }), { calories: 0, protein: 0, carbs: 0, fat: 0 });
+  // Get today's meals from store
+  const today = new Date().toISOString().split('T')[0];
+  const meals = fitnessData.meals.filter(m => m.date === today).map(m => ({
+    ...m,
+    // Ensure compatibility with local Meal interface if needed, or just use what's there
+  }));
+
+  // Calculate today's totals from store data
+  const todayTotals = {
+    calories: fitnessData.calories,
+    protein: fitnessData.protein,
+    carbs: fitnessData.carbs,
+    fat: fitnessData.fat
+  };
 
 
 
@@ -125,48 +145,27 @@ const Nutrition = () => {
 
   // Quick Actions handlers
   const handleAddSteps = () => {
-    // QuickActions calls addSteps on the shared store. Keep UX toast only.
-    toast({
-      title: "Steps Added",
-      description: "1000 steps requested. UI will refresh from central store.",
-    });
+    console.log('🔍 DEBUG: Nutrition - Add steps feedback');
   };
 
   const handleAddWater = () => {
-    // QuickActions calls addWater on the shared store. Keep UX toast only.
-    toast({
-      title: "Water Added",
-      description: "1 cup requested. UI will refresh from central store.",
-    });
+    console.log('🔍 DEBUG: Nutrition - Add water feedback');
   };
 
   const handleLogMeal = () => {
-    setMealLogged(true);
-    setTimeout(() => setMealLogged(false), 2000);
-    toast({
-      title: "Meal Logged",
-      description: "Meal requested. UI will refresh from central store.",
-    });
+    console.log('🔍 DEBUG: Nutrition - Log meal feedback');
   };
 
   const handleLogSleep = () => {
-    setSleepLogged(true);
-    setTimeout(() => setSleepLogged(false), 2000);
-    toast({
-      title: "Sleep Logged",
-      description: "Sleep requested. UI will refresh from central store.",
-    });
+    console.log('🔍 DEBUG: Nutrition - Log sleep feedback');
   };
 
   // Add meal function
-  const addMeal = (mealData: Omit<Meal, 'id' | 'time'>) => {
-    const newMeal: Meal = {
-      id: Date.now().toString(),
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      ...mealData
-    };
-    setMeals(prev => [newMeal, ...prev]);
-    addCalories(mealData.calories);
+  const addMeal = async (mealData: Omit<Meal, 'id' | 'time'>) => {
+    await addMealToStore({
+      ...mealData,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    });
     handleLogMeal();
   };
 
@@ -190,15 +189,12 @@ const Nutrition = () => {
   };
 
   // Delete meal function
-  const deleteMeal = (mealId: string) => {
-    const mealToDelete = meals.find(meal => meal.id === mealId);
-    if (mealToDelete) {
-      setMeals(prev => prev.filter(meal => meal.id !== mealId));
-      toast({
-        title: "Meal Deleted",
-        description: `${mealToDelete.name} has been removed from your log.`,
-      });
-    }
+  const deleteMeal = async (mealId: string) => {
+    await deleteMealFromStore(mealId);
+    toast({
+      title: "Meal Deleted",
+      description: "Meal has been removed from your log.",
+    });
   };
 
   // Edit meal function
@@ -209,19 +205,11 @@ const Nutrition = () => {
 
   // Weekly chart data - now uses state and updates with today's totals
   const weeklyData = {
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    labels: weeklyChartData.labels,
     datasets: [
       {
         label: 'Calories',
-        data: [
-          weeklyNutrition.Mon.calories,
-          weeklyNutrition.Tue.calories,
-          weeklyNutrition.Wed.calories,
-          weeklyNutrition.Thu.calories,
-          weeklyNutrition.Fri.calories,
-          weeklyNutrition.Sat.calories,
-          todayTotals.calories
-        ],
+        data: weeklyChartData.data.map(d => d.calories),
         borderColor: 'hsl(25 95% 53%)',
         backgroundColor: 'hsl(25 95% 53% / 0.1)',
         tension: 0.4,
@@ -229,15 +217,7 @@ const Nutrition = () => {
       },
       {
         label: 'Protein',
-        data: [
-          weeklyNutrition.Mon.protein,
-          weeklyNutrition.Tue.protein,
-          weeklyNutrition.Wed.protein,
-          weeklyNutrition.Thu.protein,
-          weeklyNutrition.Fri.protein,
-          weeklyNutrition.Sat.protein,
-          todayTotals.protein
-        ],
+        data: weeklyChartData.data.map(d => d.protein),
         borderColor: 'hsl(0 100% 50%)',
         backgroundColor: 'hsl(0 100% 50% / 0.1)',
         tension: 0.4,
@@ -245,15 +225,7 @@ const Nutrition = () => {
       },
       {
         label: 'Carbs',
-        data: [
-          weeklyNutrition.Mon.carbs,
-          weeklyNutrition.Tue.carbs,
-          weeklyNutrition.Wed.carbs,
-          weeklyNutrition.Thu.carbs,
-          weeklyNutrition.Fri.carbs,
-          weeklyNutrition.Sat.carbs,
-          todayTotals.carbs
-        ],
+        data: weeklyChartData.data.map(d => d.carbs),
         borderColor: 'hsl(142 76% 36%)',
         backgroundColor: 'hsl(142 76% 36% / 0.1)',
         tension: 0.4,
@@ -261,15 +233,7 @@ const Nutrition = () => {
       },
       {
         label: 'Fat',
-        data: [
-          weeklyNutrition.Mon.fat,
-          weeklyNutrition.Tue.fat,
-          weeklyNutrition.Wed.fat,
-          weeklyNutrition.Thu.fat,
-          weeklyNutrition.Fri.fat,
-          weeklyNutrition.Sat.fat,
-          todayTotals.fat
-        ],
+        data: weeklyChartData.data.map(d => d.fat),
         borderColor: 'hsl(60 100% 50%)',
         backgroundColor: 'hsl(60 100% 50% / 0.1)',
         tension: 0.4,
@@ -356,15 +320,15 @@ const Nutrition = () => {
         >
             <div className="flex items-center justify-between">
         <div>
-  <h1 className="text-4xl font-extrabold uppercase tracking-wide text-foreground mb-2 font-['Bebas_Neue']">
+  <h1 className="text-page-heading text-foreground mb-2">
     Hey {getGreeting()}, ready to track your nutrition?
   </h1>
 
-  <p className="text-lg text-muted-foreground">
+  <p className="text-body-text text-muted-foreground">
     Monitor your daily nutrition and calorie intake
   </p>
 
-  <p className="text-sm text-muted-foreground mt-2">
+  <p className="text-number-label text-muted-foreground mt-2">
     Last Reset: {getLastResetTime()}
   </p>
 </div>
@@ -389,14 +353,14 @@ const Nutrition = () => {
             <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-muted-foreground">Calories</h3>
+                  <h3 className="text-card-title uppercase text-muted-foreground">Calories</h3>
                   <Flame className="h-4 w-4 text-orange-500" />
                 </div>
-                <div className="text-2xl font-bold text-foreground mb-2">
+                <div className="text-primary-number text-foreground mb-2">
                   {todayTotals.calories.toLocaleString()}
                 </div>
-                <p className="text-xs text-muted-foreground mb-3">
-                  of {macroGoals.calories.toLocaleString()} kcal
+                <p className="text-number-label text-muted-foreground mb-3">
+                  Goal: {macroGoals.calories.toLocaleString()} kcal
                 </p>
                 <Progress value={(todayTotals.calories / macroGoals.calories) * 100} className="h-2" />
               </CardContent>
@@ -405,14 +369,14 @@ const Nutrition = () => {
             <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-medium text-muted-foreground">Protein</h3>
+                  <h3 className="text-card-title uppercase text-muted-foreground">Protein</h3>
                   <Beef className="h-4 w-4 text-red-500" />
                 </div>
-                <div className="text-2xl font-bold text-foreground mb-2">
-                  {todayTotals.protein}g
+                <div className="text-primary-number text-foreground mb-2">
+                  {todayTotals.protein}
                 </div>
-                <p className="text-xs text-muted-foreground mb-3">
-                  of {macroGoals.protein}g goal
+                <p className="text-number-label text-muted-foreground mb-3">
+                  g / {macroGoals.protein}g
                 </p>
                 <Progress value={(todayTotals.protein / macroGoals.protein) * 100} className="h-2" />
               </CardContent>
@@ -421,14 +385,14 @@ const Nutrition = () => {
             <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm">
               <CardContent className="p-6">
                                  <div className="flex items-center justify-between mb-4">
-                   <h3 className="text-sm font-medium text-muted-foreground">Carbs</h3>
+                   <h3 className="text-card-title uppercase text-muted-foreground">Carbs</h3>
                    <Wheat className="h-4 w-4 text-green-500" />
                  </div>
-                <div className="text-2xl font-bold text-foreground mb-2">
-                  {todayTotals.carbs}g
+                <div className="text-primary-number text-foreground mb-2">
+                  {todayTotals.carbs}
               </div>
-                <p className="text-xs text-muted-foreground mb-3">
-                  of {macroGoals.carbs}g goal
+                <p className="text-number-label text-muted-foreground mb-3">
+                  g / {macroGoals.carbs}g
                 </p>
                 <Progress value={(todayTotals.carbs / macroGoals.carbs) * 100} className="h-2" />
               </CardContent>
@@ -437,14 +401,14 @@ const Nutrition = () => {
             <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80 backdrop-blur-sm">
               <CardContent className="p-6">
                                  <div className="flex items-center justify-between mb-4">
-                   <h3 className="text-sm font-medium text-muted-foreground">Fat</h3>
+                   <h3 className="text-card-title uppercase text-muted-foreground">Fat</h3>
                    <Apple className="h-4 w-4 text-yellow-500" />
                  </div>
-                <div className="text-2xl font-bold text-foreground mb-2">
-                  {todayTotals.fat}g
+                <div className="text-primary-number text-foreground mb-2">
+                  {todayTotals.fat}
                 </div>
-                <p className="text-xs text-muted-foreground mb-3">
-                  of {macroGoals.fat}g goal
+                <p className="text-number-label text-muted-foreground mb-3">
+                  g / {macroGoals.fat}g
                 </p>
                 <Progress value={(todayTotals.fat / macroGoals.fat) * 100} className="h-2" />
             </CardContent>
@@ -463,7 +427,7 @@ const Nutrition = () => {
                 <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl flex items-center space-x-2">
+                      <CardTitle className="text-card-title uppercase flex items-center space-x-2">
                         <TrendingUp className="h-6 w-6 text-primary" />
                         <span>Weekly Overview</span>
                       </CardTitle>
@@ -508,7 +472,7 @@ const Nutrition = () => {
               >
                 <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80">
                   <CardHeader>
-                    <CardTitle className="text-S">Quick Start Meals</CardTitle>
+                    <CardTitle className="text-card-title uppercase">Quick Start Meals</CardTitle>
             </CardHeader>
             <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -532,9 +496,9 @@ const Nutrition = () => {
                               });
                             }}
                           >
-                            <span className="text-2xl mb-2">{meal.name.split(' ')[0]}</span>
-                            <span className="text-sm font-medium">{meal.name.split(' ').slice(1).join(' ')}</span>
-                            <span className="text-xs text-muted-foreground mt-1">{meal.calories} cal</span>
+                            <span className="text-card-title uppercase mb-2">{meal.name.split(' ')[0]}</span>
+                            <span className="text-body-text">{meal.name.split(' ').slice(1).join(' ')}</span>
+                            <span className="text-number-label text-muted-foreground mt-1">{meal.calories} cal</span>
                           </Button>
                       </motion.div>
                   ))}
@@ -552,7 +516,7 @@ const Nutrition = () => {
                 <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80">
           <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl flex items-center space-x-2">
+                      <CardTitle className="text-card-title uppercase flex items-center space-x-2">
                         <Clock className="h-6 w-6 text-primary" />
                         <span>Recent Meals</span>
                       </CardTitle>
@@ -570,7 +534,7 @@ const Nutrition = () => {
           <CardContent>
                     {filteredMeals.length === 0 ? (
                       <div className="text-center py-8">
-                        <p className="text-muted-foreground mb-4">
+                        <p className="text-body-text text-muted-foreground mb-4">
                           {searchQuery ? 'No meals found matching your search.' : 'No meals logged yet. Start your nutrition journey!'}
                         </p>
                         <Button onClick={() => setIsAddMealOpen(true)}>
@@ -589,23 +553,23 @@ const Nutrition = () => {
                   >
                     <div className="flex items-center space-x-3">
                               <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                                <span className="text-lg">
+                                <span className="text-card-title uppercase">
                                   {meal.type === 'breakfast' ? '🍳' : 
                                    meal.type === 'lunch' ? '🥪' : 
                                    meal.type === 'dinner' ? '🍽' : '🥤'}
                                 </span>
                               </div>
                       <div>
-                        <h4 className="font-medium">{meal.name}</h4>
-                        <p className="text-sm text-muted-foreground">{meal.time}</p>
+                        <h4 className="text-card-title uppercase">{meal.name}</h4>
+                        <p className="text-body-text text-muted-foreground">{meal.time}</p>
                                 <div className="flex space-x-2 mt-1">
-                                  <Badge variant="secondary" className="text-xs">
+                                  <Badge variant="secondary" className="text-number-label">
                             P: {meal.protein}g
                                   </Badge>
-                                  <Badge variant="secondary" className="text-xs">
+                                  <Badge variant="secondary" className="text-number-label">
                             C: {meal.carbs}g
                                   </Badge>
-                                  <Badge variant="secondary" className="text-xs">
+                                  <Badge variant="secondary" className="text-number-label">
                             F: {meal.fat}g
                                   </Badge>
                         </div>
@@ -613,8 +577,8 @@ const Nutrition = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="text-right">
-                        <div className="font-medium">{meal.calories} kcal</div>
-                                <Badge variant="outline" className="text-xs capitalize">
+                        <div className="text-card-title uppercase">{meal.calories} kcal</div>
+                                <Badge variant="outline" className="text-number-label capitalize">
                           {meal.type}
                         </Badge>
                       </div>
@@ -658,8 +622,6 @@ const Nutrition = () => {
                   onAddWater={handleAddWater}
                   onLogMeal={handleLogMeal}
                   onLogSleep={handleLogSleep}
-                  mealLogged={mealLogged}
-                  sleepLogged={sleepLogged}
                 />
               </motion.div>
 
@@ -671,7 +633,7 @@ const Nutrition = () => {
               >
                 <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80">
                   <CardHeader>
-                    <CardTitle className="text-lg">Macro Breakdown</CardTitle>
+                    <CardTitle className="text-card-title uppercase">Macro Breakdown</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="h-48">
@@ -679,16 +641,16 @@ const Nutrition = () => {
                     </div>
                     <div className="grid grid-cols-3 gap-2 mt-4 text-center">
                       <div>
-                        <div className="text-sm font-medium text-red-500">Protein</div>
-                        <div className="text-xs text-muted-foreground">{todayTotals.protein}g</div>
+                        <div className="text-card-title text-red-500">Protein</div>
+                        <div className="text-number-label text-muted-foreground">{todayTotals.protein}g</div>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-green-500">Carbs</div>
-                        <div className="text-xs text-muted-foreground">{todayTotals.carbs}g</div>
+                        <div className="text-card-title text-green-500">Carbs</div>
+                        <div className="text-number-label text-muted-foreground">{todayTotals.carbs}g</div>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-yellow-500">Fat</div>
-                        <div className="text-xs text-muted-foreground">{todayTotals.fat}g</div>
+                        <div className="text-card-title text-yellow-500">Fat</div>
+                        <div className="text-number-label text-muted-foreground">{todayTotals.fat}g</div>
                       </div>
             </div>
           </CardContent>
@@ -703,19 +665,19 @@ const Nutrition = () => {
               >
                 <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80">
                   <CardHeader>
-                    <CardTitle className="text-lg">Nutrition Tips</CardTitle>
+                    <CardTitle className="text-card-title uppercase">Nutrition Tips</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-body-text text-muted-foreground">
                       💡 Drink water before meals to improve digestion
               </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-body-text text-muted-foreground">
                       🥗 Include protein in every meal for better satiety
             </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-body-text text-muted-foreground">
                       🍎 Eat colorful fruits and vegetables daily
               </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-body-text text-muted-foreground">
                       ⏰ Don't skip breakfast - it kickstarts your metabolism
               </div>
                   </CardContent>
@@ -838,23 +800,23 @@ const Nutrition = () => {
                   <div className="grid grid-cols-2 gap-6">
                     {selectedDishes.map((dish, index) => (
                       <div key={index} className="space-y-4">
-                        <h3 className="font-semibold text-lg">{dish.name}</h3>
+                        <h3 className="text-card-title uppercase">{dish.name}</h3>
                         <div className="space-y-2">
                           <div className="flex justify-between">
-                            <span>Calories:</span>
-                            <span className="font-medium">{dish.nutrition.calories} kcal</span>
+                            <span className="text-body-text">Calories:</span>
+                            <span className="text-card-title uppercase">{dish.nutrition.calories} kcal</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Protein:</span>
-                            <span className="font-medium">{dish.nutrition.protein}g</span>
+                            <span className="text-body-text">Protein:</span>
+                            <span className="text-card-title uppercase">{dish.nutrition.protein}g</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Carbs:</span>
-                            <span className="font-medium">{dish.nutrition.carbs}g</span>
+                            <span className="text-body-text">Carbs:</span>
+                            <span className="text-card-title uppercase">{dish.nutrition.carbs}g</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Fat:</span>
-                            <span className="font-medium">{dish.nutrition.fat}g</span>
+                            <span className="text-body-text">Fat:</span>
+                            <span className="text-card-title uppercase">{dish.nutrition.fat}g</span>
                           </div>
                         </div>
                         <Button 

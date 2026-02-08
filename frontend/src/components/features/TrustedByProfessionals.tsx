@@ -111,7 +111,7 @@ const AutoScrollRow: React.FC<{ items: Testimonial[]; direction?: "left" | "righ
             className="min-w-[300px] max-w-sm shrink-0 m-3 p-6 rounded-lg bg-[#1a1a1a] border-gray-800 text-gray-200 flex flex-col justify-between transition-colors duration-200 hover:border-primary"
           >
             <CardContent className="p-0">
-              <p className="text-base leading-relaxed mb-4 whitespace-normal break-words">
+              <p className="text-body-text leading-relaxed mb-4 whitespace-normal break-words">
                 "{t.quote}"
               </p>
               <div className="flex items-center gap-3">
@@ -135,7 +135,7 @@ const TrustedByProfessionals = () => {
     <section className="py-20 bg-[#0d0d0d] text-white w-full overflow-x-hidden">
       <div className="px-6">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-extrabold">TRUSTED BY PROFESSIONALS</h2>
+          <h2 className="text-primary-number md:text-primary-number font-extrabold">TRUSTED BY PROFESSIONALS</h2>
           <p className="mt-2 text-gray-400">Fitpulse is loved by fitness enthusiasts across India.</p>
         </div>
         <div className="space-y-10">

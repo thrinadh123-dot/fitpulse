@@ -23,7 +23,7 @@ const FitpulseNavbar = () => {
   return (
     <nav className="w-full border-b border-borderColor px-6 md:px-16 py-4 flex items-center justify-between">
       {/* Logo */}
-      <Link to="/" className="text-2xl font-bold text-primary">
+      <Link to="/" className="text-page-heading text-primary">
         Fitpulse
       </Link>
 
@@ -79,7 +79,7 @@ const FitpulseNavbar = () => {
       <div>
         {user ? (
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-700">Hi, {user.name}</span>
+            <span className="text-body-text text-gray-700">Hi, {user.name}</span>
             <button
               onClick={handleLogout}
               className="text-red-500 hover:underline"

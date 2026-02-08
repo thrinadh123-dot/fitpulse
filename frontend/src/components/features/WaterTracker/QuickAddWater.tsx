@@ -21,9 +21,9 @@ export const QuickAddWater = ({ onAdd }: Props) => (
         className="h-20 flex-col space-y-2"
         onClick={() => onAdd(ml)}
       >
-        <div className="text-2xl">{icon}</div>
-        <span className="text-sm">{label}</span>
-        <span className="text-xs text-muted-foreground">{ml}ml</span>
+        <div className="text-page-heading">{icon}</div>
+        <span className="text-body-text">{label}</span>
+        <span className="text-number-label text-muted-foreground">{ml}ml</span>
       </Button>
     ))}
   </div>

@@ -41,11 +41,11 @@ const HydrationProgress = ({ currentMl, goalMl }: Props) => {
           key={currentMl}
           initial={{ scale: 1.2 }}
           animate={{ scale: 1 }}
-          className="text-3xl font-bold text-foreground"
+          className="text-primary-number text-foreground"
         >
           {currentMl} ml
         </motion.span>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-body-text text-muted-foreground">
           of {goalMl} ml
         </span>
       </div>

@@ -45,7 +45,7 @@ export const ManualWaterEntry = ({ onAdd }: { onAdd: (ml: number) => void }) => 
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <label className="text-sm font-medium">Amount (ml)</label>
+        <label className="text-body-text font-medium">Amount (ml)</label>
         <Input
           type="number"
           placeholder="Enter amount in milliliters"
@@ -68,21 +68,21 @@ export const ManualWaterEntry = ({ onAdd }: { onAdd: (ml: number) => void }) => 
         <Button 
           variant="outline" 
           onClick={() => setValue("200")}
-          className="text-sm"
+          className="text-body-text"
         >
           200ml
         </Button>
         <Button 
           variant="outline" 
           onClick={() => setValue("500")}
-          className="text-sm"
+          className="text-body-text"
         >
           500ml
         </Button>
         <Button 
           variant="outline" 
           onClick={() => setValue("1000")}
-          className="text-sm"
+          className="text-body-text"
         >
           1L
         </Button>

@@ -302,11 +302,11 @@ const DishCalculator = ({ onAddToDailyLog, onCompareDishes }: DishCalculatorProp
   return (
     <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80">
       <CardHeader>
-        <CardTitle className="text-xl flex items-center space-x-2">
+        <CardTitle className="text-card-title uppercase flex items-center space-x-2">
           <Calculator className="h-6 w-6 text-primary" />
           <span>Dish Nutrition Calculator</span>
         </CardTitle>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-body-text text-muted-foreground">
           Enter a dish name and weight to calculate nutritional content
         </p>
       </CardHeader>
@@ -402,39 +402,39 @@ const DishCalculator = ({ onAddToDailyLog, onCompareDishes }: DishCalculatorProp
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center p-4 bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-lg border">
                   <Flame className="h-6 w-6 text-orange-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-page-heading text-foreground">
                     {calculatedNutrition.calories}
                   </div>
-                  <div className="text-sm text-muted-foreground">kcal</div>
+                  <div className="text-body-text text-muted-foreground">kcal</div>
                 </div>
 
                 <div className="text-center p-4 bg-gradient-to-br from-red-500/10 to-pink-500/10 rounded-lg border">
                   <Beef className="h-6 w-6 text-red-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-page-heading text-foreground">
                     {calculatedNutrition.protein}
                   </div>
-                  <div className="text-sm text-muted-foreground">g protein</div>
+                  <div className="text-body-text text-muted-foreground">g protein</div>
                 </div>
 
                 <div className="text-center p-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-lg border">
                   <Wheat className="h-6 w-6 text-green-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-page-heading text-foreground">
                     {calculatedNutrition.carbs}
                   </div>
-                  <div className="text-sm text-muted-foreground">g carbs</div>
+                  <div className="text-body-text text-muted-foreground">g carbs</div>
                 </div>
 
                 <div className="text-center p-4 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 rounded-lg border">
                   <Apple className="h-6 w-6 text-yellow-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-page-heading text-foreground">
                     {calculatedNutrition.fat}
                   </div>
-                  <div className="text-sm text-muted-foreground">g fat</div>
+                  <div className="text-body-text text-muted-foreground">g fat</div>
                 </div>
               </div>
 
               {/* Calculation Info */}
-              <div className="text-center text-sm text-muted-foreground">
+              <div className="text-center text-body-text text-muted-foreground">
                 Based on {weight}g serving (×{calculatedNutrition.factor.toFixed(2)} factor)
               </div>
 
@@ -455,7 +455,7 @@ const DishCalculator = ({ onAddToDailyLog, onCompareDishes }: DishCalculatorProp
                         className={`smart-recommendation-item flex items-start space-x-3 p-3 rounded-lg border ${getRecommendationColor(rec.type)}`}
                       >
                         {rec.icon}
-                        <span className="text-sm">{rec.message}</span>
+                        <span className="text-body-text">{rec.message}</span>
                       </motion.div>
                     ))}
                   </div>
@@ -517,7 +517,7 @@ const DishCalculator = ({ onAddToDailyLog, onCompareDishes }: DishCalculatorProp
       </AnimatePresence>
 
         {/* Available Dishes Info */}
-        <div className="text-center text-sm text-muted-foreground">
+        <div className="text-center text-body-text text-muted-foreground">
           <Info className="h-4 w-4 inline mr-1" />
           Our database contains {dishNames.length} dishes. Start typing to search!
             </div>
@@ -527,3 +527,4 @@ const DishCalculator = ({ onAddToDailyLog, onCompareDishes }: DishCalculatorProp
 };
 
 export default DishCalculator; 
+

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Activity, Target, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useUser } from "@/hooks/useUser";
 
 const goals = [
   {
@@ -31,12 +32,13 @@ const goals = [
 
 const GoalSelection = () => {
   const navigate = useNavigate();
+  const { updateProfile } = useUser();
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
 
   const handleGoalSelect = (goalId: string) => {
     setSelectedGoal(goalId);
-    // Save goal to localStorage or context
-    localStorage.setItem("fitnessGoal", goalId);
+    // Save goal to context
+    updateProfile({ goal: goalId });
   };
 
   const handleContinue = () => {
@@ -83,19 +85,19 @@ const GoalSelection = () => {
         >
           <div className="flex items-center justify-center space-x-2 mb-6">
             <Activity className="h-12 w-12 text-primary" />
-            <span className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <span className="text-primary-number bg-gradient-primary bg-clip-text text-transparent">
               FitPulse
             </span>
           </div>
           <motion.h1 
-            className="text-3xl font-bold mb-4"
+            className="text-page-heading mb-4"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
             Hi there! Let's set your goals
           </motion.h1>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-body-text text-muted-foreground">
             Select the goal that best matches your fitness journey
           </p>
         </motion.div>
@@ -124,10 +126,10 @@ const GoalSelection = () => {
                     >
                       <Icon className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="text-xl font-semibold text-center mb-2">
+                    <h3 className="text-card-title uppercase text-center mb-2">
                       {goal.title}
                     </h3>
-                    <p className="text-muted-foreground text-center">
+                    <p className="text-body-text text-muted-foreground text-center">
                       {goal.description}
                     </p>
                     {isSelected && (
@@ -170,7 +172,7 @@ const GoalSelection = () => {
           <Button
             onClick={handleContinue}
             disabled={!selectedGoal}
-            className="bg-gradient-primary hover:shadow-glow transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed px-8 py-3 text-lg"
+            className="bg-gradient-primary hover:shadow-glow transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed px-8 py-3 text-card-title uppercase"
           >
             Continue to Dashboard
           </Button>

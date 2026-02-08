@@ -76,7 +76,7 @@ const Leaderboard = ({ entries, metric, timeFrame }: LeaderboardProps) => {
             <Trophy className="h-5 w-5 text-primary" />
             <span>Leaderboard</span>
           </CardTitle>
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="outline" className="text-number-label">
             {timeFrame.charAt(0).toUpperCase() + timeFrame.slice(1)}
           </Badge>
         </div>
@@ -90,7 +90,7 @@ const Leaderboard = ({ entries, metric, timeFrame }: LeaderboardProps) => {
               variant={selectedMetric === m ? "default" : "outline"}
               size="sm"
               onClick={() => setSelectedMetric(m as 'steps' | 'calories' | 'streak' | 'hydration')}
-              className="text-xs"
+              className="text-number-label"
             >
               {getMetricIcon(m)}
               <span className="ml-1 capitalize">{m}</span>
@@ -117,13 +117,13 @@ const Leaderboard = ({ entries, metric, timeFrame }: LeaderboardProps) => {
                 {entry.rank <= 3 ? (
                   getRankIcon(entry.rank)
                 ) : (
-                  <span className="text-sm font-medium">{entry.rank}</span>
+                  <span className="text-card-title">{entry.rank}</span>
                 )}
               </div>
 
               {/* Avatar */}
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <span className="text-xs font-bold text-primary-foreground">
+                <span className="text-card-title text-primary-foreground">
                   {entry.name.charAt(0).toUpperCase()}
                 </span>
               </div>
@@ -131,18 +131,18 @@ const Leaderboard = ({ entries, metric, timeFrame }: LeaderboardProps) => {
               {/* Name and Score */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2">
-                  <span className={`text-sm font-medium truncate ${
+                  <span className={`text-body-text font-medium truncate ${
                     entry.isCurrentUser ? 'text-primary' : ''
                   }`}>
                     {entry.isCurrentUser ? 'You' : entry.name}
                   </span>
                   {entry.isCurrentUser && (
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge variant="secondary" className="text-number-label">
                       You
                     </Badge>
                   )}
                 </div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-number-label text-muted-foreground">
                   {formatScore(entry.score, selectedMetric)}
                 </div>
               </div>
@@ -155,7 +155,7 @@ const Leaderboard = ({ entries, metric, timeFrame }: LeaderboardProps) => {
                   <TrendingDown className="h-3 w-3 text-red-500" />
                 ) : null}
                 {entry.change !== 0 && (
-                  <span className={`text-xs ${
+                  <span className={`text-number-label ${
                     entry.change > 0 ? 'text-green-500' : 'text-red-500'
                   }`}>
                     {Math.abs(entry.change)}

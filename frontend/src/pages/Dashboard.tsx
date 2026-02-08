@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { 
   Bell, Settings, User, Activity, Droplet, Moon, Target, TrendingUp, 
   Plus, Calendar, BarChart3, Zap, Flame, Sparkles, Crown, Users, 
@@ -48,7 +48,7 @@ ChartJS.register(
 );
 
 // Chart data with dark mode support and time period tabs
-const chartData = {
+const DEFAULT_CHART_DATA = {
   daily: {
     labels: ['6AM', '9AM', '12PM', '3PM', '6PM', '9PM'],
     datasets: [
@@ -111,63 +111,63 @@ const chartData = {
   }
 };
 
-const chartOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-      labels: {
-        color: 'hsl(var(--foreground))',
-        font: {
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+        labels: {
+          color: 'hsl(var(--foreground))',
+          font: {
+            family: "'Inter', sans-serif",
+            size: 12,
+            weight: 400,
+          },
+        },
+      },
+      tooltip: {
+        backgroundColor: 'hsl(var(--card))',
+        titleColor: 'hsl(var(--foreground))',
+        bodyColor: 'hsl(var(--foreground))',
+        borderColor: 'hsl(var(--border))',
+        borderWidth: 1,
+        titleFont: {
           family: "'Inter', sans-serif",
           size: 12,
-          weight: '500',
         },
-      },
-    },
-    tooltip: {
-      backgroundColor: 'hsl(var(--card))',
-      titleColor: 'hsl(var(--foreground))',
-      bodyColor: 'hsl(var(--foreground))',
-      borderColor: 'hsl(var(--border))',
-      borderWidth: 1,
-      titleFont: {
-        family: "'Inter', sans-serif",
-        size: 12,
-      },
-      bodyFont: {
-        family: "'Roboto Mono', monospace",
-        size: 11,
-      },
-    },
-  },
-  scales: {
-    x: {
-      ticks: {
-        color: 'hsl(var(--muted-foreground))',
-        font: {
+        bodyFont: {
           family: "'Inter', sans-serif",
-          size: 11,
+          size: 12,
         },
       },
-      grid: {
-        color: 'hsl(var(--border))',
-      },
     },
-    y: {
-      ticks: {
-        color: 'hsl(var(--muted-foreground))',
-        font: {
-          family: "'Inter', sans-serif",
-          size: 11,
+    scales: {
+      x: {
+        ticks: {
+          color: 'hsl(var(--muted-foreground))',
+          font: {
+            family: "'Inter', sans-serif",
+            size: 12,
+          },
+        },
+        grid: {
+          color: 'hsl(var(--border))',
         },
       },
-      grid: {
-        color: 'hsl(var(--border))',
+      y: {
+        ticks: {
+          color: 'hsl(var(--muted-foreground))',
+          font: {
+            family: "'Inter', sans-serif",
+            size: 12,
+          },
+        },
+        grid: {
+          color: 'hsl(var(--border))',
+        },
       },
     },
-  },
-};
+  };
 
 // Daily Summary Tile Component with Improved Typography
 const DailySummaryTile = ({ 
@@ -196,7 +196,7 @@ const DailySummaryTile = ({
     <Card className="h-full card-enhanced shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-card to-card/80">
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-medium text-muted-foreground font-['Inter'] tracking-[0.02em]">
+          <h3 className="text-card-title uppercase">
             {title}
           </h3>
           <div className="p-2 rounded-full" style={{ backgroundColor: `${color}20` }}>
@@ -204,16 +204,16 @@ const DailySummaryTile = ({
           </div>
         </div>
         <div className="mb-3">
-          <div className="text-2xl font-bold text-foreground font-['Roboto Mono'] leading-tight tracking-tight">
-            {current.toLocaleString()} / {target.toLocaleString()}
+          <div className="text-primary-number text-foreground leading-none">
+            {current.toLocaleString()}
           </div>
-          <div className="text-sm text-muted-foreground font-['Inter'] tracking-[0.01em] mt-1">
-            {unit}
+          <div className="text-number-label text-muted-foreground mt-1">
+            Goal: {target.toLocaleString()} {unit}
           </div>
         </div>
         <div className="space-y-2">
           <Progress value={progress} className="h-2 progress-bar" style={{ '--progress-color': color } as React.CSSProperties} />
-          <div className="text-xs text-muted-foreground font-['Inter'] tracking-[0.01em]">
+          <div className="text-number-label text-muted-foreground">
             {progress.toFixed(0)}% complete
           </div>
         </div>
@@ -251,7 +251,7 @@ const MoodTracker = ({ currentMood, onMoodChange, weeklyMood }: {
   return (
     <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80 card-enhanced">
       <CardHeader>
-        <CardTitle className="text-lg flex items-center space-x-2 font-['Bebas Neue'] tracking-[0.03em]">
+        <CardTitle className="text-card-title uppercase flex items-center space-x-2">
           <Heart className="h-5 w-5 text-secondary" />
           <span>Mood Tracker</span>
         </CardTitle>
@@ -268,19 +268,19 @@ const MoodTracker = ({ currentMood, onMoodChange, weeklyMood }: {
                   : 'hover:bg-muted/50'
               }`}
             >
-              <div className="text-2xl">{mood.emoji}</div>
-              <div className="text-xs font-['Inter'] tracking-[0.01em] mt-1">{mood.label}</div>
+              <div className="text-page-heading leading-none">{mood.emoji}</div>
+              <div className="text-number-label mt-1">{mood.label}</div>
             </button>
           ))}
         </div>
         
         <div className="mt-4">
-          <h4 className="text-sm font-medium font-['Inter'] mb-2 tracking-[0.02em]">Weekly Mood</h4>
+          <h4 className="text-card-title uppercase mb-2">Weekly Mood</h4>
           <div className="flex justify-between">
             {weeklyMood.map((mood, index) => (
               <div key={index} className="text-center">
-                <div className="text-lg">{getMoodEmoji(mood)}</div>
-                <div className="text-xs text-muted-foreground font-['Inter'] tracking-[0.01em] mt-1">
+                <div className="text-card-title uppercase">{getMoodEmoji(mood)}</div>
+                <div className="text-number-label text-muted-foreground mt-1">
                   {days[index]}
                 </div>
               </div>
@@ -294,8 +294,143 @@ const MoodTracker = ({ currentMood, onMoodChange, weeklyMood }: {
 
 const Dashboard = () => {
   const { user } = useUser();
-  const { data: fitnessData, goals, addSteps, addWater } = useFitnessStore();
+  const { data: fitnessData, goals, getProgress, getLastResetTime } = useFitnessStore();
   const { toast } = useToast();
+
+  const chartData = useMemo(() => {
+    // Helper to get last 7 days
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const today = new Date();
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(today);
+      d.setDate(d.getDate() - (6 - i));
+      return {
+        dateStr: d.toISOString().split('T')[0],
+        label: days[d.getDay()]
+      };
+    });
+
+    // Helper to get history for a specific date
+    const getHistoryForDate = (dateStr: string) => {
+      // Check current day first
+      if (dateStr === fitnessData.lastUpdated) {
+        return fitnessData;
+      }
+      // Then check history
+      return fitnessData.history?.find(h => h.date === dateStr) || null;
+    };
+
+    // Sleep Data
+    const sleepData = last7Days.map(day => {
+      const entry = fitnessData.sleepHistory?.find(e => e.date === day.dateStr);
+      return entry ? entry.duration : 0;
+    });
+
+    // Workouts Data (Monthly/Weekly) - Simplified to Weekly count for now
+    const getWeekNumber = (d: Date) => {
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+    };
+
+    const currentWeek = getWeekNumber(new Date());
+    const last4Weeks = [currentWeek - 3, currentWeek - 2, currentWeek - 1, currentWeek];
+    
+    const workoutsByWeek = last4Weeks.map(week => {
+       return fitnessData.workouts.filter(w => {
+         const wDate = new Date(w.date);
+         return getWeekNumber(wDate) === week;
+       }).length;
+    });
+
+    // Weekly Steps (Activity)
+    const weeklySteps = last7Days.map(day => {
+      const history = getHistoryForDate(day.dateStr);
+      return history ? history.steps : 0;
+    });
+
+    // Trends (Calories vs Burned - simulated 'burned' as calories for now or random var)
+    // Let's show Calories Consumed vs Goal for last 7 days
+    const caloriesTrend = last7Days.map(day => {
+      const history = getHistoryForDate(day.dateStr);
+      return history ? history.calories : 0;
+    });
+
+    return {
+      daily: {
+        // Hourly breakdown is not tracked, so we'll show a simple "Today vs Goal" progress as a bar
+        // Or we can just mock the hourly distribution based on current total?
+        // Let's stick to a simple distribution for visual appeal, scaled to current total.
+        labels: ['6AM', '9AM', '12PM', '3PM', '6PM', '9PM'],
+        datasets: [
+          {
+            label: 'Calories Burned (Est)',
+            // Distribute current calories roughly across the day
+            data: [
+              fitnessData.calories * 0.1, 
+              fitnessData.calories * 0.2, 
+              fitnessData.calories * 0.3, 
+              fitnessData.calories * 0.2, 
+              fitnessData.calories * 0.15, 
+              fitnessData.calories * 0.05
+            ],
+            borderColor: 'hsl(var(--sunset-orange))',
+            backgroundColor: 'hsl(var(--sunset-orange))',
+            borderWidth: 1,
+          }
+        ]
+      },
+      weekly: {
+        labels: last7Days.map(d => d.label),
+        datasets: [
+          {
+            label: 'Steps',
+            data: weeklySteps,
+            borderColor: 'hsl(var(--neon-green))',
+            backgroundColor: 'hsl(var(--neon-green))',
+            borderWidth: 1,
+          }
+        ]
+      },
+      monthly: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [
+          {
+            label: 'Workouts',
+            data: workoutsByWeek,
+            borderColor: 'hsl(var(--highlight-blue))',
+            backgroundColor: 'hsl(var(--highlight-blue))',
+            borderWidth: 1,
+          }
+        ]
+      },
+      sleepQuality: {
+        labels: last7Days.map(d => d.label),
+        datasets: [
+          {
+            label: 'Sleep Hours',
+            data: sleepData,
+            borderColor: 'hsl(var(--red-violet))',
+            backgroundColor: 'hsl(var(--red-violet))',
+            borderWidth: 1,
+          }
+        ]
+      },
+      trends: {
+        labels: last7Days.map(d => d.label),
+        datasets: [
+          {
+            label: 'Daily Calories',
+            data: caloriesTrend,
+            backgroundColor: 'hsl(var(--sunset-orange))',
+            borderColor: 'hsl(var(--sunset-orange))',
+            borderWidth: 1,
+          }
+        ]
+      }
+    };
+  }, [fitnessData]);
   
   // State for chart time period
   const [selectedTimeframe, setSelectedTimeframe] = useState<'daily' | 'weekly' | 'monthly'>('daily');
@@ -304,8 +439,6 @@ const Dashboard = () => {
   const [weeklyMood, setWeeklyMood] = useState(['good', 'excellent', 'neutral', 'good', 'excellent', 'stressed', 'good']);
   const [showFullLeaderboard, setShowFullLeaderboard] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [mealLogged, setMealLogged] = useState(false);
-  const [sleepLogged, setSleepLogged] = useState(false);
 
   // Sample data for demonstration
   const communityStats = {
@@ -329,68 +462,34 @@ const Dashboard = () => {
     { name: 'Lisa Wang', avatar: 'LW', xp: 2450, badge: '🔥' }
   ];
 
-  // Calculate progress percentages
-  const getProgress = (metric: string) => {
-    const current = Number(fitnessData[metric as keyof typeof fitnessData]) || 0;
-    const target = Number(goals[metric as keyof typeof goals]) || 1;
-    return Math.min((current / target) * 100, 100);
-  };
 
-  const getLastResetTime = () => {
-    return new Date().toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-  };
 
   const handleAddSteps = async () => {
-    console.log('🔍 DEBUG: Dashboard - Add steps button clicked');
-    await addSteps(1000);
-    // Force a re-render by updating state
-    setIsLoading(prev => {
-      setTimeout(() => setIsLoading(false), 0);
-      return true;
-    });
-    toast({
-      title: "Steps Added!",
-      description: "1000 steps added to your daily count.",
-    });
+    console.log('🔍 DEBUG: Dashboard - Add steps feedback');
   };
 
   const handleAddWater = async () => {
-    console.log('🔍 DEBUG: Dashboard - Add water button clicked');
-    await addWater(1);
-    // Force a re-render by updating state
-    setIsLoading(prev => {
-      setTimeout(() => setIsLoading(false), 0);
-      return true;
-    });
-    toast({
-      title: "Water Added!",
-      description: "1 cup of water added to your daily intake.",
-    });
+    console.log('🔍 DEBUG: Dashboard - Add water feedback');
   };
 
   const handleLogMeal = () => {
-    setMealLogged(true);
-    setTimeout(() => setMealLogged(false), 3000);
+    console.log('🔍 DEBUG: Dashboard - Log meal feedback');
   };
 
   const handleLogSleep = () => {
-    setSleepLogged(true);
-    setTimeout(() => setSleepLogged(false), 3000);
+    console.log('🔍 DEBUG: Dashboard - Log sleep feedback');
   };
 
-  // Get current chart data based on selected timeframe
   const getCurrentChartData = () => {
-    if (selectedChart === 'overview') {
-      return chartData[selectedTimeframe];
-    } else if (selectedChart === 'sleep') {
-      return chartData.sleepQuality;
-    } else {
-      return chartData.trends;
+    switch (selectedTimeframe) {
+      case 'daily':
+        return chartData.daily;
+      case 'weekly':
+        return chartData.weekly;
+      case 'monthly':
+        return chartData.monthly;
+      default:
+        return chartData.daily;
     }
   };
 
@@ -408,7 +507,7 @@ const Dashboard = () => {
         <div className="min-h-screen bg-background flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground font-['Inter']">Loading your fitness data...</p>
+            <p className="text-body-text text-muted-foreground">Loading your fitness data...</p>
           </div>
         </div>
       </PageTransition>
@@ -435,17 +534,17 @@ const Dashboard = () => {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h1 className="text-4xl font-bold text-foreground mb-3 font-['Bebas Neue'] tracking-[0.03em] leading-tight">
+                    <h1 className="text-page-heading text-foreground mb-2">
                       {getGreeting()}, {user?.firstName || 'Fitness Warrior'}! 💪
                     </h1>
-                    <p className="text-xl text-muted-foreground font-['Inter'] tracking-[0.01em] leading-relaxed">
+                    <p className="text-body-text text-muted-foreground">
                       Ready to crush your fitness goals today?
                     </p>
-                    <p className="text-sm text-muted-foreground/80 mt-3 font-['Roboto Mono'] tracking-[0.02em]">
+                    <p className="text-number-label text-muted-foreground/80 mt-3">
                       Last Reset: {getLastResetTime()}
                     </p>
                   </div>
-                  <div className="text-5xl">🏆</div>
+                  <div className="text-primary-number">🏆</div>
                 </div>
               </motion.div>
 
@@ -471,8 +570,8 @@ const Dashboard = () => {
                 />
                 <DailySummaryTile
                   title="Water"
-                  current={fitnessData.water}
-                  target={goals.water}
+                  current={Math.round(fitnessData.water / 250)}
+                  target={Math.round(goals.water / 250)}
                   unit="cups"
                   icon={Droplet}
                   color="hsl(var(--highlight-blue))"
@@ -498,7 +597,7 @@ const Dashboard = () => {
                 <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80 card-enhanced">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl flex items-center space-x-3 font-['Bebas Neue'] tracking-[0.04em]">
+                      <CardTitle className="text-card-title uppercase flex items-center space-x-3">
                         <BarChart3 className="h-7 w-7 text-primary" />
                         <span>Progress Analytics</span>
                       </CardTitle>
@@ -519,9 +618,9 @@ const Dashboard = () => {
                   <CardContent>
                     <Tabs value={selectedChart} onValueChange={(value: 'overview' | 'sleep' | 'trends') => setSelectedChart(value)} className="w-full">
                       <TabsList className="grid w-full grid-cols-3">
-                        <TabsTrigger value="overview" className="font-['Inter'] tracking-[0.02em]">Overview</TabsTrigger>
-                        <TabsTrigger value="sleep" className="font-['Inter'] tracking-[0.02em]">Sleep</TabsTrigger>
-                        <TabsTrigger value="trends" className="font-['Inter'] tracking-[0.02em]">Trends</TabsTrigger>
+                        <TabsTrigger value="overview">Overview</TabsTrigger>
+                        <TabsTrigger value="sleep">Sleep</TabsTrigger>
+                        <TabsTrigger value="trends">Trends</TabsTrigger>
                       </TabsList>
                       <TabsContent value="overview" className="mt-6">
                         <div className="h-[300px]">
@@ -553,11 +652,11 @@ const Dashboard = () => {
                   <CardContent className="p-8">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="text-2xl font-semibold text-success mb-3 font-['Bebas Neue'] tracking-[0.03em] leading-tight">
+                        <h3 className="text-card-title uppercase text-success mb-3">
                           Tomorrow's Goal
                         </h3>
-                        <p className="text-success/90 font-['Inter'] tracking-[0.01em] leading-relaxed">
-                          Aim for 2.5L water and 2100 calories burned
+                        <p className="text-success/90 text-body-text">
+                          Aim for 2.5 L water and 2100 calories burned
                         </p>
                       </div>
                       <TargetIcon className="h-10 w-10 text-success" />
@@ -565,8 +664,8 @@ const Dashboard = () => {
                     <div className="mt-6">
                       <Progress value={65} className="h-3 progress-bar" />
                       <div className="flex justify-between mt-2">
-                        <span className="text-sm text-success/80 font-['Inter'] tracking-[0.01em]">65% progress</span>
-                        <span className="text-sm text-success/80 font-['Roboto Mono'] tracking-[0.02em]">+15% from yesterday</span>
+                        <span className="text-number-label text-success/80">65% progress</span>
+                        <span className="text-number-label text-success/80">+15% from yesterday</span>
                       </div>
                     </div>
                   </CardContent>
@@ -588,23 +687,23 @@ const Dashboard = () => {
                   >
                     <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80 card-enhanced">
                       <CardHeader>
-                        <CardTitle className="text-lg flex items-center space-x-3 font-['Bebas Neue'] tracking-[0.04em]">
+                        <CardTitle className="text-card-title uppercase flex items-center space-x-3">
                           <Zap className="h-6 w-6 text-primary" />
                           <span>XP Progress & Rewards</span>
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-5">
                         <div className="text-center">
-                          <div className="text-3xl font-bold text-primary mb-2 font-['Roboto Mono'] tracking-tight">
+                          <div className="text-primary-number text-primary mb-2 leading-none">
                             +120 XP
                           </div>
-                          <div className="text-sm text-muted-foreground font-['Inter'] tracking-[0.02em]">
+                          <div className="text-number-label text-muted-foreground">
                             earned today
                           </div>
                         </div>
                         <div className="text-center">
-                          <div className="text-lg font-semibold mb-1 font-['Inter'] tracking-[0.02em]">Day 4 of 7</div>
-                          <div className="text-sm text-muted-foreground font-['Inter'] tracking-[0.01em]">
+                          <div className="text-body-text mb-1">Day 4 of 7</div>
+                          <div className="text-number-label text-muted-foreground">
                             streak • keep going!
                           </div>
                         </div>
@@ -614,7 +713,7 @@ const Dashboard = () => {
                               <Crown className="h-8 w-8 text-primary" />
                             </div>
                             <div className="absolute -top-2 -right-2">
-                              <Badge className="bg-primary text-primary-foreground font-['Inter'] tracking-[0.02em]">
+                              <Badge className="bg-primary text-primary-foreground text-number-label">
                                 Intermediate
                               </Badge>
                             </div>
@@ -644,8 +743,6 @@ const Dashboard = () => {
                       onAddWater={handleAddWater}
                       onLogMeal={handleLogMeal}
                       onLogSleep={handleLogSleep}
-                      mealLogged={mealLogged}
-                      sleepLogged={sleepLogged}
                     />
                   </motion.div>
 
@@ -657,42 +754,42 @@ const Dashboard = () => {
                   >
                     <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80 card-enhanced">
                       <CardHeader>
-                        <CardTitle className="text-lg flex items-center space-x-3 font-['Bebas Neue'] tracking-[0.04em]">
+                        <CardTitle className="text-card-title uppercase flex items-center space-x-3">
                           <Users className="h-6 w-6 text-primary" />
                           <span>Community Stats</span>
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-5">
                         <div className="text-center">
-                          <div className="text-3xl font-bold text-primary mb-2 font-['Roboto Mono'] tracking-tight">
+                          <div className="text-primary-number text-primary mb-2 leading-none">
                             #{communityStats.rank}
                           </div>
-                          <div className="text-sm text-muted-foreground font-['Inter'] tracking-[0.02em]">
+                          <div className="text-number-label text-muted-foreground">
                             Top 8% globally
                           </div>
                         </div>
                         <div className="space-y-3">
                           <div className="flex justify-between items-center">
-                            <span className="text-sm font-['Inter'] tracking-[0.02em]">Total Users</span>
-                            <span className="text-sm font-medium font-['Roboto Mono'] tracking-tight">
+                            <span className="text-body-text">Total Users</span>
+                            <span className="text-body-text">
                               {communityStats.totalUsers.toLocaleString()}
                             </span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-sm font-['Inter'] tracking-[0.02em]">Your Age Group</span>
-                            <span className="text-sm font-medium font-['Inter'] tracking-[0.02em]">
+                            <span className="text-body-text">Your Age Group</span>
+                            <span className="text-body-text">
                               {communityStats.ageGroup}
                             </span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-sm font-['Inter'] tracking-[0.02em]">Active Today</span>
-                            <span className="text-sm font-medium font-['Roboto Mono'] tracking-tight">
+                            <span className="text-body-text">Active Today</span>
+                            <span className="text-body-text">
                               3,842
                             </span>
                           </div>
                         </div>
                         <div className="text-center pt-3">
-                          <Badge variant="secondary" className="text-sm font-['Inter'] tracking-[0.03em] px-4 py-1.5">
+                          <Badge variant="secondary" className="text-number-label px-4 py-1.5">
                             {communityStats.badge}
                           </Badge>
                         </div>
@@ -709,7 +806,7 @@ const Dashboard = () => {
                 >
                   <Card className="shadow-lg border-0 bg-gradient-to-br from-card to-card/80 card-enhanced">
                     <CardHeader>
-                      <CardTitle className="text-lg flex items-center space-x-3 font-['Bebas Neue'] tracking-[0.04em]">
+                      <CardTitle className="text-card-title uppercase flex items-center space-x-3">
                         <Trophy className="h-6 w-6 text-primary" />
                         <span>Leaderboard</span>
                       </CardTitle>
@@ -722,35 +819,35 @@ const Dashboard = () => {
                               <div className="flex items-center space-x-4">
                                 <div className="relative">
                                   <Avatar className="h-10 w-10">
-                                    <AvatarFallback className="font-['Inter'] font-semibold text-sm">
+                                    <AvatarFallback className="text-card-title">
                                       {entry.avatar}
                                     </AvatarFallback>
                                   </Avatar>
                                   <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                                    <span className="text-xs font-bold text-primary-foreground">
+                                    <span className="text-number-label font-bold text-primary-foreground">
                                       {index + 1}
                                     </span>
                                   </div>
                                 </div>
                                 <div>
-                                  <div className="font-medium text-sm font-['Inter'] tracking-[0.02em]">
-                                    {entry.name}
-                                  </div>
-                                  <div className="text-xs text-muted-foreground font-['Roboto Mono'] tracking-tight">
+                                  <div className="text-body-text">
+                          {entry.name}
+                        </div>
+                                  <div className="text-number-label text-muted-foreground">
                                     {entry.xp.toLocaleString()} XP
                                   </div>
                                 </div>
                               </div>
                               <div className="flex space-x-1">
                                 {entry.status.map((status, idx) => (
-                                  <span key={idx} className="text-sm font-['Inter']">{status}</span>
+                                  <span key={idx} className="text-body-text">{status}</span>
                                 ))}
                               </div>
                             </div>
                           ))}
                           <Button 
                             variant="outline" 
-                            className="w-full mt-4 btn-secondary font-['Inter'] tracking-[0.02em]"
+                            className="w-full mt-4 btn-secondary text-card-title"
                             onClick={() => setShowFullLeaderboard(true)}
                           >
                             🔎 View Full Leaderboard
@@ -762,22 +859,22 @@ const Dashboard = () => {
                             {fullLeaderboardData.map((entry, index) => (
                               <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
                                 <div className="flex items-center space-x-3">
-                                  <div className="text-2xl">{entry.badge}</div>
+                                  <div className="text-page-heading">{entry.badge}</div>
                                   <Avatar className="h-8 w-8">
-                                    <AvatarFallback className="font-['Inter'] font-semibold">
+                                    <AvatarFallback className="text-card-title">
                                       {entry.avatar}
                                     </AvatarFallback>
                                   </Avatar>
                                   <div>
-                                    <div className="font-medium text-sm font-['Inter'] tracking-[0.02em]">
+                                    <div className="font-medium text-body-text">
                                       {entry.name}
                                     </div>
-                                    <div className="text-xs text-muted-foreground font-['Roboto Mono'] tracking-tight">
+                                    <div className="text-number-label text-muted-foreground">
                                       {entry.xp.toLocaleString()} XP
                                     </div>
                                   </div>
                                 </div>
-                                <div className="text-sm font-medium font-['Inter'] tracking-[0.03em]">
+                                <div className="text-body-text font-medium">
                                   #{index + 1}
                                 </div>
                               </div>
@@ -785,7 +882,7 @@ const Dashboard = () => {
                           </div>
                           <Button 
                             variant="outline" 
-                            className="w-full mt-4 btn-secondary font-['Inter'] tracking-[0.02em]"
+                            className="w-full mt-4 btn-secondary text-card-title"
                             onClick={() => setShowFullLeaderboard(false)}
                           >
                             ← Back to Preview
@@ -805,3 +902,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+

@@ -182,14 +182,14 @@ function PlanCard({ plan, isSelected, onSelect }: PlanCardProps) {
      <CardContent className="p-8 flex flex-col h-full">
   <div className="flex items-center justify-between mb-4">
     <h3
-      className="text-3xl font-bold"
+      className="text-page-heading"
       style={{ color: plan.color }}
     >
       {plan.name}
     </h3>
 
     {plan.badge && (
-      <span className="text-sm font-semibold px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/40">
+      <span className="text-card-title px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/40">
         {plan.badge}
       </span>
     )}
@@ -197,9 +197,9 @@ function PlanCard({ plan, isSelected, onSelect }: PlanCardProps) {
 
 
 
-        <p className="text-4xl font-bold mb-6">
+        <p className="text-primary-number mb-6">
           {formatCurrency(plan.basePrice)}
-          <span className="text-sm text-gray-400"> /month</span>
+          <span className="text-body-text text-gray-400"> /month</span>
         </p>
 
         <ul className="space-y-3 text-gray-300 flex-grow">
@@ -258,12 +258,12 @@ function PaymentMethodRow({
           onChange={onSelect}
           className="accent-indigo-600"
         />
-        <span className={`text-sm md:text-base ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+        <span className={`text-body-text md:text-body-text ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
           {option.label}
         </span>
       </div>
 
-      <span className={`text-xs md:text-sm ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+      <span className={`text-number-label md:text-body-text ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
         {option.feePercent === 0
           ? "No extra fee"
           : `+${option.feePercent}% fee`}
@@ -445,10 +445,10 @@ export default function PricingWithCheckout() {
       <div className="max-w-6xl mx-auto">
         {/* HEADER */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold">
+          <h2 className="text-page-heading">
             Find the Perfect Plan
           </h2>
-          <p className="text-gray-400 mt-4 max-w-xl mx-auto">
+          <p className="text-body-text text-gray-400 mt-4 max-w-xl mx-auto">
             Choose a plan that matches your fitness journey. Upgrade or cancel anytime.
           </p>
         </div>
@@ -483,10 +483,10 @@ export default function PricingWithCheckout() {
             {/* Payment Method Selection */}
             <div className="bg-[#1a1a1a] border border-gray-800 rounded-2xl p-8">
               <div className="mb-6">
-                <h3 className="text-xl font-bold text-white mb-2">
+                <h3 className="text-card-title uppercase text-white mb-2">
                   Choose Payment Method
                 </h3>
-                <p className="text-gray-400">
+                <p className="text-body-text text-gray-400">
                   Selected: <span style={{ color: selectedPlan.color }} className="font-semibold">{selectedPlan.name}</span> • {formatCurrency(selectedPlan.basePrice)}/month
                 </p>
               </div>
@@ -504,7 +504,7 @@ export default function PricingWithCheckout() {
               </div>
 
               {/* Price Breakdown */}
-              <div className="border-t border-gray-800 pt-6 space-y-2 text-sm text-gray-300">
+              <div className="border-t border-gray-800 pt-6 space-y-2 text-body-text text-gray-300">
                 <div className="flex justify-between">
                   <span>Base Price</span>
                   <span>{formatCurrency(selectedPlan.basePrice)}</span>
@@ -517,7 +517,7 @@ export default function PricingWithCheckout() {
                     )}
                   </span>
                 </div>
-                <div className="flex justify-between text-lg font-bold text-white pt-2 border-t border-gray-800">
+                <div className="flex justify-between text-card-title uppercase text-white pt-2 border-t border-gray-800">
                   <span>Total Payable</span>
                   <span>{formatCurrency(finalPrice)}</span>
                 </div>
@@ -547,17 +547,17 @@ export default function PricingWithCheckout() {
             </Button>
 
             <div className="bg-[#1a1a1a] border border-gray-800 rounded-2xl p-8">
-              <h3 className="text-xl font-bold text-white mb-2">
+              <h3 className="text-card-title uppercase text-white mb-2">
                 Complete Your Payment
               </h3>
-              <p className="text-gray-400 mb-6">
+              <p className="text-body-text text-gray-400 mb-6">
                 Pay {formatCurrency(finalPrice)} for <span className="text-white font-semibold">{selectedPlan?.name}</span> plan
               </p>
 
               {/* UPI Payment Form */}
               {paymentMethod === "upi" && (
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">
+                  <label className="block text-card-title text-gray-400 mb-2">
                     UPI ID
                   </label>
                   <input
@@ -569,17 +569,17 @@ export default function PricingWithCheckout() {
                   />
                   
                   {upiError && (
-                    <p className="text-red-400 text-sm mt-2">{upiError}</p>
+                    <p className="text-red-400 text-number-label mt-2">{upiError}</p>
                   )}
                   
-                  <p className="text-xs text-gray-500 mt-2">
+                  <p className="text-number-label text-gray-500 mt-2">
                     Enter your UPI ID (e.g., username@okbank)
                   </p>
 
                   {/* QR Code Option */}
                   <button
                     type="button"
-                    className="mt-4 flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors"
+                    className="mt-4 flex items-center gap-2 text-body-text text-gray-300 hover:text-white transition-colors"
                     onClick={() => setShowQR(!showQR)}
                   >
                     <QrCodeIcon className="h-4 w-4" />
@@ -600,12 +600,12 @@ export default function PricingWithCheckout() {
                         </div>
                       </div>
                       <div className="mt-4 text-center">
-                        <p className="text-gray-300 font-semibold mb-1">Scan & Pay</p>
-                        <p className="text-gray-400 text-sm mb-3">Use any UPI app to scan</p>
+                        <p className="text-card-title text-gray-300 mb-1">Scan & Pay</p>
+                        <p className="text-body-text text-gray-400 mb-3">Use any UPI app to scan</p>
                         <div className="bg-[#1a1a1a] border border-gray-800 rounded p-3">
-                          <p className="text-gray-400 text-xs">Amount</p>
-                          <p className="text-white font-bold text-lg">{formatCurrency(finalPrice)}</p>
-                          <p className="text-gray-500 text-xs mt-1">Valid for 10 minutes</p>
+                          <p className="text-number-label text-gray-400">Amount</p>
+                          <p className="text-card-title uppercase text-white">{formatCurrency(finalPrice)}</p>
+                          <p className="text-number-label text-gray-500 mt-1">Valid for 10 minutes</p>
                         </div>
                       </div>
                     </div>
@@ -629,35 +629,35 @@ export default function PricingWithCheckout() {
 
                     {/* Header */}
                     <div className="relative flex justify-between items-center mb-6">
-                      <span className="text-sm uppercase tracking-wide text-[#9ca3af]">
+                      <span className="text-number-label uppercase  text-[#9ca3af]">
                         {paymentMethod === "credit" ? "CREDIT CARD" : "DEBIT CARD"}
                       </span>
-                      <span className="text-sm font-medium text-[#c7d2fe]">
+                      <span className="text-card-title text-[#c7d2fe]">
                         VISA
                       </span>
                     </div>
 
                     {/* Card Number - Show only last 4 digits or masked */}
-                    <div className="relative mb-6 font-mono text-lg tracking-[0.25em] text-[#9ca3af]">
+                    <div className="relative mb-6 font-mono text-card-title  text-[#9ca3af]">
                       {maskedCardNumber(cardNumber)}
                     </div>
 
                     {/* Footer - Matching the image layout */}
                     <div className="relative flex justify-between items-end">
                       <div>
-                        <p className="text-[11px] uppercase tracking-wide text-[#9ca3af]">
+                        <p className="text-number-label uppercase  text-[#9ca3af]">
                           CARD HOLDER
                         </p>
-                        <p className="font-medium text-[#e5e7eb]">
+                        <p className="text-body-text font-medium text-[#e5e7eb]">
                           {cardName || "YOUR NAME"}
                         </p>
                       </div>
 
                       <div className="text-right">
-                        <p className="text-[11px] uppercase tracking-wide text-[#9ca3af]">
+                        <p className="text-number-label uppercase  text-[#9ca3af]">
                           EXPIRY
                         </p>
-                        <p className="font-medium text-[#c7d2fe]">
+                        <p className="text-body-text font-medium text-[#c7d2fe]">
                           {expiry || "MM/YY"}
                         </p>
                       </div>
@@ -702,7 +702,7 @@ export default function PricingWithCheckout() {
 
                   {/* Card Inputs */}
                   <div>
-                    <label className="block text-sm text-gray-400 mb-2">
+                    <label className="block text-body-text text-gray-400 mb-2">
                       Card Number
                     </label>
                     <input
@@ -716,7 +716,7 @@ export default function PricingWithCheckout() {
                   </div>
 
                   <div>
-                    <label className="block text-sm text-gray-400 mb-2">
+                    <label className="block text-card-title text-gray-400 mb-2">
                       Name on Card
                     </label>
                     <input
@@ -735,7 +735,7 @@ export default function PricingWithCheckout() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm text-gray-400 mb-2">
+                      <label className="block text-body-text text-gray-400 mb-2">
                         Expiry Date (MM/YY)
                       </label>
                       <input
@@ -748,7 +748,7 @@ export default function PricingWithCheckout() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-400 mb-2">
+                      <label className="block text-body-text text-gray-400 mb-2">
                         CVV
                       </label>
                       <input
@@ -769,10 +769,10 @@ export default function PricingWithCheckout() {
                 <div className="space-y-6">
                   {/* Title */}
                   <div>
-                    <h3 className="text-lg font-semibold text-white">
+                    <h3 className="text-card-title uppercase text-white">
                       Complete Your Payment
                     </h3>
-                    <p className="text-gray-400 mt-1">
+                    <p className="text-body-text text-gray-400 mt-1">
                       Pay {formatCurrency(finalPrice)} for{" "}
                       <span className="text-white font-medium">
                         {selectedPlan?.name}
@@ -783,7 +783,7 @@ export default function PricingWithCheckout() {
 
                   {/* Wallet Selection */}
                   <div className="space-y-3">
-                    <p className="text-sm uppercase tracking-wide text-gray-400">
+                    <p className="text-card-title uppercase  text-gray-400">
                       Choose Wallet App
                     </p>
 
@@ -801,7 +801,7 @@ export default function PricingWithCheckout() {
                       >
                         <span className="text-white">{wallet.name}</span>
                         {selectedWallet === wallet.id && (
-                          <span className="text-blue-400 text-sm">Selected</span>
+                          <span className="text-blue-400 text-body-text">Selected</span>
                         )}
                       </button>
                     ))}
@@ -880,35 +880,35 @@ export default function PricingWithCheckout() {
                 </svg>
               </div>
 
-              <h2 className="text-3xl font-bold text-white mb-2">
+              <h2 className="text-page-heading text-white mb-2">
                 Payment Successful!
               </h2>
 
-              <p className="text-gray-400 mb-6">
+              <p className="text-body-text text-gray-400 mb-6">
                 Welcome to <span style={{ color: selectedPlan?.color }} className="font-semibold">{selectedPlan?.name}</span> plan
               </p>
               
               {/* Transaction Details */}
               <div className="bg-[#111] border border-gray-800 rounded-xl p-5 mb-6">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-gray-400">Amount</span>
-                  <span className="text-xl font-bold text-white">{formatCurrency(finalPrice)}</span>
+                  <span className="text-body-text text-gray-400">Amount</span>
+                  <span className="text-card-title uppercase text-white">{formatCurrency(finalPrice)}</span>
                 </div>
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-gray-400">Transaction ID</span>
-                  <span className="text-gray-300 font-mono">TXN{Date.now().toString().slice(-8)}</span>
+                  <span className="text-body-text text-gray-400">Transaction ID</span>
+                  <span className="text-body-text text-gray-300 font-mono">TXN{Date.now().toString().slice(-8)}</span>
                 </div>
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-gray-400">Date</span>
-                  <span className="text-gray-300">{new Date().toLocaleDateString('en-IN', { 
+                  <span className="text-body-text text-gray-400">Date</span>
+                  <span className="text-body-text text-gray-300">{new Date().toLocaleDateString('en-IN', { 
                     day: 'numeric', 
                     month: 'short', 
                     year: 'numeric' 
                   })}</span>
                 </div>
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-gray-400">Payment Method</span>
-                  <span className="text-gray-300 capitalize">
+                  <span className="text-body-text text-gray-400">Payment Method</span>
+                  <span className="text-body-text text-gray-300 capitalize">
                     {paymentMethod === "debit" ? "Debit Card" : 
                      paymentMethod === "credit" ? "Credit Card" : 
                      paymentMethod === "wallet" ? 
@@ -917,14 +917,14 @@ export default function PricingWithCheckout() {
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Status</span>
-                  <span className="text-green-500 font-semibold">Completed</span>
+                  <span className="text-body-text text-gray-400">Status</span>
+                  <span className="text-body-text text-green-500 font-semibold">Completed</span>
                 </div>
               </div>
 
               {/* Auto-redirect message */}
               <div className="mb-6">
-                <p className="text-gray-500 text-sm">
+                <p className="text-body-text text-gray-500">
                   Redirecting to login in{" "}
                   <span className="text-white font-bold">
                     {redirectCountdown}
@@ -941,7 +941,7 @@ export default function PricingWithCheckout() {
                 Continue to Login
               </Button>
               
-              <p className="text-xs text-gray-500 mt-4">
+              <p className="text-number-label text-gray-500 mt-4">
                 A confirmation email has been sent to your registered email address.
               </p>
             </div>
@@ -951,3 +951,5 @@ export default function PricingWithCheckout() {
     </section>
   );
 }
+
+

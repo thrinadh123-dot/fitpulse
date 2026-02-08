@@ -128,36 +128,35 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#18181b] p-4">
-      <div className="w-full max-w-4xl flex flex-col md:flex-row rounded-3xl overflow-hidden shadow-2xl bg-[#18181b]">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-4xl flex flex-col md:flex-row rounded-3xl overflow-hidden shadow-2xl bg-card">
         {/* Login Form Section */}
         <div className="w-full md:w-1/2 px-8 py-12 md:px-12 md:py-16 flex flex-col justify-center">
           <div className="mb-8 flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
               <Activity className="text-white w-5 h-5" />
             </div>
-            <span className="font-bold text-lg text-white tracking-wide">Fitpulse</span>
-            {/* <span className="text-xs text-orange-500 font-semibold">Start </span> */}
+            <span className="text-card-title text-card-foreground uppercase">Fitpulse</span>
           </div>
           
-          <h2 className="text-3xl font-bold text-white mb-2">
+          <h2 className="text-page-heading text-card-foreground mb-2">
             {isLogin ? (
               <>Hey, Welcome Back! <span className="inline-block"></span></>
             ) : (
               <>Create an Account <span className="inline-block">✨</span></>
             )}
           </h2>
-          <p className="text-sm text-gray-400 mb-8">
+          <p className="text-body-text text-muted-foreground mb-8">
             {isLogin ? "Please enter your details" : "Start your fitness journey"}
           </p>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-gray-300 mb-2 text-sm font-medium">Email</label>
+              <label className="block text-form-label text-muted-foreground mb-2">Email</label>
               <input
                 type="email"
                 name="email"
-                className="w-full px-4 py-3 rounded-lg bg-[#232326] text-white border border-transparent focus:border-orange-500 focus:ring-2 focus:ring-orange-900 focus:outline-none transition"
+                className="w-full px-4 py-3 rounded-lg bg-input text-input-text border border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition"
                 placeholder="example@gmail.com"
                 value={formData.email}
                 onChange={handleInputChange}
@@ -167,12 +166,12 @@ const Login = () => {
             </div>
             
             <div>
-              <label className="block text-gray-300 mb-2 text-sm font-medium">Password</label>
+              <label className="block text-form-label text-muted-foreground mb-2">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  className="w-full px-4 py-3 rounded-lg bg-[#232326] text-white border border-transparent focus:border-orange-500 focus:ring-2 focus:ring-orange-900 focus:outline-none transition"
+                  className="w-full px-4 py-3 rounded-lg bg-input text-input-text border border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition"
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleInputChange}
@@ -181,7 +180,7 @@ const Login = () => {
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   onClick={togglePasswordVisibility}
                   disabled={isLoading}
                 >
@@ -192,12 +191,12 @@ const Login = () => {
 
             {!isLogin && (
               <div>
-                <label className="block text-gray-300 mb-2 text-sm font-medium">Confirm Password</label>
+                <label className="block text-form-label text-muted-foreground mb-2">Confirm Password</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     name="confirmPassword"
-                    className="w-full px-4 py-3 rounded-lg bg-[#232326] text-white border border-transparent focus:border-orange-500 focus:ring-2 focus:ring-orange-900 focus:outline-none transition"
+                    className="w-full px-4 py-3 rounded-lg bg-input text-input-text border border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition"
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
@@ -209,18 +208,18 @@ const Login = () => {
             )}
 
             {isLogin && (
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2 text-gray-400">
+              <div className="flex items-center justify-between text-body-text">
+                <label className="flex items-center gap-2 text-muted-foreground">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="accent-orange-500 w-4 h-4"
+                    className="accent-primary w-4 h-4"
                     disabled={isLoading}
                   />
                   Remember me
                 </label>
-                <Link to="/forgot-password" className="text-orange-500 hover:underline">
+                <Link to="/forgot-password" className="text-primary hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -228,12 +227,12 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full py-3 rounded-lg bg-orange-500 text-white font-semibold text-lg shadow hover:bg-orange-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 rounded-lg bg-primary text-primary-foreground text-card-title uppercase shadow hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-foreground mr-2"></div>
                   {isLogin ? "Logging in..." : "Signing up..."}
                 </div>
               ) : (
@@ -243,7 +242,7 @@ const Login = () => {
 
             <button
               type="button"
-              className="w-full py-3 rounded-lg border border-gray-600 text-white font-semibold text-lg flex items-center justify-center gap-2 hover:bg-[#232326] transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 rounded-lg border border-input text-foreground text-card-title uppercase flex items-center justify-center gap-2 hover:bg-accent transition disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               <svg className="w-5 h-5" viewBox="0 0 48 48">
@@ -256,13 +255,13 @@ const Login = () => {
             </button>
           </form>
 
-          <div className="mt-8 text-center text-gray-400 text-sm">
+          <div className="mt-8 text-center text-muted-foreground text-body-text">
             {isLogin ? (
               <>
                 Don't have an account?{" "}
                 <button 
                   onClick={() => setIsLogin(false)} 
-                  className="text-orange-500 hover:underline"
+                  className="text-primary hover:underline"
                 >
                   Sign up here
                 </button>
@@ -272,7 +271,7 @@ const Login = () => {
                 Already have an account?{" "}
                 <button 
                   onClick={() => setIsLogin(true)} 
-                  className="text-orange-500 hover:underline"
+                  className="text-primary hover:underline"
                 >
                   Login here
                 </button>
@@ -301,7 +300,7 @@ const Login = () => {
           ))}
           
           <div className="absolute bottom-0 left-0 w-full p-8 z-10">
-            <p className="text-white text-xl font-medium mb-6">
+            <p className="text-white text-card-title uppercase mb-6">
               {motivationalSlides[currentSlide].text}
             </p>
             

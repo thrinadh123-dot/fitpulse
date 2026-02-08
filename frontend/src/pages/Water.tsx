@@ -1,30 +1,38 @@
 import { useState } from "react";
-import { Droplet, ChevronDown, ChevronUp, Bell, TrendingUp, Flame, Clock, Edit2, Dumbbell, Zap, Heart } from "lucide-react";
+import { Droplet, ChevronDown, ChevronUp, TrendingUp, Flame, Clock, Edit2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-
-interface WaterEntry {
-  time: string;
-  amount: number;
-}
+import { useUser } from "@/hooks/useUser";
+import { useFitnessStore } from "@/stores/fitnessStore";
 
 const Water = () => {
-  const [waterEntries, setWaterEntries] = useLocalStorage<WaterEntry[]>('waterEntries', []);
-  const [dailyGoal, setDailyGoal] = useLocalStorage<number>('waterGoal', 12);
-  const [remindersEnabled, setRemindersEnabled] = useLocalStorage<boolean>('waterReminders', true);
+  const { user, updateProfile } = useUser();
+  const { data: fitnessData, goals, addWater: storeAddWater } = useFitnessStore();
+  
+  // Use UserContext for notification settings
+  const remindersEnabled = user?.notificationSettings?.waterReminders ?? true;
+  const setRemindersEnabled = (enabled: boolean) => {
+    updateProfile({
+      notificationSettings: {
+        ...user?.notificationSettings,
+        waterReminders: enabled
+      }
+    });
+  };
+
   const [autoAdjustEnabled, setAutoAdjustEnabled] = useLocalStorage<boolean>('autoAdjustGoal', false);
   const [isHistoryCollapsed, setIsHistoryCollapsed] = useState(true);
 
   const today = new Date().toDateString();
-  const todayEntries = waterEntries.filter(entry => 
+  const todayEntries = fitnessData.waterHistory.filter(entry => 
     new Date(entry.time).toDateString() === today
   );
 
-  const totalMl = todayEntries.reduce((sum, entry) => sum + entry.amount, 0);
+  const totalMl = fitnessData.water;
   const totalLiters = (totalMl / 1000).toFixed(1);
-  const goalMl = 3000;
+  const goalMl = goals.water;
   const goalLiters = (goalMl / 1000).toFixed(1);
   const percentage = Math.min((totalMl / goalMl) * 100, 100);
   
@@ -33,11 +41,7 @@ const Water = () => {
   const lastDrink = "2h ago";
   
   const addWater = (amount: number) => {
-    const newEntry: WaterEntry = {
-      time: new Date().toISOString(),
-      amount
-    };
-    setWaterEntries(prev => [...prev, newEntry]);
+    storeAddWater(amount);
   };
 
   const quickAdd = (amount: number) => {
@@ -45,112 +49,120 @@ const Water = () => {
   };
 
   return (
-    <div className="space-y-4 p-4">
-      {/* Page Title - Already Correct */}
+    <div className="space-y-4 p-4 animate-fade-in">
+      {/* Page Title */}
       <div className="mb-4">
-        <h1 className="text-3xl font-bold text-foreground">Water Tracker</h1>
-        <p className="text-sm text-muted-foreground mt-1">Stay hydrated throughout the day</p>
+        <h1 className="text-page-heading text-foreground mb-2">Water Tracker</h1>
+        <p className="text-body-text text-muted-foreground leading-relaxed">Stay hydrated throughout the day</p>
       </div>
 
       {/* Top Section - 3-Column Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr_280px] gap-8 items-start">
 
-  {/* LEFT — Progress Circle */}
-  <div className="flex justify-center">
-    <div className="relative w-56 h-56">
-      
-      {/* Background ring */}
-      <div className="absolute inset-0 rounded-full bg-muted/40" />
+        {/* LEFT — Progress Circle */}
+        <div className="flex justify-center">
+          <div className="relative w-56 h-56">
+            
+            {/* Background ring */}
+            <div className="absolute inset-0 rounded-full bg-muted/40" />
 
-      {/* Progress fill */}
-      <div
-        className="absolute inset-0 rounded-full bg-gradient-to-t from-blue-600 via-blue-500 to-cyan-400 transition-all duration-700 ease-out"
-        style={{
-          clipPath: `inset(${100 - Math.min(percentage, 100)}% 0 0 0)`,
-          transform: 'rotate(180deg)'
-        }}
-      />
+            {/* Progress fill */}
+            <div
+              className="absolute inset-0 rounded-full bg-gradient-to-t from-blue-600 via-blue-500 to-cyan-400 transition-all duration-700 ease-out"
+              style={{
+                clipPath: `inset(${100 - Math.min(percentage, 100)}% 0 0 0)`,
+              }}
+            />
 
-      {/* Glow */}
-      <div className="absolute inset-0 rounded-full blur-xl bg-blue-500/20" />
+            {/* Glow */}
+            <div className="absolute inset-0 rounded-full blur-xl bg-blue-500/20" />
 
-      {/* Center content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <div className="text-4xl font-bold text-foreground tracking-tight">
-          {totalLiters}L
-        </div>
-        <div className="text-xs uppercase tracking-wide text-muted-foreground mt-2">
-          Today’s Intake
-        </div>
-        <div className="text-2xl font-semibold text-primary mt-1">
-          {Math.round(percentage)}%
-        </div>
-      </div>
-    </div>
-  </div>
-
-  {/* RIGHT — Info + Actions */}
-  <div className="flex flex-col space-y-6">
-
-    {/* Stats */}
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-foreground">
-        Water Intake
-      </h3>
-
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        <div className="p-3 rounded-lg bg-muted/40">
-          <div className="text-muted-foreground">Daily Goal</div>
-          <div className="font-medium text-foreground">{goalLiters}L</div>
+            {/* Center content */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+              <div className="flex items-baseline space-x-1">
+                <div className="text-primary-number text-foreground">
+                  {totalLiters}
+                </div>
+                <div className="text-card-title text-muted-foreground">L</div>
+              </div>
+              <div className="text-number-label uppercase text-muted-foreground mt-2">
+                Today’s Intake
+              </div>
+              <div className="text-page-heading text-primary mt-1">
+                {Math.round(percentage)}%
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="p-3 rounded-lg bg-muted/40">
-          <div className="text-muted-foreground">Current</div>
-          <div className="font-medium text-foreground">{totalLiters}L</div>
+        {/* RIGHT — Info + Actions */}
+        <div className="flex flex-col space-y-6">
+
+          {/* Stats */}
+          <div className="space-y-4">
+            <h3 className="text-card-title uppercase text-foreground">
+              Water Intake
+            </h3>
+
+            <div className="grid grid-cols-2 gap-4 text-body-text">
+              <div className="p-3 rounded-lg bg-muted/40">
+                <div className="text-muted-foreground mb-1">Daily Goal</div>
+                <div className="flex items-baseline space-x-1">
+                    <span className="text-primary-number text-foreground">{goalLiters}</span>
+                    <span className="text-card-title text-muted-foreground">L</span>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-lg bg-muted/40">
+                <div className="text-muted-foreground mb-1">Current</div>
+                <div className="flex items-baseline space-x-1">
+                    <span className="text-primary-number text-foreground">{totalLiters}</span>
+                    <span className="text-card-title text-muted-foreground">L</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Remaining / Success */}
+            {percentage >= 100 ? (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/10 text-primary text-body-text">
+                🎉 Goal achieved! Excellent hydration today.
+              </div>
+            ) : (
+              <div className="text-body-text text-muted-foreground">
+                <span className="text-card-title text-foreground">{Math.round((goalMl - totalMl) / 100) / 10}L</span> remaining
+              </div>
+            )}
+
+            {/* Linear progress (secondary feedback) */}
+            <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-700"
+                style={{ width: `${Math.min(percentage, 100)}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Quick Add */}
+          <div className="space-y-3">
+            <div className="text-card-title uppercase text-foreground">Quick Add</div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Button
+                className="bg-gradient-primary hover:scale-[1.02] active:scale-95 transition-all text-card-title"
+                onClick={() => quickAdd(250)}
+              >
+                +250 ml
+              </Button>
+
+              <Button
+                className="bg-gradient-primary hover:scale-[1.02] active:scale-95 transition-all text-card-title"
+                onClick={() => quickAdd(500)}
+              >
+                +500 ml
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-
-      {/* Remaining / Success */}
-      {percentage >= 100 ? (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/10 text-primary text-sm">
-          🎉 Goal achieved! Excellent hydration today.
-        </div>
-      ) : (
-        <div className="text-sm text-muted-foreground">
-          {Math.round((goalMl - totalMl) / 100) / 10}L remaining
-        </div>
-      )}
-
-      {/* Linear progress (secondary feedback) */}
-      <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
-        <div
-          className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-700"
-          style={{ width: `${Math.min(percentage, 100)}%` }}
-        />
-      </div>
-    </div>
-
-    {/* Quick Add */}
-    <div className="space-y-3">
-      <div className="text-sm font-medium text-foreground">Quick Add</div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <Button
-          className="bg-gradient-primary hover:scale-[1.02] active:scale-95 transition-all"
-          onClick={() => quickAdd(250)}
-        >
-          +250 ml
-        </Button>
-
-        <Button
-          className="bg-gradient-primary hover:scale-[1.02] active:scale-95 transition-all"
-          onClick={() => quickAdd(500)}
-        >
-          +500 ml
-        </Button>
-      </div>
-    </div>
-  </div>
 
 
         {/* RIGHT STACK - Two Small Cards */}
@@ -158,7 +170,7 @@ const Water = () => {
           {/* TOP RIGHT CARD - Quick Add */}
           <Card className="bg-gradient-card">
             <CardContent className="p-4">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Custom Amount</h3>
+              <h3 className="text-card-title uppercase text-foreground mb-4">Custom Amount</h3>
               <div className="grid grid-cols-4 gap-3">
                 {[
                   { label: "Small Glass", amount: 300, emoji: "🥤" },
@@ -171,11 +183,11 @@ const Water = () => {
                     className="flex flex-col items-center p-3 rounded-lg border border-muted hover:bg-accent/50 transition-all"
                     onClick={() => quickAdd(item.amount)}
                   >
-                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-2 text-lg">
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-2 text-card-title">
                       {item.emoji}
                     </div>
-                    <p className="text-xs text-foreground">{item.label}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{item.amount}ml</p>
+                    <p className="text-card-title uppercase text-foreground text-center leading-tight mb-1">{item.label}</p>
+                    <p className="text-number-label text-muted-foreground">{item.amount}ml</p>
                   </button>
                 ))}
               </div>
@@ -185,7 +197,7 @@ const Water = () => {
           {/* BOTTOM RIGHT CARD - Secondary Feature */}
           <Card className="bg-gradient-card">
             <CardContent className="p-4">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Workout Intensity</h3>
+              <h3 className="text-card-title uppercase text-foreground mb-4">Workout Intensity</h3>
               <div className="grid grid-cols-3 gap-3">
                 {[
                   { label: "Light", emoji: "🚶", desc: "Low sweat" },
@@ -197,11 +209,11 @@ const Water = () => {
                     className="flex flex-col items-center p-3 rounded-lg border border-muted hover:bg-accent/50 transition-all"
                     onClick={() => {}}
                   >
-                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center mb-2 text-lg">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center mb-2 text-card-title">
                       {item.emoji}
                     </div>
-                    <p className="text-xs text-foreground">{item.label}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
+                    <p className="text-card-title uppercase text-foreground">{item.label}</p>
+                    <p className="text-number-label text-muted-foreground mt-1 text-center leading-tight">{item.desc}</p>
                   </button>
                 ))}
               </div>
@@ -217,10 +229,13 @@ const Water = () => {
           <CardContent className="p-6">
             <div className="flex items-center space-x-2 mb-3">
               <TrendingUp className="w-4 h-4 text-muted-foreground" />
-              <p className="text-sm font-medium text-foreground">Weekly Average</p>
+              <p className="text-card-title uppercase text-foreground">Weekly Average</p>
             </div>
-            <p className="text-2xl font-semibold text-foreground mb-1">{weeklyAverage.toFixed(1)}L</p>
-            <p className="text-xs text-muted-foreground">Last 7 days</p>
+            <div className="flex items-baseline space-x-1 mb-1">
+                <span className="text-primary-number text-foreground">{weeklyAverage.toFixed(1)}</span>
+                <span className="text-card-title text-muted-foreground">L</span>
+            </div>
+            <p className="text-number-label text-muted-foreground">Last 7 days</p>
           </CardContent>
         </Card>
 
@@ -229,10 +244,13 @@ const Water = () => {
           <CardContent className="p-6">
             <div className="flex items-center space-x-2 mb-3">
               <Flame className="w-4 h-4 text-muted-foreground" />
-              <p className="text-sm font-medium text-foreground">Current Streak</p>
+              <p className="text-card-title uppercase text-foreground">Current Streak</p>
             </div>
-            <p className="text-2xl font-semibold text-foreground mb-1">{streak} day</p>
-            <p className="text-xs text-muted-foreground">Keep it up</p>
+            <div className="flex items-baseline space-x-1 mb-1">
+                <span className="text-primary-number text-foreground">{streak}</span>
+                <span className="text-card-title text-muted-foreground">day</span>
+            </div>
+            <p className="text-number-label text-muted-foreground">Keep it up</p>
           </CardContent>
         </Card>
 
@@ -241,10 +259,13 @@ const Water = () => {
           <CardContent className="p-6">
             <div className="flex items-center space-x-2 mb-3">
               <Clock className="w-4 h-4 text-muted-foreground" />
-              <p className="text-sm font-medium text-foreground">Last Drink</p>
+              <p className="text-card-title uppercase text-foreground">Last Drink</p>
             </div>
-            <p className="text-2xl font-semibold text-foreground mb-1">{lastDrink}</p>
-            <p className="text-xs text-muted-foreground">Time since last</p>
+            <div className="flex items-baseline space-x-1 mb-1">
+              <span className="text-primary-number text-foreground">2</span>
+              <span className="text-card-title text-muted-foreground">h ago</span>
+            </div>
+            <p className="text-number-label text-muted-foreground">Time since last</p>
           </CardContent>
         </Card>
       </div>
@@ -253,15 +274,15 @@ const Water = () => {
       <Card className="bg-gradient-card">
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-foreground">Hydration Settings</h3>
+            <h3 className="text-card-title uppercase text-foreground">Hydration Settings</h3>
           </div>
           
           <div className="space-y-6">
             {/* Enable Notifications */}
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-sm font-medium text-foreground">Enable Notifications</p>
-                <p className="text-xs text-muted-foreground">Get hydration reminders</p>
+                <p className="text-card-title uppercase text-foreground">Enable Notifications</p>
+                <p className="text-number-label text-muted-foreground">Get hydration reminders</p>
               </div>
               <Switch 
                 checked={remindersEnabled}
@@ -272,8 +293,8 @@ const Water = () => {
             {/* Auto Goal Adjustment */}
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-sm font-medium text-foreground">Auto Goal Adjustment</p>
-                <p className="text-xs text-muted-foreground">Adjust goal based on activity</p>
+                <p className="text-card-title uppercase text-foreground">Auto Goal Adjustment</p>
+                <p className="text-number-label text-muted-foreground">Adjust goal based on activity</p>
               </div>
               <Switch 
                 checked={autoAdjustEnabled}
@@ -284,11 +305,11 @@ const Water = () => {
             {/* Daily Water Goal */}
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-sm font-medium text-foreground">Daily Water Goal</p>
-                <p className="text-xs text-muted-foreground">Set your daily hydration target</p>
+                <p className="text-card-title uppercase text-foreground">Daily Water Goal</p>
+                <p className="text-number-label text-muted-foreground">Set your daily hydration target</p>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-foreground">{goalLiters}L</span>
+                <span className="text-card-title text-foreground">{goalLiters}L</span>
                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                   <Edit2 className="w-3 h-3" />
                 </Button>
@@ -302,7 +323,7 @@ const Water = () => {
       <Card className="bg-gradient-card">
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-foreground">Today's History</h3>
+            <h3 className="text-card-title uppercase text-foreground">Today's History</h3>
             <Button 
               variant="ghost" 
               size="sm" 
@@ -317,7 +338,7 @@ const Water = () => {
             <div className="space-y-3">
               {todayEntries.length === 0 ? (
                 <div className="text-center py-6">
-                  <p className="text-sm text-muted-foreground">No water logged today</p>
+                  <p className="text-body-text text-muted-foreground">No water logged today</p>
                 </div>
               ) : (
                 todayEntries.map((entry, index) => (
@@ -330,17 +351,17 @@ const Water = () => {
                         <Droplet className="w-3 h-3 text-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-foreground">{entry.amount}ml</p>
+                        <p className="text-card-title uppercase text-foreground">{entry.amount}ml</p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-4">
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-number-label text-muted-foreground">
                         {new Date(entry.time).toLocaleTimeString([], { 
                           hour: '2-digit', 
                           minute: '2-digit' 
                         })}
                       </p>
-                      <p className="text-xs text-muted-foreground">Glass {index + 1}</p>
+                      <p className="text-number-label text-muted-foreground">Glass {index + 1}</p>
                     </div>
                   </div>
                 ))

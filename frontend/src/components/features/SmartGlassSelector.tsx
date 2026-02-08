@@ -67,13 +67,14 @@ export default function SmartGlassSelector({ onSelect, defaultSize = "regular" }
               <Droplet className="absolute top-0 left-0 h-10 w-10 text-green-400" />
             </div>
 
-            <p className="text-sm font-medium text-center">{glass.label}</p>
-            <p className="text-xs text-muted-foreground">{glass.volume}ml</p>
+            <p className="text-body-text font-medium text-center">{glass.label}</p>
+            <p className="text-number-label text-muted-foreground">{glass.volume}ml</p>
           </motion.div>
         );
       })}
     </div>
   );
 }
+
 
 

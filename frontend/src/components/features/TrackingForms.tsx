@@ -29,7 +29,7 @@ export const WaterEntryForm = ({ onAdd }: WaterEntryFormProps) => {
   return (
     <Card className="shadow-card">
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
+        <CardTitle className="flex items-center space-x-2 text-card-title uppercase">
           <Droplet className="h-5 w-5 text-primary" />
           <span>Add Water</span>
         </CardTitle>
@@ -53,7 +53,7 @@ export const WaterEntryForm = ({ onAdd }: WaterEntryFormProps) => {
               variant="outline"
               size="sm"
               onClick={() => setAmount(qty)}
-              className="text-xs"
+              className="text-number-label"
             >
               {qty} cup{qty !== 1 ? 's' : ''}
             </Button>
@@ -90,7 +90,7 @@ export const SleepEntryForm = ({ onAdd }: SleepEntryFormProps) => {
   return (
     <Card className="shadow-card">
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
+        <CardTitle className="flex items-center space-x-2 text-card-title uppercase">
           <Moon className="h-5 w-5 text-primary" />
           <span>Log Sleep</span>
         </CardTitle>
@@ -176,7 +176,7 @@ export const ManualSleepEntryForm = ({ onAdd }: ManualSleepEntryFormProps) => {
   return (
     <Card className="shadow-card">
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
+        <CardTitle className="flex items-center space-x-2 text-card-title uppercase">
           <Moon className="h-5 w-5 text-primary" />
           <span>Manually Enter Sleep</span>
         </CardTitle>
@@ -274,7 +274,7 @@ export const WorkoutEntryForm = ({ onAdd }: WorkoutEntryFormProps) => {
   return (
     <Card className="shadow-card">
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
+        <CardTitle className="flex items-center space-x-2 text-card-title uppercase">
           <Activity className="h-5 w-5 text-primary" />
           <span>Log Workout</span>
         </CardTitle>

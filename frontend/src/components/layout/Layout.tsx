@@ -37,7 +37,7 @@ const Layout = () => {
                 <Activity className="h-8 w-8 text-primary" />
                 <div className="absolute inset-0 h-8 w-8 bg-primary rounded-full opacity-20 animate-pulse"></div>
               </div>
-              <span className="text-xl font-bold text-foreground font-['Bebas Neue']">
+              <span className="text-page-heading text-foreground  uppercase">
                 FitPulse
               </span>
             </Link>
@@ -55,7 +55,7 @@ const Layout = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 font-['Inter'] ${
+                  className={`px-4 py-2 rounded-md text-body-text transition-all duration-200 ${
                     location.pathname === item.path
                       ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                       : "text-muted-foreground hover:text-foreground hover:bg-accent/50"

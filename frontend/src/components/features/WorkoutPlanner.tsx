@@ -67,6 +67,8 @@ const workoutVideos: WorkoutVideos = {
   }
 };
 
+import { useFitnessStore } from "@/stores/fitnessStore";
+
 const WorkoutPlanner = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<string>("");
@@ -78,6 +80,7 @@ const WorkoutPlanner = () => {
   const [showVideo, setShowVideo] = useState(false);
   
   const { toast } = useToast();
+  const { addWorkout } = useFitnessStore();
   
   const [workoutPlan, setWorkoutPlan] = useLocalStorage<WorkoutPlan>('workoutPlan', {
     userGoal: "",
@@ -179,9 +182,22 @@ const WorkoutPlanner = () => {
       if (allCompleted) {
         completedWorkouts[dayKey] = true;
         // Award XP for completing workout
-        const xpGained = workoutPlan.weeklySplit[day].intensity === 'high' ? 50 : 
-                        workoutPlan.weeklySplit[day].intensity === 'moderate' ? 30 : 20;
+        const intensity = workoutPlan.weeklySplit[day].intensity;
+        const xpGained = intensity === 'high' ? 50 : 
+                        intensity === 'moderate' ? 30 : 20;
         
+        // Sync with fitnessStore
+        const duration = intensity === 'high' ? 60 : intensity === 'moderate' ? 45 : 30;
+        const calories = intensity === 'high' ? 500 : intensity === 'moderate' ? 350 : 200;
+        
+        addWorkout({
+            name: `${day} Workout`,
+            type: workoutPlan.weeklySplit[day].focus,
+            duration: duration,
+            calories: calories,
+            intensity: intensity as 'high' | 'moderate' | 'low'
+        });
+
         return {
           ...prev,
           completedExercises,
@@ -265,7 +281,7 @@ const WorkoutPlanner = () => {
     whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
   >
-    <CardTitle className="flex items-center gap-3 text-lg font-semibold tracking-[0.08em] uppercase">
+    <CardTitle className="flex items-center gap-3 text-card-title uppercase uppercase">
   <Calendar className="h-5 w-5 text-primary" />
       <span>📅 WORKOUT PLANNER</span>
     </CardTitle>
@@ -278,7 +294,7 @@ const WorkoutPlanner = () => {
   </motion.div>
 
   {!isExpanded && (
-    <p className="text-sm text-muted-foreground tracking-[0.02em] mt-1">
+    <p className="text-body-text text-muted-foreground  mt-1">
       Plan your weekly workouts and track your progress
     </p>
   )}
@@ -297,7 +313,7 @@ const WorkoutPlanner = () => {
               {/* Goal Selection */}
               {!selectedGoal ? (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold flex items-center space-x-2">
+                  <h3 className="text-card-title uppercase flex items-center space-x-2">
                     <Target className="h-5 w-5 text-primary" />
                     <span>Select Your Fitness Goal</span>
                   </h3>
@@ -313,10 +329,10 @@ const WorkoutPlanner = () => {
                           className="w-full h-auto p-4 flex flex-col items-start space-y-2 hover:bg-accent/50"
                           onClick={() => selectGoal(key)}
                         >
-                          <div className="text-2xl">{goal.name.split(' ')[0]}</div>
+                          <div className="text-page-heading">{goal.name.split(' ')[0]}</div>
                           <div className="text-left">
-                            <div className="font-medium">{goal.name}</div>
-                            <div className="text-sm text-muted-foreground">{goal.description}</div>
+                            <div className="font-medium text-body-text">{goal.name}</div>
+                            <div className="text-number-label text-muted-foreground">{goal.description}</div>
                           </div>
                         </Button>
                       </motion.div>
@@ -328,17 +344,17 @@ const WorkoutPlanner = () => {
                   {/* Current Goal & Stats */}
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-lg font-semibold">{goals[selectedGoal as keyof typeof goals].name}</h3>
-                      <p className="text-sm text-muted-foreground">{goals[selectedGoal as keyof typeof goals].description}</p>
+                      <h3 className="text-card-title uppercase">{goals[selectedGoal as keyof typeof goals].name}</h3>
+                      <p className="text-body-text text-muted-foreground">{goals[selectedGoal as keyof typeof goals].description}</p>
                     </div>
                     <div className="flex items-center space-x-4">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-primary">{workoutPlan.streak}</div>
-                        <div className="text-xs text-muted-foreground">Day Streak</div>
+                        <div className="text-primary-number text-primary">{workoutPlan.streak}</div>
+                        <div className="text-number-label text-muted-foreground">Day Streak</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-green-500">{workoutPlan.xp}</div>
-                        <div className="text-xs text-muted-foreground">XP Earned</div>
+                        <div className="text-primary-number text-green-500">{workoutPlan.xp}</div>
+                        <div className="text-number-label text-muted-foreground">XP Earned</div>
                       </div>
                     </div>
                   </div>
@@ -387,19 +403,19 @@ const WorkoutPlanner = () => {
       `}
     >
       {/* Day */}
-      <div className="text-sm font-medium tracking-wide">
+      <div className="text-card-title">
         {day.slice(0, 3)}
       </div>
 
       {/* Focus */}
-      <div className="text-xs text-center text-muted-foreground">
+      <div className="text-number-label text-center text-muted-foreground">
         {workout.focus}
       </div>
 
       {/* Intensity badge */}
       <div
         className={`
-          text-[10px]
+          text-number-label
           px-2 py-1
           rounded-full
           border
@@ -422,7 +438,7 @@ const WorkoutPlanner = () => {
                   border border-primary/15
                 ">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold flex items-center space-x-2">
+                    <h4 className="text-card-title flex items-center space-x-2">
                       <Play className="h-4 w-4 text-primary" />
                       <span>
                         Today’s Workout: {workoutPlan.weeklySplit[today].focus}
@@ -441,7 +457,7 @@ const WorkoutPlanner = () => {
                     </Badge>
                   </div>
 
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-body-text text-muted-foreground mb-4">
                     {getDayExercises(today).length} exercises •{" "}
                     {workoutPlan.weeklySplit[today].muscleGroups.join(", ")}
                   </p>
@@ -454,7 +470,7 @@ const WorkoutPlanner = () => {
                       hover:bg-primary/90
                       text-black
                       font-medium
-                      tracking-wide
+                      
                     "
                   >
                     <Play className="h-4 w-4 mr-2" />
@@ -467,20 +483,20 @@ const WorkoutPlanner = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="text-center p-3 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-lg border">
                       <Trophy className="h-6 w-6 text-blue-500 mx-auto mb-2" />
-                      <div className="text-lg font-bold">{workoutPlan.streak}</div>
-                      <div className="text-xs text-muted-foreground">Day Streak</div>
+                      <div className="text-primary-number">{workoutPlan.streak}</div>
+                      <div className="text-number-label text-muted-foreground">Day Streak</div>
                     </div>
                     <div className="text-center p-3 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-lg border">
                       <TrendingUp className="h-6 w-6 text-green-500 mx-auto mb-2" />
-                      <div className="text-lg font-bold">{workoutPlan.xp}</div>
-                      <div className="text-xs text-muted-foreground">Total XP</div>
+                      <div className="text-primary-number">{workoutPlan.xp}</div>
+                      <div className="text-number-label text-muted-foreground">Total XP</div>
                     </div>
                     <div className="text-center p-3 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-lg border">
                       <Award className="h-6 w-6 text-purple-500 mx-auto mb-2" />
-                      <div className="text-lg font-bold">
+                      <div className="text-primary-number">
                         {Object.values(workoutPlan.completedWorkouts).filter(Boolean).length}
                       </div>
-                      <div className="text-xs text-muted-foreground">Workouts Done</div>
+                      <div className="text-number-label text-muted-foreground">Workouts Done</div>
                     </div>
                   </div>
                 </div>
@@ -501,8 +517,8 @@ const WorkoutPlanner = () => {
                       {/* Play Button for Workout Video */}
                       <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border">
                         <div>
-                          <h4 className="font-semibold">{workoutVideos[currentDay]?.title || workoutPlan.weeklySplit[currentDay]?.focus}</h4>
-                          <p className="text-sm text-muted-foreground">
+                          <h4 className="text-card-title">{workoutVideos[currentDay]?.title || workoutPlan.weeklySplit[currentDay]?.focus}</h4>
+                          <p className="text-body-text text-muted-foreground">
                             {workoutVideos[currentDay]?.info || `${currentExercises.length} exercises • ${workoutPlan.weeklySplit[currentDay]?.muscleGroups?.join(', ')}`}
                           </p>
                         </div>
@@ -557,13 +573,13 @@ const WorkoutPlanner = () => {
                               <div className="flex-1">
                                 <div className="flex items-center space-x-2 mb-2">
                                   <h4 className="font-medium">{exercise.name}</h4>
-                                  <Badge variant="outline" className="text-xs">{exercise.difficulty}</Badge>
-                                  <Badge variant="outline" className="text-xs">{exercise.equipment}</Badge>
+                                  <Badge variant="outline" className="text-number-label">{exercise.difficulty}</Badge>
+                                  <Badge variant="outline" className="text-number-label">{exercise.equipment}</Badge>
                                 </div>
-                                <p className="text-sm text-muted-foreground mb-2">
+                                <p className="text-body-text text-muted-foreground mb-2">
                                   <strong>Sets:</strong> {exercise.sets} • <strong>Muscle Group:</strong> {exercise.muscleGroup}
                                 </p>
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-body-text text-muted-foreground">
                                   {exercise.instructions}
                                 </p>
                               </div>
@@ -586,7 +602,7 @@ const WorkoutPlanner = () => {
                       
                       {/* Workout Notes & Rating */}
                       <div className="space-y-3 pt-4 border-t">
-                        <h4 className="font-medium flex items-center space-x-2">
+                        <h4 className="text-card-title flex items-center space-x-2">
                           <Lightbulb className="h-4 w-4" />
                           <span>Workout Notes</span>
                         </h4>
@@ -599,7 +615,7 @@ const WorkoutPlanner = () => {
                         />
                         
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm">Rate intensity:</span>
+                          <span className="text-body-text">Rate intensity:</span>
                           {[1, 2, 3, 4, 5].map((rating) => (
                             <Button
                               key={rating}
@@ -635,4 +651,7 @@ const WorkoutPlanner = () => {
 };
 
 export default WorkoutPlanner; 
+
+
+
 

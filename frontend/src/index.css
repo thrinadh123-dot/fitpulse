@@ -195,7 +195,7 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: 'Inter', 'Roboto Mono', sans-serif;
+    font-family: 'Inter', sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease;
     /* Prevent white line artifacts */
     margin: 0;
@@ -261,7 +261,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Bebas Neue', 'Inter', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: -0.02em;
